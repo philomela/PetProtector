@@ -1,0 +1,64 @@
+﻿using Application.Common.Interfaces;
+using Domain.Core;
+using Infrastructure.Identity;
+using Infrastructure.Percistance;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+namespace Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
+    {
+        var connectionString = config["DbConnection"];
+
+        services.AddDbContext<AuthDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        services.AddIdentity<AppUser, IdentityRole>(options =>
+        {
+        }).AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
+        {
+            cfg.TokenValidationParameters = new TokenValidationParameters()
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+                    config["Jwt:Secret"]
+                    ?? throw new Exception("Secret key was not found"))),
+                ValidIssuer = config["Jwt:Issuer"]
+                    ?? throw new Exception("Secret key was not found"),
+                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidateLifetime = true,
+                RequireExpirationTime = true,
+                ValidateIssuerSigningKey = true
+            };
+        });
+
+        services.AddAuthorization(options =>
+            options.AddPolicy("UserIdPolicy", policy => policy.RequireRole("Administrator")));
+
+        //services.AddTransient<IJwtGenerator<AppUser>, JwtGenerator>();
+
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(connectionString);
+        });
+
+        services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
+
+        return services;
+    }
+}

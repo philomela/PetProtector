@@ -1,0 +1,15 @@
+C:\Repositories\PetProtector\Application\bin\Debug\net7.0\Application.deps.json
+C:\Repositories\PetProtector\Application\bin\Debug\net7.0\Application.dll
+C:\Repositories\PetProtector\Application\bin\Debug\net7.0\Application.pdb
+C:\Repositories\PetProtector\Application\bin\Debug\net7.0\Domain.Core.dll
+C:\Repositories\PetProtector\Application\bin\Debug\net7.0\Domain.Core.pdb
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.csproj.AssemblyReference.cache
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.AssemblyInfoInputs.cache
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.AssemblyInfo.cs
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.csproj.CoreCompileInputs.cache
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.csproj.CopyComplete
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.dll
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\refint\Application.dll
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\Application.pdb
+C:\Repositories\PetProtector\Application\obj\Debug\net7.0\ref\Application.dll
