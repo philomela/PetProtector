@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -25,6 +24,7 @@ public static class DependencyInjection
         services.AddIdentity<AppUser, IdentityRole>(options =>
         {
         }).AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
+        services.AddScoped<PasswordHasher<AppUser>>();
 
         services.AddAuthentication(options =>
         {
@@ -35,12 +35,12 @@ public static class DependencyInjection
             cfg.TokenValidationParameters = new TokenValidationParameters()
             {
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-                    config["Jwt:Secret"]
+                    config["JwtSettings:Secret"]
                     ?? throw new Exception("Secret key was not found"))),
-                ValidIssuer = config["Jwt:Issuer"]
-                    ?? throw new Exception("Secret key was not found"),
+                //ValidIssuer = config["JwtSettings:Issuer"]
+                    //?? throw new Exception("Secret key was not found"),
                 ValidateAudience = false,
-                ValidateIssuer = true,
+                ValidateIssuer = false,
                 ValidateLifetime = true,
                 RequireExpirationTime = true,
                 ValidateIssuerSigningKey = true
@@ -48,9 +48,7 @@ public static class DependencyInjection
         });
 
         services.AddAuthorization(options =>
-            options.AddPolicy("UserIdPolicy", policy => policy.RequireRole("Administrator")));
-
-        //services.AddTransient<IJwtGenerator<AppUser>, JwtGenerator>();
+            options.AddPolicy("UserIdPolicy", policy => policy.RequireRole("User")));
 
         services.AddDbContext<AppDbContext>(options =>
         {

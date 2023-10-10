@@ -4,5 +4,5 @@ namespace Domain.Core;
 
 public class AppUser : IdentityUser
 {
-    public Guid QuestionnaireId { get; set; }
+    public string FullName { get; set; }
 }
