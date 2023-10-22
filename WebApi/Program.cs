@@ -12,15 +12,10 @@ builder.Services.AddControllers(options =>
      options.Filters.Add<ApiExceptionFilterAttribute>();
  });
 
-//builder.Services.Configure<ApiBehaviorOptions>(options =>
-//            options.SuppressModelStateInvalidFilter = true);
-
-//builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PetProtector API", Version = "v1" });
 
-    // Добавьте этот код для добавления токена доступа в Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",

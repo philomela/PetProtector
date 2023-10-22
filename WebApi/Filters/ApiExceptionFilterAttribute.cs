@@ -15,7 +15,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
             { typeof(ValidationException), HandleValidationException },
             { typeof(NotFoundException), HandleNotFoundException },
             { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-            { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+            { typeof(ForbiddenAccessException), HandleForbiddenAccessException }
         };
     }
 
@@ -24,6 +24,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         HandleException(context);
 
         base.OnException(context);
+        //Разобраться с исключениями, например DbContext попадает со стек трейсом.
     }
 
     private void HandleException(ExceptionContext context)
@@ -35,11 +36,24 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
             return;
         }
 
-        if (!context.ModelState.IsValid)
+        HandleUnhundledException(context);
+    }
+
+    private void HandleUnhundledException(ExceptionContext context)
+    {
+        var details = new ProblemDetails
         {
-            HandleInvalidModelStateException(context);
-            return;
-        }
+            Status = StatusCodes.Status500InternalServerError,
+            Title = "Internal Server Error",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
+        };
+
+        context.Result = new ObjectResult(details)
+        {
+            StatusCode = StatusCodes.Status500InternalServerError
+        };
+
+        context.ExceptionHandled = true;
     }
 
     private void HandleValidationException(ExceptionContext context)

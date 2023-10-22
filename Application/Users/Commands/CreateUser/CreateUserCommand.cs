@@ -16,10 +16,9 @@ public record CreateUserCommand : IRequest<Unit>
 public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit>
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly PasswordHasher<AppUser> _passwordHasher;
 
-    public CreateUserCommandHandler(UserManager<AppUser> userManager, PasswordHasher<AppUser> passwordHasher) 
-        => (_userManager, _passwordHasher) = (userManager, passwordHasher);
+    public CreateUserCommandHandler(UserManager<AppUser> userManager) 
+        => (_userManager) = (userManager);
 
     public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
@@ -30,7 +29,7 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
             FullName = request.FullName
         };
 
-        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.Password);
 
         var result = await _userManager.CreateAsync(user);
 

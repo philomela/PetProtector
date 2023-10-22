@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Core;
 using Infrastructure.Identity;
+using Infrastructure.Identity.Jwt;
 using Infrastructure.Percistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -23,8 +24,8 @@ public static class DependencyInjection
 
         services.AddIdentity<AppUser, IdentityRole>(options =>
         {
-        }).AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
-        services.AddScoped<PasswordHasher<AppUser>>();
+        }).AddEntityFrameworkStores<AuthDbContext>()
+        .AddTokenProvider<DataProtectorTokenProvider<AppUser>>("PetProtector");
 
         services.AddAuthentication(options =>
         {
@@ -56,6 +57,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
+        services.AddTransient<IJwtTokenManager, JwtTokenManager>();
 
         return services;
     }
