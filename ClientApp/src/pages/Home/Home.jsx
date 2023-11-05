@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-return <div>'Home'</div>
-  
+  return (
+    <>
+      <div>This is Main page</div>
+    </>
+  );
 };
 
 export default Home;

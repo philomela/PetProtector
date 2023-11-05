@@ -13,13 +13,13 @@ public record AuthenticateCommand : IRequest<string>
     public string Password { get; set; }
 }
 
-public record AuthenticationQueryHandler : IRequestHandler<AuthenticateCommand, string>
+public record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, string>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IJwtTokenManager _tokenManager;
 
-    public AuthenticationQueryHandler(
+    public AuthenticateCommandHandler(
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor,
         IJwtTokenManager tokenManager)

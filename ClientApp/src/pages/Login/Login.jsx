@@ -1,37 +1,113 @@
-import React, { useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import useAuth from "../../hooks/useAuth";
+//import jwt from 'jsonwebtoken';
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
+import axios from "../../api/axios";
+const LOGIN_URL = "/api/account/login";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { setAuth } = useAuth();
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+  const emailRef = useRef();
+  const errRef = useRef();
+
+  const [email, setEmail] = useState("");
+  const [password, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+
+  useEffect(() => {
+    emailRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [email, password]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ email, password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(JSON.stringify(response?.data));
+
+      const accessToken = response?.data?.token;
+
+      //const decodedToken = jwt.decode(accessToken);
+      //const role = decodedToken?.role; //Попробовать выдывать реальный массив ролей с фронта если это нужно.
+      const payload = accessToken.split(".")[1];
+      const role = JSON.parse(atob(payload)).role;
+      //const email = JSON.parse(atob(payload)).role;
+
+      setAuth({ email, role, accessToken });
+      setEmail("");
+      setPwd("");
+      navigate(from, { replace: true });
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+      errRef.current.focus();
+    }
   };
 
   return (
-    <div>
+    <section>
+      <p
+        ref={errRef}
+        className={errMsg ? "errmsg" : "offscreen"}
+        aria-live="assertive"
+      >
+        {errMsg}
+      </p>
+      <h1>Войдите</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            name="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            name="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button>Sign In</button>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          ref={emailRef}
+          autoComplete="off"
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          required
+        />
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          autoComplete="off"
+          onChange={(e) => setPwd(e.target.value)}
+          value={password}
+          required
+        />
+        <button>Войти</button>
       </form>
-    </div>
+      <p>
+        У Вас нет аккаунта?
+        <br />
+        <span className="line">
+          {/*Вставить ссылку на страницу регистрации */}
+          <a href="#">Зарегистрироваться</a>
+        </span>
+      </p>
+    </section>
   );
 };
 

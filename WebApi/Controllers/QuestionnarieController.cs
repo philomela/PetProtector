@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    public class QuestionnarieController : ApiControllerBase
+    public class QuestionnariesController : ApiControllerBase
     {
         [Authorize(Policy = "UserIdPolicy")]
-        [HttpPut("Edit/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Edit(string id)
         {
             await Mediator.Send(new UpdateQuestionnaireCommand());
@@ -16,10 +16,19 @@ namespace WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("Get/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
             return Ok(await Mediator.Send(new GetQuestionnaireQuery()));
         }
+
+        //[Authorize(Policy = "UserIdPolicy")]
+        //[HttpGet("/{id}")]
+        //public async Task<IActionResult> (string id)
+        //{
+        //    var userId = _http
+        //    await Mediator.Send(new UpdateQuestionnaireCommand());
+        //    return NoContent();
+        //}
     }
 }

@@ -1,17 +1,32 @@
-import './App.css'
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import Home from './pages/Home/Home'
-import Login from './pages/Login/Login'
+import React from "react";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Header from "./components/Header/Header";
+import Login from "./pages/Login/Login";
+import Questionnaire from "./pages/questionnaire/questionnaire";
+import Profile from "./pages/Profile/Profile";
+import PrivateRoute from "./utils/PrivateRoute";
+import Layout from "./components/Layout/layout";
 
 const App = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/home" element={<Home/>}/>
-                <Route path="/login" element={<Login/>}/>
-            </Routes>
-        </Router>
-    );
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route element={<PrivateRoute allowedRole={"User"} />}>
+            <Route path="quest" element={<Questionnaire />} />
+          </Route>
+          <Route element={<PrivateRoute allowedRole={"User"} />}>
+            <Route path="profile" element={<Profile />} />
+          </Route>
+        </Route>
+      </Routes>
+      //nextjs
+    </>
+  );
 };
 
-export default App
+export default App;
