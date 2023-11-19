@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Register\**" />
+    <Content Remove="Controllers\Register\**" />
+    <EmbeddedResource Remove="Controllers\Register\**" />
+    <None Remove="Controllers\Register\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
@@ -23,7 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Home\" />
-    <Folder Include="Controllers\Register\" />
+    <Folder Include="Configurations\" />
   </ItemGroup>
 
 </Project>

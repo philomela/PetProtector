@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import styles from "./Home.module.css";
 
 const Home = () => {
   return (
     <>
-      <div>This is Main page</div>
+      <div className={styles.home_page}>Главная страница</div>
     </>
   );
 };

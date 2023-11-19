@@ -19,7 +19,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            return Ok(await Mediator.Send(new GetQuestionnaireQuery()));
+            return Ok(await Mediator.Send(new GetQuestionnaireQuery() { Id = Guid.NewGuid() }));
         }
 
         //[Authorize(Policy = "UserIdPolicy")]

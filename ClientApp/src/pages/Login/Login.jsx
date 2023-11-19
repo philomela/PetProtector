@@ -47,9 +47,10 @@ const Login = () => {
       //const role = decodedToken?.role; //Попробовать выдывать реальный массив ролей с фронта если это нужно.
       const payload = accessToken.split(".")[1];
       const role = JSON.parse(atob(payload)).role;
+      const userId = JSON.parse(atob(payload)).nameid;
       //const email = JSON.parse(atob(payload)).role;
 
-      setAuth({ email, role, accessToken });
+      setAuth({ userId, role, accessToken });
       setEmail("");
       setPwd("");
       navigate(from, { replace: true });

@@ -16,15 +16,17 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route path="login" element={<Login />} />
           <Route path="/" element={<Home />} />
+
           <Route element={<PrivateRoute allowedRole={"User"} />}>
             <Route path="quest" element={<Questionnaire />} />
           </Route>
+
           <Route element={<PrivateRoute allowedRole={"User"} />}>
             <Route path="profile" element={<Profile />} />
           </Route>
+          
         </Route>
       </Routes>
-      //nextjs
     </>
   );
 };

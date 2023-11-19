@@ -4,10 +4,12 @@ import styles from "./Header.module.css";
 const Header = () => {
   return (
     <nav className={styles.horizontal_menu}>
-      <Link to="/">Home</Link> <br />
-      <Link to="login">Login</Link> <br />
-      <Link to="profile">Profile</Link> <br />
-      <Link to="quest">Questionnaire</Link> <br />
+      <ul>
+        <li><Link to="/">Главная</Link> </li>
+        <li><Link to="login">Войти</Link></li>
+        <li><Link to="profile">Профиль</Link></li>
+        <li><Link to="quest">Анкета</Link></li>
+      </ul>
     </nav>
   );
 };

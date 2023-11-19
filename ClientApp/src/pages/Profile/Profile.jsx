@@ -14,7 +14,7 @@ const Profile = () => {
 
       const getQuestionnaire = async () => {
           try {
-              const response = await axiosPrivate.post('/api/questionnaries', {
+              const response = await axiosPrivate.post('/api/user/getUserInfo', {
                   signal: controller.signal
               });
               console.log(response.data);
