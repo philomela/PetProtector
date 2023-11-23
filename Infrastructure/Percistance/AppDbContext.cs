@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Core;
+using Infrastructure.Percistance.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Percistance;
@@ -16,7 +17,7 @@ public class AppDbContext : DbContext, IAppDbContext
     {
         //modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
         //modelBuilder.ApplyConfiguration(new PostConfiguration());
-        //modelBuilder.ApplyConfiguration(new CheckResultsConfiguration());
+        modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 

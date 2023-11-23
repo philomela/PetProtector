@@ -16,6 +16,8 @@ public record QuestionnaireVm : IMapWith<Questionnaire>
 
     public string State { get; set; }
 
+    public string SecretKey { get; set; }
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<Questionnaire, QuestionnaireVm>()
@@ -28,6 +30,8 @@ public record QuestionnaireVm : IMapWith<Questionnaire>
              .ForMember(questionnaireVm => questionnaireVm.PhoneNumber,
                 opt => opt.MapFrom(questionnaire => questionnaire.PhoneNumber))
              .ForMember(questionnaireVm => questionnaireVm.State,
-                opt => opt.MapFrom(questionnaire => questionnaire.State));
+                opt => opt.MapFrom(questionnaire => questionnaire.State))
+             .ForMember(questionnaireVm => questionnaireVm.SecretKey,
+                opt => opt.MapFrom(questionnaire => questionnaire.SecretKey));
     }
 }

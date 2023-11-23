@@ -11,4 +11,6 @@ public record Questionnaire
     public string PhoneNumber { get; set; }
 
     public string State { get; set; }
+
+    public string SecretKey { get; set; }
 }

@@ -2,7 +2,6 @@
 using Application.Users.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace WebApi.Controllers;
 
@@ -20,8 +19,6 @@ public class UserController : ApiControllerBase
     [HttpPost("GetUserInfo")]
     public async Task<IActionResult> GetUserInfo(GetUserQuery query)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
         return Ok(await Mediator.Send(query));
     }
 }

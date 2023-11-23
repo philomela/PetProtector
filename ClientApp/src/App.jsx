@@ -11,7 +11,6 @@ import Layout from "./components/Layout/layout";
 const App = () => {
   return (
     <>
-      <Header />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="login" element={<Login />} />

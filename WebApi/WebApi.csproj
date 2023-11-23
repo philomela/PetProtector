@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Home\" />
-    <Folder Include="Configurations\" />
   </ItemGroup>
 
 </Project>

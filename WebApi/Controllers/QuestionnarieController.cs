@@ -17,9 +17,9 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await Mediator.Send(new GetQuestionnaireQuery() { Id = Guid.NewGuid() }));
+            return Ok(await Mediator.Send(new GetQuestionnaireQuery() { Id = id }));
         }
 
         //[Authorize(Policy = "UserIdPolicy")]
