@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-public class AccountController : ApiControllerBase
+public class AccountsController : ApiControllerBase
 {
     [AllowAnonymous]
     [HttpPost("Login")]

@@ -12,5 +12,7 @@ public record Questionnaire
 
     public string State { get; set; }
 
-    public string SecretKey { get; set; }
+    public Guid CollarId { get; set; }
+
+    public Collar Collar { get; set; }
 }

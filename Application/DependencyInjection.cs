@@ -1,4 +1,5 @@
 ﻿using Application.Common.Behaviours;
+using Application.Common.Mappings;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,11 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
 
         });
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
+            cfg.AddProfile(new AssemblyMappingProfile(typeof(IMapWith<>).Assembly));
+        });
         services.AddValidatorsFromAssemblies(new[] { Assembly.GetExecutingAssembly() });
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>),

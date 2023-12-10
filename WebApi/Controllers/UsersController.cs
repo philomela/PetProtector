@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-public class UserController : ApiControllerBase
+public class UsersController : ApiControllerBase
 {
     [AllowAnonymous]
     [HttpPost("Register")]
@@ -15,10 +15,10 @@ public class UserController : ApiControllerBase
         return Ok();
     }
 
-    [Authorize(Policy = "UserIdPolicy")] // Добавить для админа.
-    [HttpPost("GetUserInfo")]
-    public async Task<IActionResult> GetUserInfo(GetUserQuery query)
+    [Authorize(Policy = "UserIdPolicy")] //Добавить для админа.
+    [HttpGet("UserInfo")]
+    public async Task<IActionResult> UserInfo()
     {
-        return Ok(await Mediator.Send(query));
+        return Ok(await Mediator.Send(new GetUserQuery()));
     }
 }

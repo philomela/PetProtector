@@ -7,6 +7,7 @@ namespace Infrastructure.Percistance;
 
 public class AppDbContext : DbContext, IAppDbContext
 {
+    public DbSet<Collar> Collars { get; set; }
     public DbSet<Questionnaire> Questionnaires { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -16,7 +17,7 @@ public class AppDbContext : DbContext, IAppDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
-        //modelBuilder.ApplyConfiguration(new PostConfiguration());
+        modelBuilder.ApplyConfiguration(new CollarConfiguration());
         modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
         base.OnModelCreating(modelBuilder);
     }

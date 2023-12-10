@@ -9,7 +9,7 @@ public record GetQuestionnaireQuery : IRequest<QuestionnaireVm>
     public Guid Id { get; set; }
 }
 
-public record GetQuestionnaireQueryHandler : IRequestHandler<GetQuestionnaireQuery, QuestionnaireVm>
+internal record GetQuestionnaireQueryHandler : IRequestHandler<GetQuestionnaireQuery, QuestionnaireVm>
 {
     private readonly IAppDbContext _appDbContext;
     private readonly IMapper _mapper;

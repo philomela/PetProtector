@@ -5,9 +5,10 @@ import useAuth from './useAuth';
 const useRefreshToken = () => {
     const { setAuth } = useAuth();
 
-    const refresh = async () => {
-        const response = await axios.post('/api/Account/RefreshToken', {
-            withCredentials: true
+    const refresh = async (expiredToken) => {
+        const response = await axios.post('/api/Accounts/RefreshToken', {
+            withCredentials: true,
+            token: expiredToken
         });
         setAuth(prev => {
             console.log(JSON.stringify(prev));

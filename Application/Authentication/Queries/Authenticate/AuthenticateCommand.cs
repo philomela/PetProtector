@@ -13,7 +13,7 @@ public record AuthenticateCommand : IRequest<string>
     public string Password { get; set; }
 }
 
-public record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, string>
+internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, string>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -57,7 +57,9 @@ public record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, 
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Expires = DateTime.UtcNow.AddDays(7)
+            Expires = DateTime.UtcNow.AddDays(7),
+            Secure = true,
+            SameSite = SameSiteMode.None
         };
 
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);

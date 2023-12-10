@@ -12,7 +12,7 @@ public record UpdateQuestionnaireCommand : IRequest<Guid>
 
     public string PhoneNumber { get; set; }
 }
-public record UpdateQuestionnaireCommandHandler : IRequestHandler<UpdateQuestionnaireCommand, Guid>
+internal record UpdateQuestionnaireCommandHandler : IRequestHandler<UpdateQuestionnaireCommand, Guid>
 {
     public async Task<Guid> Handle(UpdateQuestionnaireCommand request, CancellationToken cancellationToken)
     {

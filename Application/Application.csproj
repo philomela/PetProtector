@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Collars\Commands\" />
     <Folder Include="Questionnaires\Commands\DeleteQuestionnaire\" />
   </ItemGroup>
 

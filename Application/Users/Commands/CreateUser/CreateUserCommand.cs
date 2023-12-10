@@ -26,7 +26,8 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
         {
             Email = request.Email,
             UserName = request.Email,
-            FullName = request.FullName
+            FullName = request.FullName,
+            CreatedAt = DateTime.Now.Date
         };
 
         user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.Password);

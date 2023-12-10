@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Core;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,7 @@ public record RefreshTokenCommand : IRequest<string>
     public string Token { get; set; }
 }
 
-public record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, string>
+internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, string>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -24,21 +25,24 @@ public record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, 
         IHttpContextAccessor httpContextAccessor,
         IJwtTokenManager tokenManager,
         IConfiguration configuration)
-    => (_userManager, _httpContextAccessor, _tokenManager, _configuration)
-        = (userManager, httpContextAccessor, tokenManager, configuration);
+        => (_userManager, _httpContextAccessor, _tokenManager, _configuration)
+            = (userManager, httpContextAccessor, tokenManager, configuration);
 
     public async Task<string> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        var currentRefreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+        var currentRefreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"]
+                                  ?? throw new BadRequestException("Refresh token not found");
 
         var principal = _tokenManager.GetPrincipalFromToken(request.Token);
 
-        var user = await _userManager.Users.Include(x => x.Tokens).FirstOrDefaultAsync(x => x.Email == principal.Identity.Name);
+        var user = await _userManager.Users.Include(x => x.Tokens)
+            .FirstOrDefaultAsync(x => x.Email == principal.Identity.Name);
 
         if (user is null)
             throw new UnauthorizedAccessException();
 
-        var existingToken = user.Tokens.FirstOrDefault(t => t.Token == currentRefreshToken && t.ExpiryOn >= DateTime.Now);
+        var existingToken =
+            user.Tokens.FirstOrDefault(t => t.Token == currentRefreshToken && t.ExpiryOn >= DateTime.Now);
 
         if (existingToken is null)
             throw new UnauthorizedAccessException();
@@ -49,13 +53,15 @@ public record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, 
         existingToken.ExpiryOn = DateTime.Now.AddDays(1);
         existingToken.Token = newRefreshToken;
         await _userManager.UpdateAsync(user);
-        
+
         var newAccessToken = _tokenManager.GenerateAccessToken(user);
 
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Expires = DateTime.UtcNow.AddDays(7)
+            Expires = DateTime.UtcNow.AddDays(7),
+            Secure = true,
+            SameSite = SameSiteMode.None
         };
 
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);

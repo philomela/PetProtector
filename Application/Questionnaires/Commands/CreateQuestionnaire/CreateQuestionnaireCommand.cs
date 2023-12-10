@@ -14,7 +14,7 @@ public record CreateQuestionnaireCommand : IRequest<Unit>
     public string PhoneNumber { get; set; }
 }
 
-public record CreateQuestionnaireCommandHandler : IRequestHandler<CreateQuestionnaireCommand, Unit>
+internal record CreateQuestionnaireCommandHandler : IRequestHandler<CreateQuestionnaireCommand, Unit>
 {
     public async Task<Unit> Handle(CreateQuestionnaireCommand request, CancellationToken cancellationToken)
     {
