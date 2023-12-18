@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using AutoMapper;
-using Domain.Core;
+using Domain.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 

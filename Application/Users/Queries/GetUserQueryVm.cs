@@ -1,6 +1,6 @@
 ﻿using Application.Common.Mappings;
 using AutoMapper;
-using Domain.Core;
+using Domain.Core.Entities;
 
 namespace Application.Users.Queries;
 

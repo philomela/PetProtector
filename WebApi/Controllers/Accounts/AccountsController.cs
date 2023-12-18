@@ -15,6 +15,16 @@ public class AccountsController : ApiControllerBase
 
         return Ok(new { token });
     }
+    
+    [Authorize(Policy = "UserIdPolicy")]
+    [HttpPost("Logout")]
+    public async Task<IActionResult> Logout()
+    {
+        // var token = await Mediator.Send(authData);
+        //
+        // return Ok(new { token });
+        return Ok();
+    }
 
     [AllowAnonymous]
     [HttpPost("RefreshToken")]

@@ -1,9 +1,11 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Collars.Queries.Dtos;
+using Application.Common.Interfaces;
+using Application.Questionnaires.Queries.Dtos;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Collars.Queries;
+namespace Application.Collars.Queries.GetCollars;
 
 public record GetCollarsQuery : IRequest<CollarsVm>
 {
@@ -25,6 +27,21 @@ internal record GetCollarsQueryHandler : IRequestHandler<GetCollarsQuery, Collar
     {
         var userId = _executionContextAccessor.UserId;
 
-        return _mapper.Map<CollarsVm>(await _appDbContext.Collars.Where(c => c.UserId == userId).ToListAsync());
+        var entities = await _appDbContext.Collars.AsNoTracking()
+            .Include(c => c.Questionnaire).AsNoTracking()
+            .Where(c => c.UserId == userId)
+            .Select(c => new CollarDto()
+            {
+                Id = c.Id,
+                Questionnaire = new ()
+                {
+                    OwnersName = c.Questionnaire.OwnersName,
+                    PetsName = c.Questionnaire.PetsName,
+                    PhoneNumber = c.Questionnaire.PhoneNumber
+                }
+            }).ToListAsync(cancellationToken);
+        
+        return _mapper
+            .Map<CollarsVm>(entities);
     }
 }

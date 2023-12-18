@@ -1,5 +1,6 @@
-﻿using Application.Common.Interfaces;
-using Domain.Core;
+﻿using System.Reflection;
+using Application.Common.Interfaces;
+using Domain.Core.Entities;
 using Infrastructure.Percistance.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,6 @@ public class AppDbContext : DbContext, IAppDbContext
 {
     public DbSet<Collar> Collars { get; set; }
     public DbSet<Questionnaire> Questionnaires { get; set; }
-
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {}
@@ -17,15 +17,15 @@ public class AppDbContext : DbContext, IAppDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
-        modelBuilder.ApplyConfiguration(new CollarConfiguration());
-        modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
+        // modelBuilder.ApplyConfiguration(new CollarConfiguration());
+        // modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
+        
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {
-        //await _mediator.DispatchDomainEvents(this);
-
         return await base.SaveChangesAsync(cancellationToken);
     }
 }

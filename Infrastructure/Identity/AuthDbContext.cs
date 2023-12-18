@@ -1,6 +1,5 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Entities;
 using Infrastructure.Identity.Configurations;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +11,7 @@ public class AuthDbContext : IdentityDbContext<AppUser>
     public DbSet<AppRefreshToken> AppTokens { get; set; }
     public AuthDbContext(DbContextOptions<AuthDbContext> options)
     : base(options)
-    { Database.EnsureCreated(); }
+    {  }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

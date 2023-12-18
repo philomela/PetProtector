@@ -1,7 +1,5 @@
-﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
-using Domain.Core;
-using Microsoft.AspNetCore.Identity;
+﻿using Application.Common.Interfaces;
+using Domain.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

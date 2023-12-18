@@ -22,6 +22,7 @@ public static class DependencyInjection
             cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
             cfg.AddProfile(new AssemblyMappingProfile(typeof(IMapWith<>).Assembly));
         });
+        
         services.AddValidatorsFromAssemblies(new[] { Assembly.GetExecutingAssembly() });
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>),

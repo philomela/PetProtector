@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Domain.Core;
+using Domain.Core.Entities;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Jwt;
 using Infrastructure.Percistance;
@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Infrastructure.Percistance.Interceptors;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastructure;
 
@@ -19,6 +21,8 @@ public static class DependencyInjection
     {
         var connectionString = config["DbConnection"];
 
+        services.AddScoped<ISaveChangesInterceptor, DomainEventDispatcher>();
+        
         services.AddDbContext<AuthDbContext>(options =>
             options.UseSqlServer(connectionString));
 
@@ -51,8 +55,9 @@ public static class DependencyInjection
         services.AddAuthorization(options =>
             options.AddPolicy("UserIdPolicy", policy => policy.RequireRole("User")));
 
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<AppDbContext>((provider, options) =>
         {
+            options.AddInterceptors(provider.GetServices<ISaveChangesInterceptor>());
             options.UseSqlServer(connectionString);
         });
 

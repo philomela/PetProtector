@@ -11,22 +11,17 @@ import Layout from "./components/Layout/layout";
 const App = () => {
   return (
     <>
-    <Header/>
+      <Header />
       <Routes>
-      
         <Route path="/" element={<Layout />}>
-          
+
           <Route path="login" element={<Login />} />
           <Route path="/" element={<Home />} />
-
-          <Route element={<PrivateRoute allowedRole={"User"} />}>
-            <Route path="quest" element={<Questionnaire />} />
-          </Route>
+          <Route path="quest/:id" element={<Questionnaire  />} /> 
 
           <Route element={<PrivateRoute allowedRole={"User"} />}>
             <Route path="profile" element={<Profile />} />
           </Route>
-          
         </Route>
       </Routes>
     </>

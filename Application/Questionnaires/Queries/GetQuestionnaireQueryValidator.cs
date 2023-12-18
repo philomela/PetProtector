@@ -6,6 +6,6 @@ public class GetQuestionnaireQueryValidator : AbstractValidator<GetQuestionnaire
 {
     public GetQuestionnaireQueryValidator()
     {
-        RuleFor(q => q.Id).NotNull().NotEmpty();
+        RuleFor(q => q.LinkQuestionnaire).NotNull().NotEmpty();
     }
 }

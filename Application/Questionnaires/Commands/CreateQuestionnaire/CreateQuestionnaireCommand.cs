@@ -1,4 +1,4 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Entities;
 using MediatR;
 
 namespace Application.Questionnaires.Commands.CreateQuestionnaire;

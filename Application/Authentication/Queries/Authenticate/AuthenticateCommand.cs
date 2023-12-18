@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Domain.Core;
+using Domain.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

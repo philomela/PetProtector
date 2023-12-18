@@ -1,4 +1,5 @@
-﻿using Application;
+﻿using System.Text.Json.Serialization;
+using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
 using Microsoft.OpenApi.Models;
@@ -13,7 +14,7 @@ builder.Services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccesso
 builder.Services.AddControllers(options =>
  {
      options.Filters.Add<ApiExceptionFilterAttribute>();
- });
+ }).AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddSwaggerGen(c =>
 {

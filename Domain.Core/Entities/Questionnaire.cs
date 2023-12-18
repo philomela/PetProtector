@@ -1,8 +1,12 @@
-﻿namespace Domain.Core;
+﻿using Domain.Core.Common;
 
-public record Questionnaire
+namespace Domain.Core.Entities;
+
+public class Questionnaire : BaseEntity
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
+    
+    public Guid LinkQuestionnaire { get; set; }
 
     public string OwnersName { get; set; }
 
@@ -11,8 +15,6 @@ public record Questionnaire
     public string PhoneNumber { get; set; }
 
     public string State { get; set; }
-
-    public Guid CollarId { get; set; }
-
+    
     public Collar Collar { get; set; }
 }

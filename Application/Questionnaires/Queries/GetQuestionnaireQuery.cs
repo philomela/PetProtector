@@ -1,12 +1,13 @@
 ﻿using Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Questionnaires.Queries;
 
 public record GetQuestionnaireQuery : IRequest<QuestionnaireVm>
 {
-    public Guid Id { get; set; }
+    public Guid LinkQuestionnaire { get; set; }
 }
 
 internal record GetQuestionnaireQueryHandler : IRequestHandler<GetQuestionnaireQuery, QuestionnaireVm>
@@ -19,6 +20,7 @@ internal record GetQuestionnaireQueryHandler : IRequestHandler<GetQuestionnaireQ
 
     public async Task<QuestionnaireVm> Handle(GetQuestionnaireQuery request, CancellationToken cancellationToken)
     {
-        return _mapper.Map<QuestionnaireVm>(await _appDbContext.Questionnaires.FindAsync(request.Id));
+        return _mapper.Map<QuestionnaireVm>(await _appDbContext.Questionnaires
+            .Where( q => q.LinkQuestionnaire == request.LinkQuestionnaire).FirstOrDefaultAsync());
     }
 }

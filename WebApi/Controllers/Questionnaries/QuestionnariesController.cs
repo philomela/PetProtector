@@ -8,10 +8,10 @@ namespace WebApi.Controllers
     public class QuestionnariesController : ApiControllerBase
     {
         [Authorize(Policy = "UserIdPolicy")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Edit(string id)
+        [HttpPut]
+        public async Task<IActionResult> Update(UpdateQuestionnaireCommand updateQuestionnaireData)
         {
-            await Mediator.Send(new UpdateQuestionnaireCommand());
+            await Mediator.Send(updateQuestionnaireData);
             return NoContent();
         }
 
@@ -19,7 +19,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await Mediator.Send(new GetQuestionnaireQuery() { Id = id }));
+            return Ok(await Mediator.Send(new GetQuestionnaireQuery() { LinkQuestionnaire = id }));
         }
 
         //[Authorize(Policy = "UserIdPolicy")]

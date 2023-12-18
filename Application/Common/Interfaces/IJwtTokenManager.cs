@@ -1,4 +1,4 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Entities;
 using System.Security.Claims;
 
 namespace Application.Common.Interfaces;
