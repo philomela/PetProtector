@@ -15,24 +15,15 @@ const Profile = () => {
 
     const getUserProfile = async () => {
       try {
-        const response = await axiosPrivate.get("/api/users/UserInfo", {
+        const responseUserInfo = await axiosPrivate.get("/api/users/UserInfo", {
           signal: controller.signal,
         });
-        console.log(response.data);
-        isMounted && setUserInfo(response.data);
-      } catch (err) {
-        console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
-      }
-    };
-
-    const getUserCollar = async () => {
-      try {
-        const response = await axiosPrivate.get("/api/collars/GetAll", {
-          signal: controller.signal,
-        });
-        console.log(response.data);
-        isMounted && setCollarsInfo(response.data);
+        const responseUserCollars = await axiosPrivate.get("/api/collars/GetAll", {
+            signal: controller.signal,
+          });
+        console.log(responseUserInfo.data);
+        console.log(responseUserCollars.data);
+        isMounted && setUserInfo(responseUserInfo.data) && setCollarsInfo(responseUserCollars.data);
       } catch (err) {
         console.error(err);
         navigate("/login", { state: { from: location }, replace: true });
@@ -40,7 +31,6 @@ const Profile = () => {
     };
 
     getUserProfile();
-    getUserCollar();
 
     return () => {
       isMounted = false;
@@ -63,9 +53,9 @@ const Profile = () => {
         <>
           {collarsInfo.collars.map((collar) => (
             <div key={collar.id}>
-              <p>Владелец животного: {collar.questionnaire.ownersName}</p>
-              <p>Имя животного: {collar.questionnaire.petsName}</p>
-              <p>Телефон владельца: {collar.questionnaire.phoneNumber}</p>
+              <p>Владелец животного: {collar.questionnaire.ownersName ?? "Еще не заполнено"}</p>
+              <p>Имя животного: {collar.questionnaire.petsName ?? "Еще не заполнено"}</p>
+              <p>Телефон владельца: {collar.questionnaire.phoneNumber ?? "Еще не заполнено"}</p>
             </div>
           ))}
         </>

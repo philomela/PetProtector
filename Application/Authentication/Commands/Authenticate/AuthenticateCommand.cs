@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Authentication.Queries.Authenticate;
+namespace Application.Authentication.Commands.Authenticate;
 
 public record AuthenticateCommand : IRequest<string>
 {

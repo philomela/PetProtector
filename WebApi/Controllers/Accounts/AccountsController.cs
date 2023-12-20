@@ -1,5 +1,6 @@
-﻿using Application.Authentication.Queries.Authenticate;
-using Application.Authentication.Queries.RefreshToken;
+﻿using Application.Authentication.Commands.Authenticate;
+using Application.Authentication.Commands.Logout;
+using Application.Authentication.Commands.RefreshToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,9 @@ public class AccountsController : ApiControllerBase
     
     [Authorize(Policy = "UserIdPolicy")]
     [HttpPost("Logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(LogoutCommand logoutData)
     {
-        // var token = await Mediator.Send(authData);
-        //
-        // return Ok(new { token });
-        return Ok();
+        return Ok(await Mediator.Send(logoutData));
     }
 
     [AllowAnonymous]

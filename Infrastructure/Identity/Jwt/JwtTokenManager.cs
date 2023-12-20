@@ -31,7 +31,7 @@ public class JwtTokenManager : IJwtTokenManager
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.Role, "User"),
             }),
-            Expires = DateTime.UtcNow.AddMinutes(3),
+            Expires = DateTime.UtcNow.AddSeconds(10), //Вынести в appsettings
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

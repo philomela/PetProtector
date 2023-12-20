@@ -36,7 +36,7 @@ const Login = () => {
         JSON.stringify({ email, password }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          //withCredentials: true,
         }
       );
       console.log(JSON.stringify(response?.data));
@@ -48,9 +48,9 @@ const Login = () => {
       const payload = accessToken.split(".")[1];
       const role = JSON.parse(atob(payload)).role;
       const userId = JSON.parse(atob(payload)).nameid;
+      const isAuth = true;
       //const email = JSON.parse(atob(payload)).role;
-
-      setAuth({ userId, role, accessToken });
+      setAuth({ userId, role, accessToken, isAuth });
       setEmail("");
       setPwd("");
       navigate(from, { replace: true });

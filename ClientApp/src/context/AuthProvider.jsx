@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem('userInfo')) : {});
     
     const handleSetAuth = (authProps) => {
+        //console.log(JSON.stringify(authProps));//убрать
         localStorage.setItem('userInfo', JSON.stringify(authProps));
         setAuth(authProps);
     }

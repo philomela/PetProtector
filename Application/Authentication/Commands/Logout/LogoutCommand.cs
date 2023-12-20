@@ -5,30 +5,26 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace Application.Authentication.Queries.RefreshToken;
+namespace Application.Authentication.Commands.Logout;
 
-public record RefreshTokenCommand : IRequest<string>
+public record LogoutCommand : IRequest<Unit>
 {
     public string Token { get; set; }
 }
 
-internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, string>
+internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IJwtTokenManager _tokenManager;
-    private readonly IConfiguration _configuration;
 
-    public RefreshTokenCommandHandler(UserManager<AppUser> userManager,
+    public LogoutCommandHandler(UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor,
-        IJwtTokenManager tokenManager,
-        IConfiguration configuration)
-        => (_userManager, _httpContextAccessor, _tokenManager, _configuration)
-            = (userManager, httpContextAccessor, tokenManager, configuration);
-
-    public async Task<string> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        IJwtTokenManager tokenManager) => (_userManager, _httpContextAccessor, _tokenManager)
+    = (userManager, httpContextAccessor, tokenManager);
+    
+    public async Task<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
         var currentRefreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"]
                                   ?? throw new BadRequestException("Refresh token not found");
@@ -46,26 +42,20 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
 
         if (existingToken is null)
             throw new UnauthorizedAccessException();
-
-        var newRefreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
+        
         existingToken.RevokedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
         existingToken.RevokedOn = DateTime.Now;
         existingToken.ExpiryOn = DateTime.Now.AddDays(1);
-        existingToken.Token = newRefreshToken;
         await _userManager.UpdateAsync(user);
-
-        var newAccessToken = _tokenManager.GenerateAccessToken(user);
-
-        var cookieOptions = new CookieOptions
+        
+        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", "", new CookieOptions
         {
+            Expires = DateTime.Now.AddDays(-1),
             HttpOnly = true,
-            Expires = DateTime.UtcNow.AddDays(7),
-            Secure = true,
-            SameSite = SameSiteMode.None
-        };
+            SameSite = SameSiteMode.None,
+            Secure = true
+        });
 
-        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);
-
-        return newAccessToken;
+        return Unit.Value;
     }
 }
