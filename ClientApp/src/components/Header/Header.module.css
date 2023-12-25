@@ -1,6 +1,12 @@
 .horizontal_menu {
-    border-bottom: 1px solid white;
-    color: #2424;
+    color: white;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+  }
+
+  .register_link {
+    border: 2px solid #1f5e6d;
+    padding: 0.5%;
   }
 
   ul {
@@ -15,3 +21,10 @@ li {
     flex: 1;
     text-align: center;
 }
+
+a {
+  color: #2c2f34;
+  text-decoration: none;
+  font-weight: 100;
+}
+

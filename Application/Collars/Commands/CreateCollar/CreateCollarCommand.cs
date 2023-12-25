@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using Domain.Core.Events;
+using Domain.Core.Enums;
 using MediatR;
 
 namespace Application.Collars.Commands.CreateCollar;
@@ -29,13 +30,13 @@ internal record CreateCollarCommandHandler : IRequestHandler<CreateCollarCommand
         {
             Id = request.Id,
             SecretKey = request.SecretKey,
-            UserId = _executionContextAccessor.UserId, //Убрать, привязывается на update Collar
             Questionnaire = new Questionnaire()
             {
                 Id = request.Id,
                 LinkQuestionnaire = request.LinkQuestionnaire,
-                State = "Created",
-            }
+                State = QuestionnaireStates.Filling,
+            },
+            
         };
         
         entity.AddDomainEvent(new CollarCreatedEvent(entity.Id));

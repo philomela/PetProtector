@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Core.Enums;
 using Domain.Core.Events;
 using MediatR;
 
@@ -24,13 +25,14 @@ internal record UpdateQuestionnaireCommandHandler : IRequestHandler<UpdateQuesti
     
     public async Task<Guid> Handle(UpdateQuestionnaireCommand request, CancellationToken cancellationToken)
     {
+        //Возможно стоит проверить привязан ли браслет к пользователю _executeContextAccessor.
         var entity = await _appDbContext.Questionnaires
             .FindAsync(request.Id) ?? throw new NotFoundException(); //Посмотреть может быть другое исключение.
 
         entity.OwnersName = request.OwnersName;
         entity.PetsName = request.PetsName;
         entity.PhoneNumber = request.PhoneNumber;
-        entity.State = "Completed"; //Вынести в enum, возможно сстоит прикрутить стейт машину, если потребуется
+        entity.State = QuestionnaireStates.Filled; //Вынести в enum, возможно сстоит прикрутить стейт машину, если потребуется
         
         entity.AddDomainEvent(new QuestionnaireUpdatedEvent());
 

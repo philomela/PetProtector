@@ -4,3 +4,46 @@
   align-items: center;
   height: 400px;
 }
+
+.main_section {
+  min-height: 500px;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  background-color: #d2c2b3;
+  box-shadow: var(--main-border-shadow);
+  display: flex;
+  padding: 1%;
+}
+
+.slogan_main_section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-width: 40%;
+}
+
+.pet_img_main_section {
+  width: 100%;
+  background: url(/images/pet-image.png) no-repeat;
+  background-size: 40%;
+  background-position: center center; /* Выравнивание изображения по центру блока */
+}
+
+.button_slogan {
+  font-size: 1.5em;
+  border: none;
+  border-radius: 20px;
+  padding: 2%;
+  color: white;
+  background-color: #1f5e6d;
+}
+
+.app_name {
+  color: #1f5e6d;
+  font-size: 2em;
+}
+
+.slogan {
+  color: black;
+}

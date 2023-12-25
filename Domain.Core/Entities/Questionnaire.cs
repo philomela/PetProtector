@@ -1,4 +1,5 @@
 ﻿using Domain.Core.Common;
+using Domain.Core.Enums;
 
 namespace Domain.Core.Entities;
 
@@ -14,7 +15,7 @@ public class Questionnaire : BaseEntity
 
     public string PhoneNumber { get; set; }
 
-    public string State { get; set; }
+    public QuestionnaireStates State { get; set; }
     
     public Collar Collar { get; set; }
 }

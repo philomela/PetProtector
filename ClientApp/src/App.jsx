@@ -22,6 +22,7 @@ const App = () => {
 
           <Route path="/" element={<Home />} />
           <Route path="register" element={<RegistrationForm  />} /> 
+          <Route path="quest/:id" element={<Questionnaire  />} />
 
           <Route element={<PrivateRoute allowedRole={"User"} />}>
             <Route path="profile" element={<Profile />} />
