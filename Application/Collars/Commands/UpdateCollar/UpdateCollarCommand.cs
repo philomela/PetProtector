@@ -22,7 +22,7 @@ internal record UpdateCollarCommandHandler : IRequestHandler<UpdateCollarCommand
         var userId = _executionContextAccessor.UserId;
 
         var entity = await _appDbContext.Collars.FindAsync(request.Id, cancellationToken) 
-                     ?? throw new NotFoundException("Entity");
+                     ?? throw new NotFoundException("Entity not found");
         entity.UserId = userId;
 
         await _appDbContext.SaveChangesAsync(cancellationToken);

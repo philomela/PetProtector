@@ -16,9 +16,8 @@ public class AppDbContext : DbContext, IAppDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
-        // modelBuilder.ApplyConfiguration(new CollarConfiguration());
-        // modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
+        modelBuilder.ApplyConfiguration(new CollarConfiguration());
+        modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
         
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);

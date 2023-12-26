@@ -1,4 +1,5 @@
 ﻿using Application.Collars.Commands.CreateCollar;
+using Application.Collars.Commands.UpdateCollar;
 using Application.Collars.Queries.GetCollar;
 using Application.Collars.Queries.GetCollars;
 using Microsoft.AspNetCore.Authorization;
@@ -27,5 +28,12 @@ public class CollarsController : ApiControllerBase
     public async Task<IActionResult> Get(string code)
     {
         return Ok(await Mediator.Send(new GetCollarQuery() {SecretKey = code}));
+    }
+    
+    [Authorize(Policy = "UserIdPolicy")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id)
+    {
+        return Ok(await Mediator.Send(new UpdateCollarCommand() {Id = id}));
     }
 }

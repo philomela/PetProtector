@@ -6,11 +6,27 @@ import SearchForm from "../../components/SearchForm/SearchForm";
 const Profile = () => {
   const [profileInfo, setProfileInfo] = useState(null);
   const [searchCollarsInfo, setSearchCollarsInfo] = useState(null);
+  const [searchedCollar, setSearchedCollar] = useState(null);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSearchInfo = (collar) => setSearchCollarsInfo(collar);
+  const handleSearchInfo = async (collar) => setSearchCollarsInfo(collar);
+  const handleLinkCollar = async () => {
+    try {
+      // Отправка данных на сервер
+      const response = await axiosPrivate.put(`/api/collars/${searchCollarsInfo}`, {
+      });
+  
+      // Обновление компонента после успешного запроса
+      setSearchedCollar(response);
+  
+      // Сброс информации о поиске
+      setSearchCollarsInfo(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -46,7 +62,7 @@ const Profile = () => {
       isMounted = false;
       controller.abort();
     };
-  }, []);
+  }, [searchedCollar]);
 
   return (
     <article>
@@ -62,8 +78,10 @@ const Profile = () => {
       {<SearchForm handleSearchInfo={handleSearchInfo} />}
       {searchCollarsInfo && (
         <>
-          <h3>Найденные браслеты:</h3>
+          <h3>Браслет найден:</h3>
           <p>{searchCollarsInfo}</p>
+          <button onClick={handleLinkCollar}>Активировать</button>
+          
         </>
       )}
       <h3>Ваши браслеты:</h3>
