@@ -6,28 +6,40 @@
 }
 
 .main_section {
-  min-height: 500px;
-  border-top-left-radius: 50px;
-  border-top-right-radius: 50px;
-  background-color: #ccbcad;
+  min-height: 70vh; /* Устанавливаем минимальную высоту равную 100% высоты видимой области экрана */
+  height: 100%;
+  background: url(/images/main-slide.jpg) no-repeat #eaeaea;
+  background-position: bottom;
+  background-size: contain;
   box-shadow: var(--main-border-shadow);
-  display: flex;
-  padding: 1%;
+  display: flex; 
 }
 
 .slogan_main_section {
   display: flex;
-  align-items: center;
+  align-items: left;
   justify-content: center;
   flex-direction: column;
-  min-width: 40%;
+  width: 70%;
+  padding-left: 5%;
+}
+
+.slogan_container {
+  
 }
 
 .pet_img_main_section {
-  width: 100%;
-  background: url(/images/pet-image.png) no-repeat;
-  background-size: 40%;
+  width: 30%;
+  display: flex;
+  text-align: right;
+  align-items: center;
+  justify-content: right;
+  padding-right: 3%;
+  box-sizing: border-box;
+  background-color: #1f5e6d;
+  color: #eaeaea;
   background-position: center center; /* Выравнивание изображения по центру блока */
+  box-shadow: -20px 0 15px rgba(0, 0, 0, 0.2);
 }
 
 .button_slogan {
@@ -37,6 +49,9 @@
   padding: 2%;
   color: white;
   background-color: #1f5e6d;
+  font-family: 'Russo';
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  /*background: linear-gradient(to right, #1f5e6d 60%, #5b00ab);*/
 }
 
 .app_name {
@@ -46,4 +61,29 @@
 
 .slogan {
   color: black;
+}
+
+.how_it_work {
+  box-shadow:
+  4px 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.how_it_work_text {
+  font-family: 'Russo';
+  font-size: 1.8em;
+  color: #eaeaea;
+  
+}
+
+.how_it_work_sacan_text {
+  font-size: 0.45em;
+  border: 1px solid #eaeaea;
+  padding: 1px;
+}
+
+.marketplaces {
+  background-color: #1f5e6d;
+  color: #eaeaea;
+  min-height: 70vh; /* Устанавливаем минимальную высоту равную 100% высоты видимой области экрана */
+  height: 100%;
 }

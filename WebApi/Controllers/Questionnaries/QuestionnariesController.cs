@@ -21,14 +21,5 @@ namespace WebApi.Controllers
         {
             return Ok(await Mediator.Send(new GetQuestionnaireQuery() { LinkQuestionnaire = id }));
         }
-
-        //[Authorize(Policy = "UserIdPolicy")]
-        //[HttpGet("/{id}")]
-        //public async Task<IActionResult> (string id)
-        //{
-        //    var userId = _http
-        //    await Mediator.Send(new UpdateQuestionnaireCommand());
-        //    return NoContent();
-        //}
     }
 }

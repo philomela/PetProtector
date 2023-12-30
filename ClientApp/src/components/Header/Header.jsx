@@ -13,11 +13,13 @@ const Header = () => {
           <li>
             <Link to="/">Главная</Link>{" "}
           </li>
-          {auth.isAuth ? (
-            <li>
-              <Link to="profile">Профиль</Link>
-            </li>
-          ) : null}
+          <li>
+            <Link to="/">О нас</Link>{" "}
+          </li>
+          <li>
+            <Link to="/">Маркетплейсы</Link>{" "}
+          </li>
+
           {!auth.isAuth ? (
             <li>
               <Link to="login">Войти</Link> или{" "}
@@ -27,6 +29,7 @@ const Header = () => {
             </li>
           ) : (
             <li>
+              <Link to="profile">Профиль</Link>
               <Link to="logout">Выйти</Link>
             </li>
           )}

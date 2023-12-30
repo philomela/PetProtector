@@ -1,6 +1,12 @@
 @font-face {
   font-family: 'Russo';
-  src: url('./fonts/RussoOne-Regular.ttf') format('truetype');
+  src: url('fonts/RussoOne-Regular.ttf') format('truetype');
+  /* Дополнительные свойства шрифта, если необходимо */
+}
+
+@font-face {
+  font-family: 'Caveat';
+  src: url('fonts/Caveat-Regular.ttf') format('truetype');
   /* Дополнительные свойства шрифта, если необходимо */
 }
 
@@ -12,8 +18,9 @@
  
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #d2d2ca;
+  color: rgba(36, 36, 36, 0.87);
+  background-color: #eaeaea;
+  /*background-color: rgba(31, 94, 109, 0.7);*/
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,8 +28,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --main-border-shadow: -4px 0 4px rgba(0, 0, 0, 0.2),
-                        4px 0 4px rgba(0, 0, 0, 0.2);
+  --main-border-shadow: -4px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
 body {
