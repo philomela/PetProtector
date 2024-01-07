@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
-//import jwt from 'jsonwebtoken';
+import styles from "./Login.module.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
+import { faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons/faArrowRightToBracket'
 
 import axios from "../../api/axios";
 const LOGIN_URL = "/api/accounts/login";
@@ -69,7 +71,8 @@ const Login = () => {
   };
 
   return (
-    <section>
+    <section className={styles.login_section}>
+      <div className={styles.login_section_container}>
       <p
         ref={errRef}
         className={errMsg ? "errmsg" : "offscreen"}
@@ -77,10 +80,11 @@ const Login = () => {
       >
         {errMsg}
       </p>
-      <h1>Войдите</h1>
-      <form onSubmit={handleSubmit}>
+      <h1>Войдите <FontAwesomeIcon icon={faArrowRightToBracket} /></h1>
+      <form className={styles.login_form} onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>
         <input
+          className={styles.login_form_email}
           type="email"
           id="email"
           ref={emailRef}
@@ -89,7 +93,7 @@ const Login = () => {
           value={email}
           required
         />
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password">Пароль:</label>
         <input
           type="password"
           id="password"
@@ -108,6 +112,7 @@ const Login = () => {
           <a href="#">Зарегистрироваться</a>
         </span>
       </p>
+      </div>
     </section>
   );
 };

@@ -2,7 +2,9 @@
     color: white;
     padding-top: 0.5%;
     padding-bottom: 0.5%;
-    border-bottom: 10px solid #1f5e6d;
+    padding-left: 5%;
+    padding-right: 5%;
+    --border-bottom: 10px solid #1f5e6d;
   }
 
   .register_link {
@@ -16,16 +18,24 @@
     padding: 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 li {
-    flex: 1;
     text-align: center;
+
 }
 
-a {
+.horizontal_menu a {
   color: rgb(22, 22, 22);
   text-decoration: none;
   font-weight: 100;
 }
 
+.delimeter {
+  color: #520665;
+}
+
+.right_menu_buttons {
+  width: 270px;
+}

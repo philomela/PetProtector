@@ -28,7 +28,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --main-border-shadow: -4px 0px 4px rgba(0, 0, 0, 0.2);
+  --main-border-shadow: -2px 0px 2px rgba(0, 0, 0, 0.2);
 }
 
 body {
@@ -41,6 +41,11 @@ body {
   padding-right: 15px;
 }
 
+.wrapper_container {
+  max-width: 80%;
+  margin: 0 auto;
+  --box-shadow: var(--main-border-shadow);
+}
 
 
 /*a {

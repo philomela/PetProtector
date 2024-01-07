@@ -19,6 +19,7 @@ public class UsersController : ApiControllerBase
     [HttpGet("UserInfo")]
     public async Task<IActionResult> UserInfo()
     {
+        await Task.Delay(10000);
         return Ok(await Mediator.Send(new GetUserQuery()));
     }
 }

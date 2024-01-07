@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 import SearchForm from "../../components/SearchForm/SearchForm";
+import Preloader from "../../components/Preloader/Preloader";
 
 const Profile = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [profileInfo, setProfileInfo] = useState(null);
   const [searchCollarsInfo, setSearchCollarsInfo] = useState(null);
   const [searchedCollar, setSearchedCollar] = useState(null);
@@ -12,6 +14,7 @@ const Profile = () => {
   const location = useLocation();
 
   const handleSearchInfo = async (collar) => setSearchCollarsInfo(collar);
+
   const handleLinkCollar = async () => {
     try {
       // Отправка данных на сервер
@@ -50,6 +53,7 @@ const Profile = () => {
             ...responseUserInfo.data,
             ...responseUserCollars.data,
           });
+        setIsLoading(false); 
       } catch (err) {
         console.error(err);
         navigate("/login", { state: { from: location }, replace: true });
@@ -67,42 +71,48 @@ const Profile = () => {
   return (
     <article>
       <h2>Профиль</h2>
-      {profileInfo && (
+
+      {isLoading ? (
+        <Preloader />
+      ) : (
         <>
-          <p>Ваше имя: {profileInfo.fullName}</p>
-          <p>Ваш email: {profileInfo.email}</p>
-          <p>Дата регистрации: {profileInfo.createdAt}</p>
-        </>
-      )}
-      <h3>Поиск браслета:</h3>
-      {<SearchForm handleSearchInfo={handleSearchInfo} />}
-      {searchCollarsInfo && (
-        <>
-          <h3>Браслет найден:</h3>
-          <p>{searchCollarsInfo}</p>
-          <button onClick={handleLinkCollar}>Активировать</button>
-          
-        </>
-      )}
-      <h3>Ваши браслеты:</h3>
-      {profileInfo && (
-        <>
-          {profileInfo.collars.map((collar) => (
-            <div key={collar.id}>
-              <p>
-                Владелец животного:{" "}
-                {collar.questionnaire.ownersName ?? "Еще не заполнено"}
-              </p>
-              <p>
-                Имя животного:{" "}
-                {collar.questionnaire.petsName ?? "Еще не заполнено"}
-              </p>
-              <p>
-                Телефон владельца:{" "}
-                {collar.questionnaire.phoneNumber ?? "Еще не заполнено"}
-              </p>
-            </div>
-          ))}
+          {profileInfo && (
+            <>
+              <p>Ваше имя: {profileInfo.fullName}</p>
+              <p>Ваш email: {profileInfo.email}</p>
+              <p>Дата регистрации: {profileInfo.createdAt}</p>
+            </>
+          )}
+          <h3>Поиск браслета:</h3>
+          <SearchForm handleSearchInfo={handleSearchInfo} />
+          {searchCollarsInfo && (
+            <>
+              <h3>Браслет найден:</h3>
+              <p>{searchCollarsInfo}</p>
+              <button onClick={handleLinkCollar}>Активировать</button>
+            </>
+          )}
+          <h3>Ваши браслеты:</h3>
+          {profileInfo && (
+            <>
+              {profileInfo.collars.map((collar) => (
+                <div key={collar.id}>
+                  <p>
+                    Владелец животного:{" "}
+                    {collar.questionnaire.ownersName ?? "Еще не заполнено"}
+                  </p>
+                  <p>
+                    Имя животного:{" "}
+                    {collar.questionnaire.petsName ?? "Еще не заполнено"}
+                  </p>
+                  <p>
+                    Телефон владельца:{" "}
+                    {collar.questionnaire.phoneNumber ?? "Еще не заполнено"}
+                  </p>
+                </div>
+              ))}
+            </>
+          )}
         </>
       )}
     </article>

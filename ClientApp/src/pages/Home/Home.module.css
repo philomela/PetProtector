@@ -2,16 +2,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
 }
 
 .main_section {
-  min-height: 70vh; /* Устанавливаем минимальную высоту равную 100% высоты видимой области экрана */
+  min-height: 90vh;
+  max-height: 90vh; /* Устанавливаем минимальную высоту равную 100% высоты видимой области экрана */
   height: 100%;
-  background: url(/images/main-slide.jpg) no-repeat #eaeaea;
-  background-position: bottom;
-  background-size: contain;
-  box-shadow: var(--main-border-shadow);
+  background: url(/images/main-slide-origin.jpg) no-repeat #eaeaea;
+  background-position: 66% 70%;
   display: flex; 
 }
 
@@ -20,35 +18,39 @@
   align-items: left;
   justify-content: center;
   flex-direction: column;
-  width: 70%;
-  padding-left: 5%;
+  width: 80%;
+  padding-left: 5%; 
 }
 
 .slogan_container {
-  
+  /*box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);*/
+  padding: 10px;
+  padding-bottom: 30px;
 }
 
 .pet_img_main_section {
+  max-width: 90vh;
   width: 30%;
   display: flex;
-  text-align: right;
-  align-items: center;
-  justify-content: right;
-  padding-right: 3%;
+  flex-direction: column;
+  text-align: center;
+  --align-items: right;
+  justify-content: center;
   box-sizing: border-box;
-  background-color: #1f5e6d;
-  color: #eaeaea;
+  background-color: #eaeaea;
+  color: #1f5e6d;
   background-position: center center; /* Выравнивание изображения по центру блока */
-  box-shadow: -20px 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: -15px 0 10px rgba(0, 0, 0, 0.2);
+  font-family: 'Caveat';
 }
 
 .button_slogan {
-  font-size: 1.5em;
+  font-size: 1.2em;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 2%;
   color: white;
-  background-color: #1f5e6d;
+  background-color: #1f5d6d;
   font-family: 'Russo';
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
   /*background: linear-gradient(to right, #1f5e6d 60%, #5b00ab);*/
@@ -63,27 +65,30 @@
   color: black;
 }
 
-.how_it_work {
-  box-shadow:
-  4px 0 4px rgba(0, 0, 0, 0.2);
+.slogan_text {
+  font-size: 0.8em
 }
 
 .how_it_work_text {
-  font-family: 'Russo';
-  font-size: 1.8em;
-  color: #eaeaea;
-  
+  font-size: 1.5em;
+  color: #1f5e6d;
+  font-family: 'Caveat';
 }
 
-.how_it_work_sacan_text {
-  font-size: 0.45em;
-  border: 1px solid #eaeaea;
-  padding: 1px;
+.carousel {
+  display: flex;
+  align-items: right;
+  justify-content: right;
+  box-sizing: border-box;
 }
 
-.marketplaces {
-  background-color: #1f5e6d;
-  color: #eaeaea;
-  min-height: 70vh; /* Устанавливаем минимальную высоту равную 100% высоты видимой области экрана */
-  height: 100%;
+.carousel_slide {
+max-width: 100%;
+display: flex;
+  align-items: right;
+  justify-content: end;
+}
+
+.statistics {
+
 }

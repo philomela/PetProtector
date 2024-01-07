@@ -13,23 +13,16 @@ const Header = () => {
           <li>
             <Link to="/">Главная</Link>{" "}
           </li>
-          <li>
-            <Link to="/">О нас</Link>{" "}
-          </li>
-          <li>
-            <Link to="/">Маркетплейсы</Link>{" "}
-          </li>
-
           {!auth.isAuth ? (
-            <li>
-              <Link to="login">Войти</Link> или{" "}
+            <li className={styles.right_menu_buttons}>
+              <Link to="login">Войти</Link> <span className={styles.delimeter}> или </span>
               <Link to="register" className={styles.register_link}>
                 зарегистрироваться
               </Link>
             </li>
           ) : (
             <li>
-              <Link to="profile">Профиль</Link>
+              <Link to="profile">Профиль</Link><span className={styles.delimeter}> | </span>
               <Link to="logout">Выйти</Link>
             </li>
           )}
