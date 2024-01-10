@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import styles from "./Registration.module.css";
 
 const RegistrationForm = () => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,17 +15,20 @@ const RegistrationForm = () => {
     const command = {
       fullName: fullName,
       email: email,
-      password: password
+      password: password,
     };
 
     try {
-      const response = await fetch('https://localhost:7100/api/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(command)
-      });
+      const response = await fetch(
+        "https://localhost:7100/api/users/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(command),
+        }
+      );
 
       if (response.ok) {
         navigate("/profile", { state: { from: location }, replace: true });
@@ -40,36 +44,45 @@ const RegistrationForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="fullName">Full Name:</label>
-        <input
-          type="text"
-          id="fullName"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <button type="submit">Register</button>
-    </form>
+    <>
+      <section className={styles.registration_section}>
+        <div className={styles.registration_section_container}>
+          <h2>Зарегистрируйтесь</h2>
+          <form className={styles.registration_form} onSubmit={handleSubmit}>
+            <label htmlFor="fullName">Имя:</label>
+            <input
+              className={styles.registration_form_input}
+              type="text"
+              id="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+
+            <label htmlFor="email">Email:</label>
+            <input
+              className={styles.registration_form_input}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <label htmlFor="password">Пароль:</label>
+            <input
+              className={styles.registration_form_input}
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button className={styles.registration_form_button} type="submit">
+              Зарегистрироваться
+            </button>
+          </form>
+        </div>
+      </section>
+    </>
   );
 };
 

@@ -3,7 +3,7 @@ import useAuth from "../../hooks/useAuth";
 import styles from "./Login.module.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
-import { faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons/faArrowRightToBracket'
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
 
 import axios from "../../api/axios";
 const LOGIN_URL = "/api/accounts/login";
@@ -73,45 +73,48 @@ const Login = () => {
   return (
     <section className={styles.login_section}>
       <div className={styles.login_section_container}>
-      <p
-        ref={errRef}
-        className={errMsg ? "errmsg" : "offscreen"}
-        aria-live="assertive"
-      >
-        {errMsg}
-      </p>
-      <h1>Войдите <FontAwesomeIcon icon={faArrowRightToBracket} /></h1>
-      <form className={styles.login_form} onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          className={styles.login_form_email}
-          type="email"
-          id="email"
-          ref={emailRef}
-          autoComplete="off"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          required
-        />
-        <label htmlFor="password">Пароль:</label>
-        <input
-          type="password"
-          id="password"
-          autoComplete="off"
-          onChange={(e) => setPwd(e.target.value)}
-          value={password}
-          required
-        />
-        <button>Войти</button>
-      </form>
-      <p>
-        У Вас нет аккаунта?
-        <br />
-        <span className="line">
-          {/*Вставить ссылку на страницу регистрации */}
-          <a href="#">Зарегистрироваться</a>
-        </span>
-      </p>
+        <p
+          ref={errRef}
+          className={errMsg ? "errmsg" : "offscreen"}
+          aria-live="assertive"
+        >
+          {errMsg}
+        </p>
+        <h1>
+          Войдите <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </h1>
+        <form className={styles.login_form} onSubmit={handleSubmit}>
+          <label htmlFor="email">Email:</label>
+          <input
+            className={styles.login_form_input}
+            type="email"
+            id="email"
+            ref={emailRef}
+            autoComplete="off"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            required
+          />
+          <label htmlFor="password">Пароль:</label>
+          <input
+            className={styles.login_form_input}
+            type="password"
+            id="password"
+            autoComplete="off"
+            onChange={(e) => setPwd(e.target.value)}
+            value={password}
+            required
+          />
+          <button className={styles.login_form_button}>Войти</button>
+        </form>
+        <p>
+          У Вас нет аккаунта?
+          <br />
+          <span className="line">
+            {/*Вставить ссылку на страницу регистрации */}
+            <Link to="/register">Зарегистрироваться</Link>
+          </span>
+        </p>
       </div>
     </section>
   );

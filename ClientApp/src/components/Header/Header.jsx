@@ -10,11 +10,9 @@ const Header = () => {
     <header className={styles.horizontal_menu}>
       <nav>
         <ul>
-          <li>
-            <Link to="/">Главная</Link>{" "}
-          </li>
           {!auth.isAuth ? (
             <li className={styles.right_menu_buttons}>
+              <Link to="/">Главная</Link>{" "}
               <Link to="login">Войти</Link> <span className={styles.delimeter}> или </span>
               <Link to="register" className={styles.register_link}>
                 зарегистрироваться
@@ -22,6 +20,7 @@ const Header = () => {
             </li>
           ) : (
             <li>
+              <Link to="/">Главная</Link>{" "}
               <Link to="profile">Профиль</Link><span className={styles.delimeter}> | </span>
               <Link to="logout">Выйти</Link>
             </li>

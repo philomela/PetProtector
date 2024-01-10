@@ -3,6 +3,9 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 import SearchForm from "../../components/SearchForm/SearchForm";
 import Preloader from "../../components/Preloader/Preloader";
+import styles from "./Profile.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
+import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -69,15 +72,16 @@ const Profile = () => {
   }, [searchedCollar]);
 
   return (
-    <article>
-      <h2>Профиль</h2>
-
+    <>
       {isLoading ? (
         <Preloader />
       ) : (
-        <>
+        <section className={styles.profile_section}>
+        <h2>Профиль</h2>
           {profileInfo && (
             <>
+            <h3>Инфо:</h3>
+            <FontAwesomeIcon className={styles.user_icon} icon={faUser} />
               <p>Ваше имя: {profileInfo.fullName}</p>
               <p>Ваш email: {profileInfo.email}</p>
               <p>Дата регистрации: {profileInfo.createdAt}</p>
@@ -113,9 +117,10 @@ const Profile = () => {
               ))}
             </>
           )}
-        </>
+        </section>
       )}
-    </article>
+    
+    </>
   );
 };
 

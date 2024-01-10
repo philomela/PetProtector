@@ -29,19 +29,20 @@
 }
 
 .pet_img_main_section {
-  max-width: 90vh;
+  max-height: 90vh;
   width: 30%;
   display: flex;
   flex-direction: column;
   text-align: center;
   --align-items: right;
-  justify-content: center;
+  justify-content: start;
   box-sizing: border-box;
   background-color: #eaeaea;
   color: #1f5e6d;
   background-position: center center; /* Выравнивание изображения по центру блока */
   box-shadow: -15px 0 10px rgba(0, 0, 0, 0.2);
   font-family: 'Caveat';
+ 
 }
 
 .button_slogan {
@@ -75,19 +76,17 @@
   font-family: 'Caveat';
 }
 
-.carousel {
-  display: flex;
-  align-items: right;
-  justify-content: right;
-  box-sizing: border-box;
+.carousel .thumb img {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-.carousel_slide {
-max-width: 100%;
-display: flex;
-  align-items: right;
-  justify-content: end;
+.carousel .slide img {
+  max-height: 300px;  /* change this to whatever you want */
+  width: auto;
 }
+
+
 
 .statistics {
 

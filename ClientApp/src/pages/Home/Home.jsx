@@ -38,6 +38,7 @@ const Home = () => {
             infiniteLoop={true}
             showStatus={false}
             showArrows={false}
+            dynamicHeight={true}
           >
             <div className={styles.carousel_slide}>
               <img src="/images/corousel1.jpg" alt="Slideshow Image 1" />
@@ -57,7 +58,9 @@ const Home = () => {
               Защити свое животное!<br></br>
               Сканируй qr код и получи информацию о владельце
               <br></br>
-              <a href='#' className={styles.link_instagram}>Наш инстаграм <FontAwesomeIcon icon={faInstagram} /></a>
+              <a href="#" className={styles.link_instagram}>
+                Наш инстаграм <FontAwesomeIcon icon={faInstagram} />
+              </a>
             </p>
           </div>
         </div>

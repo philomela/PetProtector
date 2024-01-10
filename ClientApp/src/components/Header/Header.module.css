@@ -4,7 +4,6 @@
     padding-bottom: 0.5%;
     padding-left: 5%;
     padding-right: 5%;
-    --border-bottom: 10px solid #1f5e6d;
   }
 
   .register_link {
@@ -12,18 +11,13 @@
     padding: 0.5%;
   }
 
-  ul {
+  .horizontal_menu ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
-}
-
-li {
-    text-align: center;
-
 }
 
 .horizontal_menu a {
@@ -37,5 +31,5 @@ li {
 }
 
 .right_menu_buttons {
-  width: 270px;
+  width: 350px;
 }

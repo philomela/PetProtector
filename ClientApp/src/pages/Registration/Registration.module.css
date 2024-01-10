@@ -1,4 +1,4 @@
-.login_section{
+.registration_section {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -6,7 +6,7 @@
     height: 90vh;
 }
 
-.login_section_container {
+.registration_section_container {
     background-color: #1f5e6d;
     color: #eaeaea;
     padding: 3%;
@@ -18,11 +18,7 @@
     min-width: 20%;
 }
 
-.login_section_container a {
-    color: #eaeaea;
-}
-
-.login_form {
+.registration_form {
     display: flex;
     flex-direction: column;
     align-items: left;
@@ -30,14 +26,13 @@
     width: 100%;
 }
 
-.login_form_input {
+.registration_form_input {
     padding: 10px;
     display: flex;
     font-family: 'Russo';
-    
 }
 
-.login_form_button {
+.registration_form_button {
     padding: 10px;
     font-family: 'Russo';
     display: flex;
