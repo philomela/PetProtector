@@ -4,6 +4,8 @@ import styles from "./Login.module.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box"; // Import the Box component from Material UI
 
 import axios from "../../api/axios";
 const LOGIN_URL = "/api/accounts/login";
@@ -50,9 +52,10 @@ const Login = () => {
       const payload = accessToken.split(".")[1];
       const role = JSON.parse(atob(payload)).role;
       const userId = JSON.parse(atob(payload)).nameid;
+      const userName = JSON.parse(atob(payload)).unique_name;
       const isAuth = true;
       //const email = JSON.parse(atob(payload)).role;
-      setAuth({ userId, role, accessToken, isAuth });
+      setAuth({ userId, userName, role, accessToken, isAuth });
       setEmail("");
       setPwd("");
       navigate(from, { replace: true });
@@ -105,7 +108,16 @@ const Login = () => {
             value={password}
             required
           />
-          <button className={styles.login_form_button}>Войти</button>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              className={styles.login_form_button}
+              variant="contained"
+              sx={{ bgcolor: "#ED7D31", height: 40, width: 100, fontSize: 13 }}
+              type="submit" // Add type="submit" to trigger form submission
+            >
+              Войти
+            </Button>
+          </Box>
         </form>
         <p>
           У Вас нет аккаунта?

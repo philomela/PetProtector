@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 import useAuth from "../../hooks/useAuth";
+import ResponsiveAppBar from "../HorizontalMenu/HorizontalMenu"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
 
 const Header = () => {
   //const isAuth = localStorage.getItem('userInfo') != null ? true : false; //Как брать из контекста если это возможно?
@@ -8,25 +11,7 @@ const Header = () => {
 
   return (
     <header className={styles.horizontal_menu}>
-      <nav>
-        <ul>
-          {!auth.isAuth ? (
-            <li className={styles.right_menu_buttons}>
-              <Link to="/">Главная</Link>{" "}
-              <Link to="login">Войти</Link> <span className={styles.delimeter}> или </span>
-              <Link to="register" className={styles.register_link}>
-                зарегистрироваться
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link to="/">Главная</Link>{" "}
-              <Link to="profile">Профиль</Link><span className={styles.delimeter}> | </span>
-              <Link to="logout">Выйти</Link>
-            </li>
-          )}
-        </ul>
-      </nav>
+      <ResponsiveAppBar></ResponsiveAppBar>
     </header>
   );
 };

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import TextField from "@mui/material/TextField";
+import Button from '@mui/material/Button';
 
-const SearchForm = ( {handleSearchInfo} ) => {
+const SearchForm = ({ handleSearchInfo }) => {
   const [secretKey, setSecretKey] = useState("");
   const axiosPrivate = useAxiosPrivate();
 
@@ -26,15 +28,17 @@ const SearchForm = ( {handleSearchInfo} ) => {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <input
-            type="text"
+          <TextField
             id="fullName"
-            placeholder="Секретный ключ"
-            value={secretKey}
+            label="Секретный ключ"
+            variant="standard"
             onChange={(e) => setSecretKey(e.target.value)}
+            value={secretKey}
           />
         </div>
-        <button type="submit">Найти</button>
+        <Button type="submit" variant="contained" sx={{ bgcolor: "#1f5d6d" }}>
+          Найти
+        </Button>
       </form>
     </div>
   );

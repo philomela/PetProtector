@@ -6,6 +6,8 @@ import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Button from "@mui/material/Button";
+import ShopIcon from "@mui/icons-material/Shop";
 
 const Home = () => {
   return (
@@ -14,20 +16,29 @@ const Home = () => {
         <div className={styles.slogan_main_section}>
           <div className={styles.slogan_container}>
             <h1 className={styles.slogan}>
-              <span className={styles.app_name}>PetProtector</span>
-              <img src="/images/pet-protector-logo1.png" height={70}></img>
+              <span className={styles.app_name}>
+                Защитите свое животное от потери нашим qr-адресником
+              </span>
               <br />
               <span className={styles.slogan_text}>
                 Ваше животное, наша безопасность
               </span>
             </h1>
             <p>
-              Приобретите qr-адресник <br></br>и защитите свое животное от
-              потери
+              Простая регистрация
+              <br></br>
+              Быстрое заполнение анкеты
+              <br></br>
+              Удобный интерфейс
             </p>
-            <button className={styles.button_slogan}>
-              Приобрести <FontAwesomeIcon icon={faShoppingBag} />
-            </button>
+
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "#ED7D31", height: 60, width: 200, fontSize: 20 }}
+              endIcon={<ShopIcon />}
+            >
+              Приобрести
+            </Button>
           </div>
         </div>
         <div className={styles.pet_img_main_section}>
@@ -38,19 +49,18 @@ const Home = () => {
             infiniteLoop={true}
             showStatus={false}
             showArrows={false}
-            dynamicHeight={true}
           >
             <div className={styles.carousel_slide}>
-              <img src="/images/corousel1.jpg" alt="Slideshow Image 1" />
+              <img src="/images/corousel1.png" alt="Slideshow Image 1" />
             </div>
             <div className={styles.carousel_slide}>
-              <img src="/images/corousel2.jpg" alt="Slideshow Image 2" />
+              <img src="/images/corousel2.png" alt="Slideshow Image 2" />
             </div>
             <div className={styles.carousel_slide}>
-              <img src="/images/corousel3.jpg" alt="Slideshow Image 3" />
+              <img src="/images/corousel3.png" alt="Slideshow Image 3" />
             </div>
             <div className={styles.carousel_slide}>
-              <img src="/images/corousel4.jpg" alt="Slideshow Image 4" />
+              <img src="/images/corousel4.png" alt="Slideshow Image 4" />
             </div>
           </Carousel>
           <div className={styles.statistics}>

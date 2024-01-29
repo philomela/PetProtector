@@ -1,9 +1,5 @@
 .horizontal_menu {
     color: white;
-    padding-top: 0.5%;
-    padding-bottom: 0.5%;
-    padding-left: 5%;
-    padding-right: 5%;
   }
 
   .register_link {
@@ -16,7 +12,7 @@
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -27,9 +23,17 @@
 }
 
 .delimeter {
-  color: #520665;
+  color: #1f5e6d;
 }
 
-.right_menu_buttons {
-  width: 350px;
+.horizontal_menu_right_buttons {
+  width: 300px;
+}
+
+.horizontal_menu_login_icon {
+  color:#000000;
+}
+
+.horizontal_menu_login_link {
+  text-decoration: underline !important;
 }

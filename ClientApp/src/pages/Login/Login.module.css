@@ -4,10 +4,11 @@
     justify-content: center;
     flex-direction: column;
     height: 90vh;
+    font-family: 'Roboto';
 }
 
 .login_section_container {
-    background-color: #1f5e6d;
+    background-color: #638889;
     color: #eaeaea;
     padding: 3%;
     display: flex;
@@ -33,13 +34,13 @@
 .login_form_input {
     padding: 10px;
     display: flex;
-    font-family: 'Russo';
+    font-family: 'Roboto';
     
 }
 
 .login_form_button {
     padding: 10px;
-    font-family: 'Russo';
+    font-family: 'Roboto';
     display: flex;
     justify-content: center;
 }

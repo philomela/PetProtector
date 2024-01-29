@@ -28,8 +28,9 @@ public class JwtTokenManager : IJwtTokenManager
             Subject = new ClaimsIdentity(new[]
             {   
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.Name, user.FullName)
             }),
             Expires = DateTime.UtcNow.AddSeconds(10), //Вынести в appsettings
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
@@ -50,7 +51,7 @@ public class JwtTokenManager : IJwtTokenManager
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
             }),
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)

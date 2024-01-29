@@ -10,6 +10,20 @@
   /* Дополнительные свойства шрифта, если необходимо */
 }
 
+@font-face {
+  font-family: 'Raleway';
+  font-weight: 400;
+  src: url('fonts/Raleway/Raleway-Regular.ttf') format('truetype');
+  /* Дополнительные свойства шрифта, если необходимо */
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-weight: 700;
+  src: url('fonts/Raleway/Raleway-Bold.ttf') format('truetype');
+  /* Дополнительные свойства шрифта, если необходимо */
+}
+
 :root {
   font-family: Russo, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -19,7 +33,12 @@
 
   color-scheme: light dark;
   color: rgba(36, 36, 36, 0.87);
-  background-color: #eaeaea;
+
+    background: #F8FAE5;
+    background: -webkit-radial-gradient(circle farthest-side at center center, #fbfded 0%, #F8FAE5 100%);
+    background: -moz-radial-gradient(circle farthest-side at center center, #fbfded 0%, #F8FAE5 100%);
+    background: radial-gradient(circle farthest-side at center center, #fbfded 0%, #F8FAE5 100%);
+
   /*background-color: rgba(31, 94, 109, 0.7);*/
 
   font-synthesis: none;

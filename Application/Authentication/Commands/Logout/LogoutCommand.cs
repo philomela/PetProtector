@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using System.Security.Claims;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using MediatR;
@@ -30,9 +31,12 @@ internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
                                   ?? throw new BadRequestException("Refresh token not found");
 
         var principal = _tokenManager.GetPrincipalFromToken(request.Token);
+        
+        var emailClaim = principal.FindFirst(ClaimTypes.Email)?.Value 
+                         ?? throw new UnauthorizedAccessException();
 
         var user = await _userManager.Users.Include(x => x.Tokens)
-            .FirstOrDefaultAsync(x => x.Email == principal.Identity.Name, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email == emailClaim, cancellationToken);
 
         if (user is null)
             throw new UnauthorizedAccessException();

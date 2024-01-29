@@ -19,7 +19,14 @@ public class UsersController : ApiControllerBase
     [HttpGet("UserInfo")]
     public async Task<IActionResult> UserInfo()
     {
-        await Task.Delay(10000);
+        await Task.Delay(10000); // Убрать в проде.
+        return Ok(await Mediator.Send(new GetUserQuery()));
+    }
+    
+    [Authorize(Policy = "UserIdPolicy")] //Добавить политику для незарегестрированных.
+    [HttpGet("ConfirmRegister")]
+    public async Task<IActionResult> ConfirmRegister()
+    {
         return Ok(await Mediator.Send(new GetUserQuery()));
     }
 }

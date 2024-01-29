@@ -3,6 +3,10 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 import SearchForm from "../../components/SearchForm/SearchForm";
 import Preloader from "../../components/Preloader/Preloader";
+import Avatar from "@mui/material/Avatar";
+import { deepOrange, deepPurple } from "@mui/material/colors";
+import Button from "@mui/material/Button";
+
 import styles from "./Profile.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
@@ -21,12 +25,14 @@ const Profile = () => {
   const handleLinkCollar = async () => {
     try {
       // Отправка данных на сервер
-      const response = await axiosPrivate.put(`/api/collars/${searchCollarsInfo}`, {
-      });
-  
+      const response = await axiosPrivate.put(
+        `/api/collars/${searchCollarsInfo}`,
+        {}
+      );
+
       // Обновление компонента после успешного запроса
       setSearchedCollar(response);
-  
+
       // Сброс информации о поиске
       setSearchCollarsInfo(null);
     } catch (err) {
@@ -49,14 +55,13 @@ const Profile = () => {
             signal: controller.signal,
           }
         );
-        console.log(responseUserInfo.data);
-        console.log(responseUserCollars.data);
+
         isMounted &&
           setProfileInfo({
             ...responseUserInfo.data,
             ...responseUserCollars.data,
           });
-        setIsLoading(false); 
+        setIsLoading(false);
       } catch (err) {
         console.error(err);
         navigate("/login", { state: { from: location }, replace: true });
@@ -76,50 +81,74 @@ const Profile = () => {
       {isLoading ? (
         <Preloader />
       ) : (
-        <section className={styles.profile_section}>
-        <h2>Профиль</h2>
-          {profileInfo && (
-            <>
-            <h3>Инфо:</h3>
-            <FontAwesomeIcon className={styles.user_icon} icon={faUser} />
-              <p>Ваше имя: {profileInfo.fullName}</p>
-              <p>Ваш email: {profileInfo.email}</p>
-              <p>Дата регистрации: {profileInfo.createdAt}</p>
-            </>
-          )}
-          <h3>Поиск браслета:</h3>
-          <SearchForm handleSearchInfo={handleSearchInfo} />
-          {searchCollarsInfo && (
-            <>
-              <h3>Браслет найден:</h3>
-              <p>{searchCollarsInfo}</p>
-              <button onClick={handleLinkCollar}>Активировать</button>
-            </>
-          )}
-          <h3>Ваши браслеты:</h3>
-          {profileInfo && (
-            <>
-              {profileInfo.collars.map((collar) => (
-                <div key={collar.id}>
-                  <p>
-                    Владелец животного:{" "}
-                    {collar.questionnaire.ownersName ?? "Еще не заполнено"}
-                  </p>
-                  <p>
-                    Имя животного:{" "}
-                    {collar.questionnaire.petsName ?? "Еще не заполнено"}
-                  </p>
-                  <p>
-                    Телефон владельца:{" "}
-                    {collar.questionnaire.phoneNumber ?? "Еще не заполнено"}
-                  </p>
+        <>
+          <section className={styles.first_section}>
+            <section className={styles.user_info_section}>
+              {profileInfo && (
+                <div className={styles.user_info}>
+                  <div className={styles.user_info_title_block}>
+                    <h2 className={styles.user_info_title}>Ваш профиль</h2>{" "}
+                  </div>
+                  <div className={styles.user_info_data_block}>
+                    <p>Ваше имя: {profileInfo.fullName}</p>
+                    <p>Ваш email: {profileInfo.email}</p>
+                    <p>Дата регистрации: {profileInfo.createdAt}</p>
+                    <Avatar
+                      sx={{ bgcolor: deepOrange[500], width: 76, height: 76 }}
+                    >
+                      N
+                    </Avatar>
+                  </div>
                 </div>
-              ))}
-            </>
-          )}
-        </section>
+              )}
+            </section>
+            <section className={styles.searh_section}>
+              <div className={styles.search_collar}>
+                <h2>Поиск браслета</h2>
+                <SearchForm handleSearchInfo={handleSearchInfo} />
+                {searchCollarsInfo && (
+                  <>
+                    <h3>Браслет найден:</h3>
+                    <p>{searchCollarsInfo}</p>
+                    <Button
+                      onClick={handleLinkCollar}
+                      variant="contained"
+                      sx={{ bgcolor: "#1f5d6d" }}
+                    >
+                      Активировать
+                    </Button>
+                  </>
+                )}
+              </div>
+            </section>
+          </section>
+          <section className={styles.second_section}>
+            <section className={styles.collars_section}>
+              <h3>Ваши браслеты:</h3>
+              {profileInfo && (
+                <>
+                  {profileInfo.collars.map((collar) => (
+                    <div key={collar.id}>
+                      <p>
+                        Владелец животного:{" "}
+                        {collar.questionnaire.ownersName ?? "Еще не заполнено"}
+                      </p>
+                      <p>
+                        Имя животного:{" "}
+                        {collar.questionnaire.petsName ?? "Еще не заполнено"}
+                      </p>
+                      <p>
+                        Телефон владельца:{" "}
+                        {collar.questionnaire.phoneNumber ?? "Еще не заполнено"}
+                      </p>
+                    </div>
+                  ))}
+                </>
+              )}
+            </section>
+          </section>
+        </>
       )}
-    
     </>
   );
 };
