@@ -17,7 +17,10 @@ import useAuth from "../../hooks/useAuth";
 import styles from "./HorizontalMenu.module.css";
 
 const pages = ["Помощь"];
-const settings = ["Профиль", "Выйти"];
+const menuItems = [
+  { label: "Профиль", path: "/profile" },
+  { label: "Выйти", path: "/logout" },
+];
 
 function ResponsiveAppBar() {
   const { auth } = useAuth();
@@ -105,9 +108,11 @@ function ResponsiveAppBar() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
+                  {menuItems.map(({ label, path }) => (
+                    <MenuItem key={label} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center" component={Link} to={path}>
+                        {label}
+                      </Typography>
                     </MenuItem>
                   ))}
                 </Menu>

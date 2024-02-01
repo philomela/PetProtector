@@ -9,27 +9,31 @@ import Profile from "./pages/Profile/Profile";
 import PrivateRoute from "./utils/PrivateRoute";
 import Layout from "./components/Layout/layout";
 import RegistrationForm from "./pages/Registration/Registration";
+import Box from '@mui/system/Box';
+import Container from '@mui/material/Container';
 
 const App = () => {
   return (
     <>
-      <div className="wrapper_container">
-        <Header />
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="login" element={<Login />} />
-            <Route path="logout" element={<Logout />} />
+      <Container maxWidth="lg">
+        <Box sx={{ bgcolor: "#F8FAE5", height: "100vh" }}>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="login" element={<Login />} />
+              <Route path="logout" element={<Logout />} />
 
-            <Route path="/" element={<Home />} />
-            <Route path="register" element={<RegistrationForm />} />
-            <Route path="quest/:id" element={<Questionnaire />} />
+              <Route path="/" element={<Home />} />
+              <Route path="register" element={<RegistrationForm />} />
+              <Route path="quest/:id" element={<Questionnaire />} />
 
-            <Route element={<PrivateRoute allowedRole={"User"} />}>
-              <Route path="profile" element={<Profile />} />
+              <Route element={<PrivateRoute allowedRole={"User"} />}>
+                <Route path="profile" element={<Profile />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-      </div>
+          </Routes>
+        </Box>
+      </Container>
     </>
   );
 };
