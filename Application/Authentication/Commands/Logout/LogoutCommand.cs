@@ -38,7 +38,7 @@ internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
         var user = await _userManager.Users.Include(x => x.Tokens)
             .FirstOrDefaultAsync(x => x.Email == emailClaim, cancellationToken);
 
-        if (user is null)
+        if (user is null || !user.EmailConfirmed) //Перепроверить условие, юзер должен быть акцептован
             throw new UnauthorizedAccessException();
 
         var existingToken =

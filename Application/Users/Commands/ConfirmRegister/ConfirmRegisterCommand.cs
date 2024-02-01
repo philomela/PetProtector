@@ -1,4 +1,5 @@
-﻿using Domain.Core.Entities;
+﻿using Application.Common.Exceptions;
+using Domain.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +20,20 @@ internal record ConfirmRegisterCommandHandler : IRequestHandler<ConfirmRegisterC
     
     public async Task<Unit> Handle(ConfirmRegisterCommand request, CancellationToken cancellationToken)
     {
-        var user = _userManager
-              .Users.Where(u => u.Id == request.UserId.ToString()).ToListAsync();
-        throw new NotImplementedException();
+        var user = await _userManager
+              .Users
+              .Where(u => u.Id == request.UserId.ToString())
+              .FirstOrDefaultAsync() ?? throw new NotFoundException("User was not found");
+
+        user.EmailConfirmed = true;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded && result.Errors.Any())
+            throw new Exception("User was not updated");
+        
+        
+        
+        return Unit.Value;
     }
 }

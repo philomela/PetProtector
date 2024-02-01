@@ -63,6 +63,8 @@ public static class DependencyInjection
 
         services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
         services.AddTransient<IJwtTokenManager, JwtTokenManager>();
+        
+        //services.AddTransient<IEmailSender<>>>()
 
         return services;
     }

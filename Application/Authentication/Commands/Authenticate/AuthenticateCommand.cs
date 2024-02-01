@@ -29,7 +29,7 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
     public async Task<string> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user is null)
+        if (user is null || !user.EmailConfirmed) // Перепроверить условие, юзеры должны быть акцептованы
         {
             throw new UnauthorizedAccessException();
         }

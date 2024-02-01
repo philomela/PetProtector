@@ -26,14 +26,15 @@ const Home = () => {
             justifyContent: "center",
             backgroundImage: "url(/images/main-slide-origin.png)",
             backgroundRepeat: "no-repeat",
-            backgroundPosition: "100% 50%",
+            backgroundPosition: "80% 100%",
             backgroundSize: "60em",
           }}
         >
-          <Typography sx={{ width: "50%" }} variant="h3" gutterBottom>
+          <Typography sx={{ width: "50%", color: '#76453B', fontFamily: 'Russo' }} variant="h3" gutterBottom>
             Защитите свое животное от потери нашим qr-адресником
           </Typography>
-          <Typography sx={{ width: "50%" }} variant="h5" gutterBottom>
+          <Box/>
+          <Typography sx={{ width: "50%", color: '#76453B', mt: 3}} variant="h6" gutterBottom>
             Простая регистрация
             <br></br>
             Быстрое заполнение анкеты
@@ -48,6 +49,7 @@ const Home = () => {
               height: 60,
               width: 200,
               fontSize: 20,
+              mt: 5
             }}
             endIcon={<ShopIcon />}
           >
@@ -63,26 +65,26 @@ const Home = () => {
             showStatus={false}
             showArrows={false}
           >
-            <div className={styles.carousel_slide}>
+            <div>
               <img src="/images/corousel1.png" alt="Slideshow Image 1" />
             </div>
-            <div className={styles.carousel_slide}>
+            <div>
               <img src="/images/corousel2.png" alt="Slideshow Image 2" />
             </div>
-            <div className={styles.carousel_slide}>
+            <div>
               <img src="/images/corousel3.png" alt="Slideshow Image 3" />
             </div>
-            <div className={styles.carousel_slide}>
+            <div>
               <img src="/images/corousel4.png" alt="Slideshow Image 4" />
             </div>
           </Carousel>
           <Box>
-            <Typography>
+            <Typography sx={{textAlign: 'center'}}>
               Защити свое животное!<br></br>
               Сканируй qr код и получи информацию о владельце
               <br></br>
             </Typography>
-            <Typography>
+            <Typography sx={{textAlign: 'center', fontWeight: 'bold', color: '#76453B'}}>
               Наш инстаграм <FontAwesomeIcon icon={faInstagram} />
             </Typography>
           </Box>

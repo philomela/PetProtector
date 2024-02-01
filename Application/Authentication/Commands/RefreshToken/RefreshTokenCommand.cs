@@ -38,7 +38,7 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
         var user = await _userManager.Users.Include(x => x.Tokens)
             .FirstOrDefaultAsync(x => x.Email == principal.Identity.Name, cancellationToken);
 
-        if (user is null)
+        if (user is null || !user.EmailConfirmed) //Перепроверить условие, юзер должен быть акцептован
             throw new UnauthorizedAccessException();
 
         var existingToken =

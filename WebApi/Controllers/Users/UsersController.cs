@@ -1,4 +1,5 @@
-﻿using Application.Users.Commands.CreateUser;
+﻿using Application.Users.Commands.ConfirmRegister;
+using Application.Users.Commands.CreateUser;
 using Application.Users.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,10 @@ public class UsersController : ApiControllerBase
         return Ok(await Mediator.Send(new GetUserQuery()));
     }
     
-    [Authorize(Policy = "UserIdPolicy")] //Добавить политику для незарегестрированных.
-    [HttpGet("ConfirmRegister")]
-    public async Task<IActionResult> ConfirmRegister()
+    //[Authorize(Policy = "UserIdPolicy")] //Добавить политику для незарегестрированных.
+    [HttpPut("ConfirmRegister")]
+    public async Task<IActionResult> ConfirmRegister(ConfirmRegisterCommand command)
     {
-        return Ok(await Mediator.Send(new GetUserQuery()));
+        return Ok(await Mediator.Send(command)); //Проверить нормально ли пользователю светить его userId в виде guid
     }
 }

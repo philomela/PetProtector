@@ -54,7 +54,7 @@ const Login = () => {
       const userId = JSON.parse(atob(payload)).nameid;
       const userName = JSON.parse(atob(payload)).unique_name;
       const isAuth = true;
-      //const email = JSON.parse(atob(payload)).role;
+      
       setAuth({ userId, userName, role, accessToken, isAuth });
       setEmail("");
       setPwd("");

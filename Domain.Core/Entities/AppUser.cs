@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Domain.Core.Common;
 
 namespace Domain.Core.Entities;
 
-public class AppUser : IdentityUser
+public class AppUser : IdentityUser //Разобраться как для пользователя реализовать добавление доменных событий, мб применить какой-то декоратор
 {
     public string FullName { get; set; }
 

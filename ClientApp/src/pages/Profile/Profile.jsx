@@ -6,10 +6,9 @@ import Preloader from "../../components/Preloader/Preloader";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 import styles from "./Profile.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
-import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -82,6 +81,9 @@ const Profile = () => {
         <Preloader />
       ) : (
         <>
+        <Box>
+
+        </Box>
           <section className={styles.first_section}>
             <section className={styles.user_info_section}>
               {profileInfo && (
