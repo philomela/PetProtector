@@ -30,6 +30,8 @@ namespace WebApi.Configurations
                 throw new ApplicationException("User context is not available");
             }
         }
+        
+        //string EmailAddress добавить
 
         //public Guid CorrelationId
         //{

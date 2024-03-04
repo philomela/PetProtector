@@ -2,6 +2,7 @@
 using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
+using Infrastructure.Percistance;
 using Microsoft.OpenApi.Models;
 using WebApi.Configurations;
 using WebApi.Filters;
@@ -11,10 +12,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
 
-builder.Services.AddControllers(options =>
- {
-     options.Filters.Add<ApiExceptionFilterAttribute>();
- }).AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers(options => { options.Filters.Add<ApiExceptionFilterAttribute>(); })
+    .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -34,10 +33,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-         builder => builder.WithOrigins("http://localhost:5173")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials());
+        builder => builder.WithOrigins("http://localhost:5173")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
 });
 
 var app = builder.Build();
@@ -47,18 +46,24 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
 
-if (app.Environment.IsDevelopment())
+
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+    await initialiser.InitialiseAsync();
+    await initialiser.SeedAsync();
+}
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "PetProtector API V1");
         c.RoutePrefix = string.Empty;
     }
-    );
+);
 
-    app.UseCors("CorsPolicy");
-}
+app.UseCors("CorsPolicy");
+
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -66,7 +71,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-
 
 
 app.Run();

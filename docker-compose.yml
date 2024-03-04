@@ -1,0 +1,11 @@
+version: "3.7"
+
+networks:
+    petprotector-network:
+
+services: 
+    petprotector:
+        container_name: petprotector
+        build: ./
+        ports:
+            - 80:80

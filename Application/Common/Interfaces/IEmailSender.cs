@@ -1,6 +1,8 @@
-﻿namespace Application.Common.Interfaces;
+﻿using Application.Common.Dtos.EmailSender;
 
-public interface IEmailSender<TRequest, TResult>
+namespace Application.Common.Interfaces;
+
+public interface IEmailSender
 {
-    Task<TResult> SendAsync(TRequest request);
+    Task SendAsync(EmailMessage message, CancellationToken cancellationToken);
 }

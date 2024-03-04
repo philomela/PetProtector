@@ -10,8 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Infrastructure.EmailSender.Configurations;
 using Infrastructure.Percistance.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure;
 
@@ -62,9 +64,13 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
+        services.AddScoped<ApplicationDbContextInitialiser>();
+        
         services.AddTransient<IJwtTokenManager, JwtTokenManager>();
         
-        //services.AddTransient<IEmailSender<>>>()
+        //services.Configure<EmailSenderConfiguration>(config.GetSection("SmtpConfigurations"));
+        //services.AddSingleton<EmailSenderConfiguration>(provider => provider.GetRequiredService<IOptions<EmailSenderConfiguration>>().Value);
+        //services.AddTransient<IEmailSender, EmailSender.EmailSender>();
 
         return services;
     }
