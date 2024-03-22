@@ -1,14 +1,20 @@
 import { useRef, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
-import styles from "./Login.module.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box"; // Import the Box component from Material UI
-
+import { Button, Box, FormControl, Typography, TextField } from "@mui/material";
+import Grid from '@mui/material/Grid';
+import CssBaseline from '@mui/material/CssBaseline';
+import Paper from '@mui/material/Paper';
+import Avatar from '@mui/material/Avatar';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import axios from "../../api/axios";
+
 const LOGIN_URL = "/api/accounts/login";
+
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -17,16 +23,12 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/profile";
 
-  const emailRef = useRef();
-  const errRef = useRef();
 
   const [email, setEmail] = useState("");
   const [password, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
-  useEffect(() => {
-    emailRef.current.focus();
-  }, []);
+
 
   useEffect(() => {
     setErrMsg("");
@@ -40,21 +42,16 @@ const Login = () => {
         JSON.stringify({ email, password }),
         {
           headers: { "Content-Type": "application/json" },
-          //withCredentials: true,
         }
       );
-      console.log(JSON.stringify(response?.data));
 
       const accessToken = response?.data?.token;
-
-      //const decodedToken = jwt.decode(accessToken);
-      //const role = decodedToken?.role; //Попробовать выдывать реальный массив ролей с фронта если это нужно.
       const payload = accessToken.split(".")[1];
       const role = JSON.parse(atob(payload)).role;
       const userId = JSON.parse(atob(payload)).nameid;
       const userName = JSON.parse(atob(payload)).unique_name;
       const isAuth = true;
-      
+
       setAuth({ userId, userName, role, accessToken, isAuth });
       setEmail("");
       setPwd("");
@@ -71,64 +68,92 @@ const Login = () => {
       }
       errRef.current.focus();
     }
+    
   };
 
   return (
-    <section className={styles.login_section}>
-      <div className={styles.login_section_container}>
-        <p
-          ref={errRef}
-          className={errMsg ? "errmsg" : "offscreen"}
-          aria-live="assertive"
-        >
-          {errMsg}
-        </p>
-        <h1>
-          Войдите <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </h1>
-        <form className={styles.login_form} onSubmit={handleSubmit}>
-          <label htmlFor="email">Email:</label>
-          <input
-            className={styles.login_form_input}
-            type="email"
-            id="email"
-            ref={emailRef}
-            autoComplete="off"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-          />
-          <label htmlFor="password">Пароль:</label>
-          <input
-            className={styles.login_form_input}
-            type="password"
-            id="password"
-            autoComplete="off"
-            onChange={(e) => setPwd(e.target.value)}
-            value={password}
-            required
-          />
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              className={styles.login_form_button}
-              variant="contained"
-              sx={{ bgcolor: "#ED7D31", height: 40, width: 100, fontSize: 13 }}
-              type="submit" // Add type="submit" to trigger form submission
-            >
-              Войти
-            </Button>
+    <Grid container component="main" sx={{ height: '100vh' }}>
+        <CssBaseline />
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: (t) =>
+              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="#" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
+              </Grid>
+              
+            </Box>
           </Box>
-        </form>
-        <p>
-          У Вас нет аккаунта?
-          <br />
-          <span className="line">
-            {/*Вставить ссылку на страницу регистрации */}
-            <Link to="/register">Зарегистрироваться</Link>
-          </span>
-        </p>
-      </div>
-    </section>
+        </Grid>
+      </Grid>
   );
 };
 

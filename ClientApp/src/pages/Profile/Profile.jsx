@@ -40,22 +40,18 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+
 
     const getUserProfile = async () => {
       try {
         const responseUserInfo = await axiosPrivate.get("/api/users/UserInfo", {
-          signal: controller.signal,
+          
         });
         const responseUserCollars = await axiosPrivate.get(
-          "/api/collars/GetAll",
-          {
-            signal: controller.signal,
-          }
+          "/api/collars/GetAll"
         );
 
-        isMounted &&
+        
           setProfileInfo({
             ...responseUserInfo.data,
             ...responseUserCollars.data,
@@ -70,8 +66,7 @@ const Profile = () => {
     getUserProfile();
 
     return () => {
-      isMounted = false;
-      controller.abort();
+
     };
   }, [searchedCollar]);
 

@@ -1,10 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
-//import jwt from 'jsonwebtoken';
 import { useNavigate, useLocation } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-
-import axios from "../../api/axios";
 const LOGOUT_URL = "/api/accounts/login";
 
 const Logout = () => {

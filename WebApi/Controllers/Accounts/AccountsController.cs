@@ -21,7 +21,6 @@ public class AccountsController : ApiControllerBase
     [HttpPost("Logout")]
     public async Task<IActionResult> Logout(LogoutCommand logoutData)
     {
-        //Иногда прилетает на logout запрос, разобраться откуда и когда.
         return Ok(await Mediator.Send(logoutData));
     }
 

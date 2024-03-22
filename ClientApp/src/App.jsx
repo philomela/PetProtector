@@ -11,6 +11,7 @@ import Layout from "./components/Layout/layout";
 import RegistrationForm from "./pages/Registration/Registration";
 import Box from '@mui/system/Box';
 import Container from '@mui/material/Container';
+import ConfirmRegistration from "./components/ConfirmRegistration/ConfirmRegistration";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="register" element={<RegistrationForm />} />
               <Route path="quest/:id" element={<Questionnaire />} />
+              <Route path="confirmRegister/:userId" element={<ConfirmRegistration />} />
 
               <Route element={<PrivateRoute allowedRole={"User"} />}>
                 <Route path="profile" element={<Profile />} />

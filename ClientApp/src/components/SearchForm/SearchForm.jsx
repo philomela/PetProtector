@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import TextField from "@mui/material/TextField";
 import Button from '@mui/material/Button';
@@ -6,6 +6,10 @@ import Button from '@mui/material/Button';
 const SearchForm = ({ handleSearchInfo }) => {
   const [secretKey, setSecretKey] = useState("");
   const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();

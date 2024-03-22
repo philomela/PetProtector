@@ -68,9 +68,9 @@ public static class DependencyInjection
         
         services.AddTransient<IJwtTokenManager, JwtTokenManager>();
         
-        //services.Configure<EmailSenderConfiguration>(config.GetSection("SmtpConfigurations"));
-        //services.AddSingleton<EmailSenderConfiguration>(provider => provider.GetRequiredService<IOptions<EmailSenderConfiguration>>().Value);
-        //services.AddTransient<IEmailSender, EmailSender.EmailSender>();
+        services.Configure<EmailSenderConfiguration>(config.GetSection("SmtpConfigurations"));
+        services.AddSingleton<EmailSenderConfiguration>(provider => provider.GetRequiredService<IOptions<EmailSenderConfiguration>>().Value);
+        services.AddTransient<IEmailSender, EmailSender.EmailSender>();
 
         return services;
     }

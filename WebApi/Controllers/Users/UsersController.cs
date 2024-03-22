@@ -25,6 +25,7 @@ public class UsersController : ApiControllerBase
     }
     
     //[Authorize(Policy = "UserIdPolicy")] //Добавить политику для незарегестрированных.
+    [AllowAnonymous]
     [HttpPut("ConfirmRegister")]
     public async Task<IActionResult> ConfirmRegister(ConfirmRegisterCommand command)
     {

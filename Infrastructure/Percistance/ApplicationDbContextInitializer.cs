@@ -1,4 +1,5 @@
 ﻿using Domain.Core.Entities;
+using Domain.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,25 +8,23 @@ namespace Infrastructure.Percistance;
 
 public class ApplicationDbContextInitialiser
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _appDbContext;
     private readonly UserManager<AppUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
 
     public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger,
-        AppDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        AppDbContext appDbContext, UserManager<AppUser> userManager)
     {
-        _context = context;
+        _appDbContext = appDbContext;
         _userManager = userManager;
-        _roleManager = roleManager;
     }
 
     public async Task InitialiseAsync()
     {
         try
         {
-            if (_context.Database.IsSqlServer())
+            if (_appDbContext.Database.IsSqlServer())
             {
-                await _context.Database.MigrateAsync();
+                await _appDbContext.Database.MigrateAsync();
             }
         }
         catch (Exception ex)
@@ -43,51 +42,50 @@ public class ApplicationDbContextInitialiser
         }
         catch (Exception ex)
         {
-           // _logger.LogError(ex, "An error occurred while seeding the database.");
+            // _logger.LogError(ex, "An error occurred while seeding the database.");
             throw;
         }
     }
 
     public async Task TrySeedAsync()
     {
-        // // Default roles
-        // var administratorRole = new IdentityRole("Administrator");
-        //
-        // if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
-        // {
-        //     await _roleManager.CreateAsync(administratorRole);
-        // }
-        //
-        // // Default users
-        // var administrator = new ApplicationUser
-        //     { UserName = "administrator@localhost", Email = "administrator@localhost" };
-        //
-        // if (_userManager.Users.All(u => u.UserName != administrator.UserName))
-        // {
-        //     await _userManager.CreateAsync(administrator, "Administrator1!");
-        //     if (!string.IsNullOrWhiteSpace(administratorRole.Name))
-        //     {
-        //         await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
-        //     }
-        // }
-        //
-        // // Default data
-        // // Seed, if necessary
-        // if (!_context.TodoLists.Any())
-        // {
-        //     _context.TodoLists.Add(new TodoList
-        //     {
-        //         Title = "Todo List",
-        //         Items =
-        //         {
-        //             new TodoItem { Title = "Make a todo list 📃" },
-        //             new TodoItem { Title = "Check off the first item ✅" },
-        //             new TodoItem { Title = "Realise you've already done two things on the list! 🤯" },
-        //             new TodoItem { Title = "Reward yourself with a nice, long nap 🏆" },
-        //         }
-        //     });
-        //
-        //     await _context.SaveChangesAsync();
-        // }
+        var user = new AppUser
+        {
+            Email = "romaphilomela@yandex.ru",
+            UserName = "romaphilomela@yandex.ru",
+            FullName = "Roman",
+            CreatedAt = DateTime.Now.Date,
+            EmailConfirmed = true
+        };
+
+        //Добавить админа и роли пользователя
+
+        if (_userManager.Users.All(u => u.Email != user.Email))
+        {
+            var result = await _userManager.CreateAsync(user, "Roman1994!");
+            
+            if (!result.Succeeded && result.Errors.Any())
+                throw new Exception("User was not created");
+        }
+
+        if (!_appDbContext.Collars.Any())
+        {
+            var Id = Guid.NewGuid();
+            var collar = new Collar()
+            {
+                Id = Id,
+                SecretKey = "petprotector",
+                Questionnaire = new Questionnaire()
+                {
+                    Id = Id,
+                    LinkQuestionnaire = Guid.NewGuid(),
+                    State = QuestionnaireStates.Filling,
+                },
+            
+            };
+            await _appDbContext.Collars.AddAsync(collar);
+        }
+
+        await _appDbContext.SaveChangesAsync();
     }
 }

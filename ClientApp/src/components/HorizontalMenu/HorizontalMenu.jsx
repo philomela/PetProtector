@@ -22,7 +22,7 @@ const menuItems = [
   { label: "Выйти", path: "/logout" },
 ];
 
-function ResponsiveAppBar() {
+function HorizontalMenu() {
   const { auth } = useAuth();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -134,4 +134,4 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
+export default HorizontalMenu;

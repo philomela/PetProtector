@@ -1,3 +1,9 @@
 ﻿namespace Infrastructure.EmailSender.Configurations;
 
-public record EmailSenderConfiguration(string Server, int Port, string Login, string Password);
+public class EmailSenderConfiguration
+{
+    public string Server { get; set; }
+    public string Port { get; set; }
+    public string Login { get; set; }
+    public string Password { get; set; }
+};
