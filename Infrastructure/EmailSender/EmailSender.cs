@@ -14,19 +14,26 @@ public class EmailSender : IEmailSender
 
     public async Task SendAsync(EmailMessage msg, CancellationToken cancellationToken)
     {
-        var message = new MimeMessage();
-        message.From.Add(MailboxAddress.Parse(msg.From));
-        message.To.Add(MailboxAddress.Parse(msg.To));
-        message.Subject = msg.Subject;
-        message.Body = new TextPart(TextFormat.Html) { Text = msg.Html };
+        try
+        {
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(msg.From));
+            message.To.Add(MailboxAddress.Parse(msg.To));
+            message.Subject = msg.Subject;
+            message.Body = new TextPart(TextFormat.Html) { Text = msg.Html };
 
-        using var client = new SmtpClient();
-        await client.ConnectAsync(_config.Server,
-            int.TryParse(_config.Port, out var otp)
-                ? otp
-                : throw new Exception("EmailSender smpt port was not initialise"), true, cancellationToken);
-        await client.AuthenticateAsync(_config.Login, _config.Password, cancellationToken);
-        await client.SendAsync(message, cancellationToken);
-        await client.DisconnectAsync(true, cancellationToken);
+            using var client = new SmtpClient();
+            await client.ConnectAsync(_config.Server,
+                int.TryParse(_config.Port, out var otp)
+                    ? otp
+                    : throw new Exception("EmailSender smpt port was not initialise"), true, cancellationToken);
+            await client.AuthenticateAsync(_config.Login, _config.Password, cancellationToken);
+            await client.SendAsync(message, cancellationToken);
+            await client.DisconnectAsync(true, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            //_logger логируем исключение. 
+        }
     }
 }

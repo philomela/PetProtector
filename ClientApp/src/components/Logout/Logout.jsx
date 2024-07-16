@@ -33,7 +33,7 @@ const Logout = () => {
 
     return () => {
       isMounted = false;
-      controller.abort();
+      //controller.abort();
     };
   }, []);
 

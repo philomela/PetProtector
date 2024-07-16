@@ -1,12 +1,4 @@
-.first_section {
-    display:  flex;
-    font-family: 'Russo';
-    font-weight: 400;
-    justify-content: space-between;
-    color: #1f5d6d;
-    font-weight: 100;
 
-}
 
 .second_section {
     display:  flex;
@@ -19,10 +11,14 @@
 }
 
 .user_info_section {
+    margin-top: 10px;
+    border-radius: 10px;
     display: flex;
+    flex-direction: row;
     width: 49%;
-    color: #1f5d6d;
-    --background-color: #1f5d6d;
+    background-color: #638889;
+    color: white;
+   
     --border-radius: 30px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 5%;
@@ -30,14 +26,15 @@
 }
 
 .user_info {
-    align-items: center;
-    flex-direction: column;
-    flex: 1 0 50%;
+    --align-items: center;
+    --flex-direction: column;
+    --flex: 1 0 50%;
 }
 
 .user_info_data_block {
     font-family: 'Raleway';
-    font-weight: 600;
+    font-weight: 400;
+    display: flex;
 }
 
 .searh_section {

@@ -10,7 +10,7 @@ const ConfirmRegistration = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const Connfirm = async () => {
+    const Confirm = async () => {
       try {
         const confirmRegistrationResponse = await axios.put("/api/users/ConfirmRegister", {
           UserId: userId
@@ -27,10 +27,10 @@ const ConfirmRegistration = () => {
       }
     };
 
-    Connfirm();
+    Confirm();
 
     return () => {
-      controller.abort();
+      //controller.abort();
     };
   }, []);
 };

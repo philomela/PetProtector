@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using System.Security.Claims;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using MediatR;
@@ -36,7 +37,7 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
         var principal = _tokenManager.GetPrincipalFromToken(request.Token);
 
         var user = await _userManager.Users.Include(x => x.Tokens)
-            .FirstOrDefaultAsync(x => x.Email == principal.Identity.Name, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email == principal.FindFirst(ClaimTypes.Email)!.Value, cancellationToken);
 
         if (user is null || !user.EmailConfirmed) //Перепроверить условие, юзер должен быть акцептован
             throw new UnauthorizedAccessException();

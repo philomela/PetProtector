@@ -14,6 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import ShieldIcon from "@mui/icons-material/Shield";
 import useAuth from "../../hooks/useAuth";
+import { lightBlue } from "@mui/material/colors";
 import styles from "./HorizontalMenu.module.css";
 
 const pages = ["Помощь"];
@@ -84,11 +85,12 @@ function HorizontalMenu() {
           <Box sx={{ flexGrow: 0 }}>
             {auth.isAuth ? (
               <>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Tooltip title="Открыть профиль">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, bgColor: lightBlue[500] }}>
                     <Avatar
                       alt={auth.userName}
                       src="/static/images/avatar/2.jpg"
+                      sx={{ bgcolor: "white", color: "black" }}
                     />
                   </IconButton>
                 </Tooltip>
