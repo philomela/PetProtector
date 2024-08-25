@@ -12,6 +12,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Footer from "../../components/Footer/Footer"
 
 const Home = () => {
   return (
@@ -31,7 +32,7 @@ const Home = () => {
           }}
         >
           <Typography sx={{ width: "50%", color: '#76453B', fontFamily: 'Russo' }} variant="h3" gutterBottom>
-            Защитите свое животное от потери нашим qr-адресником
+            Защитите своего питомца от потери нашим qr-адресником
           </Typography>
           <Box/>
           <Typography sx={{ width: "50%", color: '#76453B', mt: 3}} variant="h6" gutterBottom>
@@ -80,7 +81,7 @@ const Home = () => {
           </Carousel>
           <Box>
             <Typography sx={{textAlign: 'center'}}>
-              Защити свое животное!<br></br>
+              Защити своего питомца!<br></br>
               Сканируй qr код и получи информацию о владельце
               <br></br>
             </Typography>
@@ -90,6 +91,7 @@ const Home = () => {
           </Box>
         </Box>
       </Box>
+      <Footer/>
     </>
   );
 };

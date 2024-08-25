@@ -7,7 +7,7 @@ import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrow
 
 const Header = () => {
   return (
-    <header className={styles.horizontal_menu}>
+    <header>
       <HorizontalMenu></HorizontalMenu>
     </header>
   );

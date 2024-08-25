@@ -16,6 +16,7 @@ import ShieldIcon from "@mui/icons-material/Shield";
 import useAuth from "../../hooks/useAuth";
 import { lightBlue } from "@mui/material/colors";
 import styles from "./HorizontalMenu.module.css";
+import MyCustomIcon from '../../utils/MyIcon';
 
 const pages = ["Помощь"];
 const menuItems = [
@@ -25,18 +26,10 @@ const menuItems = [
 
 function HorizontalMenu() {
   const { auth } = useAuth();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -51,7 +44,9 @@ function HorizontalMenu() {
     <AppBar position="static" sx={{ bgcolor: "#638889" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <ShieldIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          
+          <MyCustomIcon/>
+          
           <Typography
             variant="h6"
             noWrap
@@ -111,8 +106,8 @@ function HorizontalMenu() {
                   onClose={handleCloseUserMenu}
                 >
                   {menuItems.map(({ label, path }) => (
-                    <MenuItem key={label} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" component={Link} to={path}>
+                    <MenuItem sx={{bgColor: "blue"}} key={label} onClick={handleCloseUserMenu}>
+                      <Typography sx={{color: "#638889", textDecoration: "none"}} textAlign="center" component={Link} to={path}>
                         {label}
                       </Typography>
                     </MenuItem>

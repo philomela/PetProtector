@@ -30,6 +30,10 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<AuthResponsesOperationFilter>();
 });
 
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",

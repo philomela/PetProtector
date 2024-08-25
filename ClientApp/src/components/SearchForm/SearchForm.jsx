@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import TextField from "@mui/material/TextField";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 const SearchForm = ({ handleSearchInfo }) => {
   const [secretKey, setSecretKey] = useState("");
   const axiosPrivate = useAxiosPrivate();
 
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,22 +28,29 @@ const SearchForm = ({ handleSearchInfo }) => {
   };
 
   return (
-    <div>
+    <Box
+      sx={{
+        display: "flex",
+      }}
+    >
       <form onSubmit={handleSubmit}>
-        <div>
+        <Box>
           <TextField
             id="fullName"
             label="Секретный ключ"
             variant="standard"
             onChange={(e) => setSecretKey(e.target.value)}
             value={secretKey}
+            autoComplete="off"
           />
-        </div>
-        <Button type="submit" variant="contained" sx={{ bgcolor: "#1f5d6d" }}>
-          Найти
-        </Button>
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5}}>
+          <Button type="submit" variant="contained" sx={{ bgcolor: "#ED7D31" }}>
+            Найти
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 

@@ -2,9 +2,10 @@ import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 import Login from "./pages/Login/Login";
 import Logout from "./components/Logout/Logout";
-import Questionnaire from "./pages/questionnaire/questionnaire";
+import Questionnaire from "./pages/Questionnaire/Questionnaire";
 import Profile from "./pages/Profile/Profile";
 import PrivateRoute from "./utils/PrivateRoute";
 import Layout from "./components/Layout/layout";
@@ -16,7 +17,7 @@ import ConfirmRegistration from "./components/ConfirmRegistration/ConfirmRegistr
 const App = () => {
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{width: "100%"}}>
         <Box sx={{ bgcolor: "#F8FAE5", height: "100vh" }}>
           <Header />
           <Routes>
@@ -34,8 +35,10 @@ const App = () => {
               </Route>
             </Route>
           </Routes>
+       
         </Box>
       </Container>
+      
     </>
   );
 };
