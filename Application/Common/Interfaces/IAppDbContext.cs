@@ -7,6 +7,8 @@ public interface IAppDbContext
 {
     DbSet<Collar> Collars { get; set; }
     DbSet<Questionnaire> Questionnaires { get; set; }
+    
+    DbSet<Location> Locations { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

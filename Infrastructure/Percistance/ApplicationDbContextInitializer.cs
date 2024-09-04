@@ -79,7 +79,7 @@ public class ApplicationDbContextInitialiser
                 {
                     Id = Id,
                     LinkQuestionnaire = Guid.NewGuid(),
-                    State = QuestionnaireStates.Filling,
+                    State = QuestionnaireStates.WaitingFilling,
                 },
             
             };

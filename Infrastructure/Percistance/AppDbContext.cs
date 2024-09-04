@@ -10,6 +10,8 @@ public class AppDbContext : DbContext, IAppDbContext
 {
     public DbSet<Collar> Collars { get; set; }
     public DbSet<Questionnaire> Questionnaires { get; set; }
+    
+    public DbSet<Location> Locations { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {}
@@ -18,6 +20,7 @@ public class AppDbContext : DbContext, IAppDbContext
     {
         modelBuilder.ApplyConfiguration(new CollarConfiguration());
         modelBuilder.ApplyConfiguration(new QuestionnaireConfiguration());
+        modelBuilder.ApplyConfiguration(new LocationConfiguration());
         
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);

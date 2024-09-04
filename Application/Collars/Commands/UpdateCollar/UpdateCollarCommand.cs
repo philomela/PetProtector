@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Core.Events;
 using MediatR;
 
 namespace Application.Collars.Commands.UpdateCollar;
@@ -23,8 +24,16 @@ internal record UpdateCollarCommandHandler : IRequestHandler<UpdateCollarCommand
 
         var entity = await _appDbContext.Collars.FindAsync(request.Id, cancellationToken) 
                      ?? throw new NotFoundException("Entity not found");
-        entity.UserId = userId;
+        
+        if (entity.UserId == userId)
+        {
+            throw new NotFoundException("Entity not found");
+        }
 
+        entity.UserId = userId;
+        
+        entity.AddDomainEvent(new CollarUpdatedEvent(request.Id));
+        
         await _appDbContext.SaveChangesAsync(cancellationToken);
 
         return entity.Id;

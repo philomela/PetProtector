@@ -1,23 +1,31 @@
-import React, { useState } from "react";
-import styles from "./Home.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
+import React from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Button from "@mui/material/Button";
 import ShopIcon from "@mui/icons-material/Shop";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Footer from "../../components/Footer/Footer"
+import Footer from "../../components/Footer/Footer";
 
 const Home = () => {
   return (
-    <>
-      <Box sx={{ width: "100%", display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      {/* Главный контент */}
+      <Box
+        sx={{
+          flex: 1, // Контент растягивается, занимая всё доступное пространство
+          display: "flex",
+          width: "100%",
+        }}
+      >
         <Box
           sx={{
             width: "70%",
@@ -31,15 +39,23 @@ const Home = () => {
             backgroundSize: "60em",
           }}
         >
-          <Typography sx={{ width: "50%", color: '#76453B', fontFamily: 'Russo' }} variant="h3" gutterBottom>
+          <Typography
+            sx={{ width: "50%", color: "#76453B", fontFamily: "Russo" }}
+            variant="h3"
+            gutterBottom
+          >
             Защитите своего питомца от потери нашим qr-адресником
           </Typography>
-          <Box/>
-          <Typography sx={{ width: "50%", color: '#76453B', mt: 3}} variant="h6" gutterBottom>
+          <Box />
+          <Typography
+            sx={{ width: "50%", color: "#76453B", mt: 3 }}
+            variant="h6"
+            gutterBottom
+          >
             Простая регистрация
-            <br></br>
+            <br />
             Быстрое заполнение анкеты
-            <br></br>
+            <br />
             Удобный интерфейс
           </Typography>
 
@@ -50,7 +66,7 @@ const Home = () => {
               height: 60,
               width: 200,
               fontSize: 20,
-              mt: 5
+              mt: 5,
             }}
             endIcon={<ShopIcon />}
           >
@@ -58,8 +74,7 @@ const Home = () => {
           </Button>
         </Box>
         <Box sx={{ width: "30%" }}>
-          <Carousel
-            className={styles.corousel}
+          <Carousel          
             showIndicators={false}
             autoPlay={true}
             infiniteLoop={true}
@@ -80,19 +95,28 @@ const Home = () => {
             </div>
           </Carousel>
           <Box>
-            <Typography sx={{textAlign: 'center'}}>
-              Защити своего питомца!<br></br>
+            <Typography sx={{ textAlign: "center" }}>
+              Защити своего питомца!
+              <br />
               Сканируй qr код и получи информацию о владельце
-              <br></br>
+              <br />
             </Typography>
-            <Typography sx={{textAlign: 'center', fontWeight: 'bold', color: '#76453B'}}>
-              Наш инстаграм <FontAwesomeIcon icon={faInstagram} />
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "#76453B",
+              }}
+            >
+              Наш instagram <FontAwesomeIcon icon={faInstagram} />
             </Typography>
           </Box>
         </Box>
       </Box>
-      <Footer/>
-    </>
+
+      {/* Футер */}
+      <Footer />
+    </Box>
   );
 };
 

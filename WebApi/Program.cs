@@ -1,9 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
 using Infrastructure.Percistance;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using Org.BouncyCastle.Asn1.Cms;
 using WebApi.Configurations;
 using WebApi.Filters;
 
@@ -34,6 +37,31 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    
+    options.AddPolicy("RequestLimiterOneHour", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromHours(1)
+            })
+    );
+    
+    options.AddPolicy("RequestLimiterTenMinutes", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromHours(10)
+            })
+    );
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
@@ -49,6 +77,7 @@ app.UseRouting();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
+
 
 
 using (var scope = app.Services.CreateScope())
@@ -67,7 +96,7 @@ app.UseSwaggerUI(c =>
 );
 
 app.UseCors("CorsPolicy");
-
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

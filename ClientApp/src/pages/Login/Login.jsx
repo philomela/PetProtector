@@ -67,7 +67,7 @@ const Login = () => {
   };
 
   return (
-    <Grid container component="main" style={{ height: '90vh', bgColor: 'F8FAE5' }}>
+    <Grid container  sx={{ height: '90vh', bgColor: 'F8FAE5' }}>
       <CssBaseline />
       <Grid
         item

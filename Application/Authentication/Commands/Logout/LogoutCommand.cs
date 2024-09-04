@@ -28,7 +28,7 @@ internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
     public async Task<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
         var currentRefreshToken = _httpContextAccessor?.HttpContext?.Request.Cookies["refreshToken"]
-                                  ?? throw new BadRequestException("Refresh token not found");
+                                  ?? throw new BadRequestException("Refresh token not found"); //todo: пересмотреть, возможно другое исключение
 
         var principal = _tokenManager.GetPrincipalFromToken(request.Token);
         

@@ -1,5 +1,6 @@
 ﻿using Application.Collars.Queries.Dtos;
 using Application.Common.Interfaces;
+using Application.Locations.Queries.Dtos;
 using Application.Questionnaires.Queries.Dtos;
 using AutoMapper;
 using MediatR;
@@ -28,17 +29,26 @@ internal record GetCollarsQueryHandler : IRequestHandler<GetCollarsQuery, Collar
         var userId = _executionContextAccessor.UserId;
 
         var entities = await _appDbContext.Collars.AsNoTracking()
-            .Include(c => c.Questionnaire).AsNoTracking()
+            .Include(c => c.Questionnaire)
+            .Include(c => c.Locations)
             .Where(c => c.UserId == userId)
             .Select(c => new CollarDto()
             {
                 Id = c.Id,
-                Questionnaire = new ()
+                Questionnaire = new QuestionnaireDto()
                 {
                     OwnersName = c.Questionnaire.OwnersName,
                     PetsName = c.Questionnaire.PetsName,
                     PhoneNumber = c.Questionnaire.PhoneNumber
-                }
+                },
+                Location = c.Locations
+                    .OrderByDescending(l => l.CreatedAt)
+                    .Select(l => new LocationDto()
+                    {
+                        Latitude = l.Latitude,
+                        Longitude = l.Longitude
+                    })
+                    .FirstOrDefault()
             }).ToListAsync(cancellationToken);
         
         return _mapper

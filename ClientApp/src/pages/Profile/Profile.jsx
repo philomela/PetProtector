@@ -6,6 +6,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { deepOrange } from "@mui/material/colors";
@@ -18,7 +23,7 @@ import { Box, Typography, Avatar, TextField } from "@mui/material";
 import { Email, Person, CalendarToday, Edit } from "@mui/icons-material";
 import { InputAdornment } from "@mui/material";
 import moment from "moment";
-import Footer from "../../components/Footer/Footer";
+import Link from "@mui/material/Link";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 
 const Profile = () => {
@@ -27,9 +32,11 @@ const Profile = () => {
   const [searchCollarsInfo, setSearchCollarsInfo] = useState(null);
   const [searchedCollar, setSearchedCollar] = useState(null);
   const [collarInfo, setCollarInfo] = useState([]);
+  const [showHint, setShowHint] = useState(true);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Функция для обработки изменений в текстовых полях
   const handleCollarChange = (event, collarId, propName) => {
@@ -71,7 +78,10 @@ const Profile = () => {
     }
   };
 
-  const handleSearchInfo = async (collar) => setSearchCollarsInfo(collar);
+  const handleSearchInfo = async (collar) => {
+    setSearchCollarsInfo(collar);
+    setDialogOpen(true); // Открытие диалогового окна при нахождении браслета
+  };
 
   const handleLinkCollar = async () => {
     try {
@@ -87,6 +97,7 @@ const Profile = () => {
 
       // Сброс информации о поиске
       setSearchCollarsInfo(null);
+      setDialogOpen(false);
     } catch (err) {
       console.error(err);
     }
@@ -116,7 +127,6 @@ const Profile = () => {
             ...responseUserCollars.data,
           });
         setIsLoading(false);
-        setIsLoading(false);
       } catch (err) {
         console.error(err);
         navigate("/login", { state: { from: location }, replace: true });
@@ -130,16 +140,6 @@ const Profile = () => {
       //controller.abort();
     };
   }, [searchedCollar]);
-
-  const handleInputChange = (field, value) => {
-    setProfileInfo((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const placemarks = [
-    { coordinates: [55.751574, 37.573856], title: 'Красная площадь', description: 'Главная площадь Москвы' },
-    { coordinates: [55.755814, 37.617635], title: 'Кремль', description: 'Резиденция Президента России' },
-    { coordinates: [55.760186, 37.618711], title: 'Большой театр', description: 'Главный театр России' },
-  ];
 
   return (
     <>
@@ -179,13 +179,10 @@ const Profile = () => {
                   label="Ваше имя"
                   variant="standard"
                   value={profileInfo.fullName}
-                  onChange={(e) =>
-                    handleInputChange("fullName", e.target.value)
-                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Person />
+                        <Person sx={{ color: "white" }} />
                       </InputAdornment>
                     ),
                     readOnly: true,
@@ -199,7 +196,7 @@ const Profile = () => {
                       borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
                     },
                     "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid #ED7D31", // Подчеркивание при наведении
+                      borderBottom: "2px solid white", // Подчеркивание при наведении
                     },
                     "&.Mui-focused .MuiInput-underline:before": {
                       borderBottom: "2px solid blue", // Цвет подчеркивания при фокусе
@@ -220,7 +217,7 @@ const Profile = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Email />
+                        <Email sx={{ color: "white" }} />
                       </InputAdornment>
                     ),
                     readOnly: true,
@@ -254,7 +251,7 @@ const Profile = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <CalendarToday />
+                        <CalendarToday sx={{ color: "white" }} />
                       </InputAdornment>
                     ),
                     readOnly: true,
@@ -294,41 +291,58 @@ const Profile = () => {
                 boxShadow: "0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset",
                 borderRadius: 1,
                 marginLeft: 1,
-                backgroundImage: "url(/images/png-lk.png)",
+                background: `
+                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), /* Градиентный фон */
+                  url(/images/png-lk.png) /* Картинка фона */
+                `,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "160% -10%",
+               
               }}
             >
               <Typography variant="h6" component="h6">
-                Поиск адресника
+                Поиск qr-адресника
               </Typography>
               <SearchForm handleSearchInfo={handleSearchInfo} />
-              {searchCollarsInfo && (
-                <>
-                  <Typography variant="h6" component="h6">
-                    Браслет найден:
-                  </Typography>
-                  <Typography variant="body1" component="p">
-                    {searchCollarsInfo}
-                  </Typography>
-                  <Button
-                    onClick={handleLinkCollar}
-                    variant="contained"
-                    sx={{ bgcolor: "#1f5d6d" }}
-                  >
-                    Активировать
-                  </Button>
-                </>
-              )}
             </Box>
           </Box>
 
-          <Typography variant="h6" component="h6">
+          <Typography
+            variant="h6"
+            component="h6"
+            sx={{ justifyContent: "center", textAlign: "center" }}
+          >
             Ваши адресники
           </Typography>
+
+          {profileInfo.collars.length > 0 ? (
+            <Typography
+              sx={{
+                fontSize: "1rem",
+                color: "gray",
+                textAlign: "center",
+              }}
+            >
+              Заполните карточку qr-паспорта данными о питомце и нажмите
+              сохранить, Ваш qr-адресник готов{" "}
+              <Link>Как заполнить qr-паспорт?</Link>
+            </Typography>
+          ) : (
+            <Typography
+              sx={{
+                fontSize: "1rem",
+                color: "gray",
+                textAlign: "center",
+              }}
+            >
+              Вы пока не привязали ни одного qr-адресника
+              <br /> <Link>Как привязать qr-адресник?</Link>
+            </Typography>
+          )}
+
           <TableContainer
             component={Paper}
-            sx={{ backgroundColor: "#638889", color: "white" }}
+            sx={{ backgroundColor: "#638889", color: "white", mt: 3 }}
           >
             <Table sx={{ color: "white" }}>
               <TableHead sx={{ color: "white" }}>
@@ -342,95 +356,158 @@ const Profile = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {profileInfo.collars.map((collar) => (
-                  <TableRow key={collar.id}>
-                    <TableCell
-                      sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                    >
-                      {collar.id}
-                    </TableCell>
-                    <TableCell
-                      sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                    >
-                      <TextField
-                        defaultValue={
-                          collar.questionnaire.ownersName ?? "Еще не заполнено"
-                        }
-                        value={collar.questionnaire.ownersName}
-                        onChange={(event) =>
-                          handleCollarChange(event, collar.id, "ownersName")
-                        }
-                        InputProps={{
-                          sx: { color: "#638889" },
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                    >
-                      <TextField
-                        defaultValue={
-                          collar.questionnaire.petsName ?? "Еще не заполнено"
-                        }
-                        value={collar.questionnaire.petsName}
-                        onChange={(event) =>
-                          handleCollarChange(event, collar.id, "petsName")
-                        }
-                        InputProps={{
-                          sx: { color: "#638889" },
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                    >
-                      <TextField
-                        defaultValue={
-                          collar.questionnaire.phoneNumber ?? "Еще не заполнено"
-                        }
-                        value={collar.questionnaire.phoneNumber}
-                        onChange={(event) =>
-                          handleCollarChange(event, collar.id, "phoneNumber")
-                        }
-                        InputProps={{
-                          sx: { color: "#638889" },
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                    >
-                      <Button
-                        variant="contained"
-                        onClick={() => saveCollarData(collar.id)}
+                {profileInfo.collars.length > 0 ? (
+                  profileInfo.collars.map((collar) => (
+                    <TableRow key={collar.id}>
+                      <TableCell
+                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
                       >
-                        Сохранить
-                      </Button>
+                        <Button>
+                          <Link>Просмотреть qr-паспорт</Link>
+                        </Button>
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
+                      >
+                        <TextField
+                          defaultValue={
+                            collar.questionnaire.ownersName ??
+                            "Еще не заполнено"
+                          }
+                          value={collar.questionnaire.ownersName}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "ownersName")
+                          }
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Edit />
+                              </InputAdornment>
+                            ),
+                            sx: { color: "#638889" },
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
+                      >
+                        <TextField
+                          defaultValue={
+                            collar.questionnaire.petsName ?? "Еще не заполнено"
+                          }
+                          value={collar.questionnaire.petsName}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "petsName")
+                          }
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Edit />
+                              </InputAdornment>
+                            ),
+                            sx: { color: "#638889" },
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
+                      >
+                        <TextField
+                          defaultValue={
+                            collar.questionnaire.phoneNumber ??
+                            "Еще не заполнено"
+                          }
+                          value={collar.questionnaire.phoneNumber}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "phoneNumber")
+                          }
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Edit />
+                              </InputAdornment>
+                            ),
+                            sx: { color: "#638889" },
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
+                      >
+                        <Button
+                          variant="contained"
+                          onClick={() => saveCollarData(collar.id)}
+                        >
+                          Сохранить
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      sx={{ textAlign: "center", color: "white" }}
+                    >
+                      Здесь будут ваши qr-адресники...
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
-          <div style={{ width: '100%', height: '500px' }}>
-      <YMaps>
-        <Map defaultState={{ center: [55.75, 37.57], zoom: 9 }} style={{ width: '100%', height: '100%' }}>
-          {placemarks.map((placemark, index) => (
-            <Placemark
-              key={index}
-              geometry={placemark.coordinates}
-              properties={{
-                iconContent: "sdsd", // Название метки
-                balloonContent: placemark.description, // Описание метки во всплывающем окне
-              }}
-              options={{
-                preset: 'islands#blueDotIconWithCaption', // Стиль метки
-              }}
-            />
-          ))}
-        </Map>
-      </YMaps>
-    </div>
+          <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+            <DialogTitle>QR-адресник найден</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Вы нашли QR-адресник. Хотите активировать его?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleLinkCollar} color="primary">
+                Активировать
+              </Button>
+              <Button onClick={() => setDialogOpen(false)} color="secondary">
+                Отмена
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <div style={{ width: "100%", height: "500px" }}>
+            <YMaps>
+              <Map
+                defaultState={{
+                  center:
+                    profileInfo.collars.length > 0
+                      ? [
+                          profileInfo.collars[profileInfo.collars.length - 1]
+                            .location?.latitude ?? 55.75,
+                          profileInfo.collars[profileInfo.collars.length - 1]
+                            .location?.longitude ?? 37.57,
+                        ]
+                      : [55.75, 37.57], // Если меток нет, использовать центр по умолчанию
+                  zoom: 9,
+                }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                {profileInfo.collars.map((collar, index) => (
+                  <Placemark
+                    key={index}
+                    geometry={[
+                      collar.location?.latitude ?? null,
+                      collar.location?.longitude ?? null,
+                    ]}
+                    properties={{
+                      iconContent: "sdsd", // Название метки
+                      balloonContent: collar.id, // Описание метки во всплывающем окне
+                    }}
+                    options={{
+                      preset: "islands#blueDotIconWithCaption", // Стиль метки
+                    }}
+                  />
+                ))}
+              </Map>
+            </YMaps>
+          </div>
         </>
       )}
     </>

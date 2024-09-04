@@ -1,88 +1,142 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import styles from "./Registration.module.css";
+import {
+  Avatar,
+  Button,
+  TextField,
+  Grid,
+  Box,
+  Typography,
+  Paper,
+  CssBaseline,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import axios from "../../api/axios";
+
+const REGISTER_URL = "/api/users/register";
 
 const RegistrationForm = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from?.pathname || "/profile";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const command = {
-      fullName: fullName,
-      email: email,
-      password: password,
+      fullName,
+      email,
+      password,
     };
 
     try {
-      const response = await fetch(
-        "https://localhost:7100/api/users/register",
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify(command),
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(command),
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      if (response.ok) {
-        navigate("/profile", { state: { from: location }, replace: true });
-        // Регистрация прошла успешно
-        // Дополнительные действия, например, перенаправление на другую страницу
+      if (response?.status === 200) {
+        navigate(from, { replace: true });
       } else {
-        // Обработка ошибки регистрации
-        // Например, отображение сообщения об ошибке
+        setErrMsg("Registration Failed");
       }
     } catch (error) {
-      // Обработка ошибки запроса
+      setErrMsg("Registration Failed");
     }
   };
 
   return (
-    <>
-      <section className={styles.registration_section}>
-        <div className={styles.registration_section_container}>
-          <h2>Зарегистрируйтесь</h2>
-          <form className={styles.registration_form} onSubmit={handleSubmit}>
-            <label htmlFor="fullName">Имя:</label>
-            <input
-              className={styles.registration_form_input}
-              type="text"
+    <Grid container sx={{ height: "90vh", bgColor: "F8FAE5" }}>
+      <CssBaseline />
+      <Grid
+        item
+        xs={false}
+        sm={4}
+        md={7}
+        sx={{
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "F8FAE5",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Box
+          sx={{
+            my: 8,
+            mx: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "#638889" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Зарегистрируйтесь
+          </Typography>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 1 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               id="fullName"
+              label="Имя"
+              name="fullName"
+              autoComplete="name"
+              autoFocus
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
-
-            <label htmlFor="email">Email:</label>
-            <input
-              className={styles.registration_form_input}
-              type="email"
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               id="email"
+              label="Email адрес"
+              name="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
-            <label htmlFor="password">Пароль:</label>
-            <input
-              className={styles.registration_form_input}
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Пароль"
               type="password"
               id="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-
-            <button className={styles.registration_form_button} type="submit">
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, bgcolor: "#ED7D31" }}
+            >
               Зарегистрироваться
-            </button>
-          </form>
-        </div>
-      </section>
-    </>
+            </Button>
+          </Box>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

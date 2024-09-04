@@ -21,6 +21,7 @@ internal record GetQuestionnaireQueryHandler : IRequestHandler<GetQuestionnaireQ
     public async Task<QuestionnaireVm> Handle(GetQuestionnaireQuery request, CancellationToken cancellationToken)
     {
         return _mapper.Map<QuestionnaireVm>(await _appDbContext.Questionnaires
-            .Where( q => q.LinkQuestionnaire == request.LinkQuestionnaire).FirstOrDefaultAsync());
+            .Where( q => q.LinkQuestionnaire == request.LinkQuestionnaire)
+            .FirstOrDefaultAsync(cancellationToken));
     }
 }

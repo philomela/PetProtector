@@ -26,6 +26,7 @@ internal record CreateCollarCommandHandler : IRequestHandler<CreateCollarCommand
     
     public async Task<Unit> Handle(CreateCollarCommand request, CancellationToken cancellationToken)
     {
+        //todo: Не добавлять браслет с имеющимся secretKey, может быть уникальный ключ и индекс повесить на secretKey
         var entity = new Collar()
         {
             Id = request.Id,
@@ -34,7 +35,7 @@ internal record CreateCollarCommandHandler : IRequestHandler<CreateCollarCommand
             {
                 Id = request.Id,
                 LinkQuestionnaire = request.LinkQuestionnaire,
-                State = QuestionnaireStates.Filling,
+                State = QuestionnaireStates.WaitingFilling,
             },
             
         };

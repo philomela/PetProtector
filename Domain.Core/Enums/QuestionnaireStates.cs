@@ -2,6 +2,7 @@
 
 public enum QuestionnaireStates
 {
+    WaitingFilling = 1,
     Filling,
-    Filled
+    Filled,
 }

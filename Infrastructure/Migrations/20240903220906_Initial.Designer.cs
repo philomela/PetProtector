@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240307215607_Initial")]
+    [Migration("20240903220906_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -141,6 +141,31 @@ namespace Infrastructure.Migrations
                     b.ToTable("Collar", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Core.Entities.Location", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollarId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Latitude")
+                        .HasColumnType("decimal(9, 6)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(9, 6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollarId");
+
+                    b.ToTable("Location", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Core.Entities.Questionnaire", b =>
                 {
                     b.Property<Guid>("Id")
@@ -192,9 +217,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("Questionnaire");
                 });
 
+            modelBuilder.Entity("Domain.Core.Entities.Location", b =>
+                {
+                    b.HasOne("Domain.Core.Entities.Collar", "Collar")
+                        .WithMany("Locations")
+                        .HasForeignKey("CollarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collar");
+                });
+
             modelBuilder.Entity("Domain.Core.Entities.AppUser", b =>
                 {
                     b.Navigation("Tokens");
+                });
+
+            modelBuilder.Entity("Domain.Core.Entities.Collar", b =>
+                {
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("Domain.Core.Entities.Questionnaire", b =>

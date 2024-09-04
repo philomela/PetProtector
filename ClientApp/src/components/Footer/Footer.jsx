@@ -9,19 +9,19 @@ const Footer = () => {
   return (
     <Box
       sx={{
+        maxWidth: "lg",
+        boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         bgcolor: "#638889",
         padding: "20px",
-        position: "fixed", // фиксированная позиция
-        bottom: 0, // расположение внизу
-       
-        width: "100%", // растягивается на всю ширину экрана
-        height: "auto", // автоматическая высота
-        minHeight: "10vh", // минимальная высота, чтобы контент не слишком сжимался
-        maxWidth: "lg"
+        position: "relative", // Отменяем фиксированное позиционирование
+        bottom: 0, // Не нужен с relative
+        width: "100%", // Растягивается на всю ширину экрана
+        height: "auto", // Автоматическая высота
+        minHeight: "10vh", // Минимальная высота
       }}
     >
       <Typography variant="h6" color="white">
@@ -46,5 +46,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
-

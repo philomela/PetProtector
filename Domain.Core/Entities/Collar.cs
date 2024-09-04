@@ -14,4 +14,6 @@ public class Collar : BaseEntity
     public CollarStates State { get; set; }
     
     public Guid UserId { get; set; }
+    
+    public ICollection<Location> Locations { get; set; }
 }

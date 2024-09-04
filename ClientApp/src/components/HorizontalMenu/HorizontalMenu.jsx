@@ -6,16 +6,13 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import ShieldIcon from "@mui/icons-material/Shield";
 import useAuth from "../../hooks/useAuth";
 import { lightBlue } from "@mui/material/colors";
-import styles from "./HorizontalMenu.module.css";
 import MyCustomIcon from '../../utils/MyIcon';
 
 const pages = ["Помощь"];
@@ -115,15 +112,23 @@ function HorizontalMenu() {
                 </Menu>
               </>
             ) : (
-              <div className={styles.right_menu_buttons}>
-                <Link to="login" className={styles.login_link}>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Typography
+                  component={Link}
+                  to="login"
+                  sx={{ color: 'white', mr: 1 }}
+                >
                   Войти
-                </Link>{" "}
-                <span className={styles.delimeter}> или </span>
-                <Link to="register" className={styles.register_link}>
+                </Typography>
+                <Typography sx={{ color: 'white' }}>или</Typography>
+                <Typography
+                  component={Link}
+                  to="register"
+                  sx={{ color: 'white', ml: 1 }}
+                >
                   зарегистрироваться
-                </Link>
-              </div>
+                </Typography>
+              </Box>
             )}
           </Box>
         </Toolbar>

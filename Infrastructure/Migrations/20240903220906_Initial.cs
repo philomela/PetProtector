@@ -99,10 +99,36 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Location",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Latitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CollarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Location_Collar_CollarId",
+                        column: x => x.CollarId,
+                        principalTable: "Collar",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AppRefreshToken_UserId",
                 table: "AppRefreshToken",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Location_CollarId",
+                table: "Location",
+                column: "CollarId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questionnaire_LinkQuestionnaire",
@@ -118,10 +144,13 @@ namespace Infrastructure.Migrations
                 name: "AppRefreshToken");
 
             migrationBuilder.DropTable(
-                name: "Collar");
+                name: "Location");
 
             migrationBuilder.DropTable(
                 name: "AppUser");
+
+            migrationBuilder.DropTable(
+                name: "Collar");
 
             migrationBuilder.DropTable(
                 name: "Questionnaire");

@@ -2,6 +2,7 @@
 using Application.Questionnaires.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
+        [EnableRateLimiting("RequestLimiterTenMinutes")]
         public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await Mediator.Send(new GetQuestionnaireQuery() { LinkQuestionnaire = id }));
