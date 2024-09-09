@@ -40,11 +40,11 @@ jobs:
 
       - name: Deploy to server via SSH
         env:
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASS }}
           SERVER_IP: ${{ secrets.SERVER_IP }}  # Скрытый IP адрес
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&  # Перейти в директорию приложения
             git pull &&      # Обновить исходный код
 
