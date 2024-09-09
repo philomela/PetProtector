@@ -27,6 +27,35 @@ jobs:
         working-directory: ./ClientApp # Убедитесь, что это правильная директория
         run: npm run build
 
+  name: Build and Deploy React App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Возможность ручного запуска
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        working-directory: ./ClientApp # Убедитесь, что это правильная директория
+        run: npm install
+
+      - name: Build the application
+        working-directory: ./ClientApp # Убедитесь, что это правильная директория
+        run: npm run build
+
   deploy:
     needs: build # Этап deploy зависит от успешного завершения build
     runs-on: ubuntu-latest
@@ -35,20 +64,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
       - name: Deploy to server via SSH
         env:
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASS }}
           SERVER_IP: ${{ secrets.SERVER_IP }}  # Скрытый IP адрес
-          SSH_PASS: ${{ secrets.SSH_PASS }}  # Пароль к SSH-ключу
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          echo "$SSH_PASS" | ssh-add - # Добавляем ключ в агент, используя пароль
-
-          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
+          sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&  # Перейти в директорию приложения
             git pull &&      # Обновить исходный код
 
@@ -61,3 +86,4 @@ jobs:
             # Запустить новый контейнер на основе собранного образа
             docker run -d --name react-app -p 80:80 react-app
           "
+
