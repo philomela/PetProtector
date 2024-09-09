@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Добавляет возможность запуска вручную
+  workflow_dispatch: # Возможность ручного запуска
 
 jobs:
   build:
@@ -20,12 +20,20 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        working-directory: ./ClientApp # Укажите корректную директорию, если проект не в корне
+        working-directory: ./ClientApp # Убедитесь, что это правильная директория
         run: npm install
 
       - name: Build the application
         working-directory: ./ClientApp # Убедитесь, что это правильная директория
         run: npm run build
+
+  deploy:
+    needs: build # Этап deploy зависит от успешного завершения build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Deploy to server via SSH
         env:
