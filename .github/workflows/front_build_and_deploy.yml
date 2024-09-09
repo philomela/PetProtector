@@ -1,10 +1,10 @@
-name: Build and Deploy React App
+name: Build and Deploy Frontend
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # Возможность ручного запуска
+  workflow_dispatch:  # Возможность ручного запуска
 
 jobs:
   build:
@@ -20,15 +20,15 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        working-directory: ./ClientApp # Убедитесь, что это правильная директория
+        working-directory: ./ClientApp
         run: npm install
 
       - name: Build the application
-        working-directory: ./ClientApp # Убедитесь, что это правильная директория
+        working-directory: ./ClientApp
         run: npm run build
 
   deploy:
-    needs: build # Этап deploy зависит от успешного завершения build
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -41,22 +41,12 @@ jobs:
       - name: Deploy to server via SSH
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASS }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}  # Скрытый IP адрес
+          SERVER_IP: ${{ secrets.SERVER_IP }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
-            cd /home/PetProtector &&  # Перейти в директорию приложения
-            git pull &&      # Обновить исходный код
-
-            # Остановить и удалить существующий контейнер
-            docker stop react-app || true && docker rm react-app || true &&
-
-
-            cd /home/PetProtector/ClientApp &&
-            
-            # Собрать новый образ Docker
-            docker build -t react-app . &&
-
-            # Запустить новый контейнер на основе собранного образа
-            docker run -d --name react-app -p 80:80 react-app
+            cd /home/PetProtector &&  # Перейти в директорию фронтенда
+            git pull &&
+            docker-compose down &&
+            docker-compose up -d frontend
           "
