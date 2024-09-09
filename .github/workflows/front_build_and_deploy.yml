@@ -51,6 +51,9 @@ jobs:
             # Остановить и удалить существующий контейнер
             docker stop react-app || true && docker rm react-app || true &&
 
+
+            cd /home/PetProtector/ClientApp &&
+            
             # Собрать новый образ Docker
             docker build -t react-app . &&
 
