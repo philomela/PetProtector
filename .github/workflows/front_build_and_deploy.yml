@@ -39,8 +39,9 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}  # Скрытый IP адрес
         run: |
-          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@176.124.211.62 "
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /var/www/app &&
             git pull &&
             docker-compose down &&
