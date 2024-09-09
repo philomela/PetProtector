@@ -1,26 +1,26 @@
 @font-face {
   font-family: 'Russo';
-  src: url('fonts/RussoOne-Regular.ttf') format('truetype');
+  src: url('/fonts/RussoOne-Regular.ttf') format('truetype');
   /* Дополнительные свойства шрифта, если необходимо */
 }
 
 @font-face {
   font-family: 'Caveat';
-  src: url('fonts/Caveat-Regular.ttf') format('truetype');
+  src: url('/fonts/Caveat-Regular.ttf') format('truetype');
   /* Дополнительные свойства шрифта, если необходимо */
 }
 
 @font-face {
   font-family: 'Raleway';
   font-weight: 400;
-  src: url('fonts/Raleway/Raleway-Regular.ttf') format('truetype');
+  src: url('/fonts/Raleway/Raleway-Regular.ttf') format('truetype');
   /* Дополнительные свойства шрифта, если необходимо */
 }
 
 @font-face {
   font-family: 'Raleway';
   font-weight: 700;
-  src: url('fonts/Raleway/Raleway-Bold.ttf') format('truetype');
+  src: url('/fonts/Raleway/Raleway-Bold.ttf') format('truetype');
   /* Дополнительные свойства шрифта, если необходимо */
 }
 
