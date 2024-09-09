@@ -1,0 +1,47 @@
+name: Deploy React App PetProtector
+
+on:
+  push:
+    branches:
+      - main  # Триггер при пуше в ветку main, можно настроить другую ветку
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Установить Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Установить зависимости и собрать приложение
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      # Собрать Docker образ
+      - name: Build Docker image
+        run: |
+          docker build -t react-app .
+
+      # Подключение к удаленному серверу по SSH и деплой
+      - name: Deploy to remote server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: 176.124.211.62
+          username: ${{ secrets.SSH_USERNAME }}  # Имя пользователя для SSH, указано в секретах
+          key: ${{ secrets.SSH_PRIVATE_KEY }}    # Приватный SSH ключ, указано в секретах
+          port: 22
+          script: |
+            docker stop react-app || true        # Остановить контейнер, если он существует
+            docker rm react-app || true          # Удалить контейнер, если он существует
+            docker rmi react-app || true         # Удалить старый образ
+            docker pull react-app                # Вытянуть новый образ с GitHub
+            docker run -d -p 80:80 --name react-app react-app  # Запустить новый контейнер
+
