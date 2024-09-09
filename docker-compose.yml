@@ -2,20 +2,20 @@ version: '3.8'
 
 services:
   frontend:
-    image: frontend-app
     build:
-      context: ./ClientApp
+      context: .  # Указывает на корневую папку проекта
+      dockerfile: ClientApp/Dockerfile
     ports:
       - "80:80"
     networks:
       - my-network
 
   backend:
-    image: backend-app
     build:
-      context: ./WebApi
+      context: .  # Указывает на корневую папку проекта
+      dockerfile: WebApi/Dockerfile
     ports:
-      - "5000:80"  # Порт 80 внутри контейнера будет проброшен на 5000 на хосте
+      - "5000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     networks:
