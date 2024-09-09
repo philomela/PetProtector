@@ -1,47 +1,40 @@
-name: Deploy React App PetProtector
+name: Build and Deploy React App
 
 on:
   push:
     branches:
-      - main  # Триггер при пуше в ветку main, можно настроить другую ветку
+      - main
+  workflow_dispatch: # Добавляет возможность запуска вручную
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Установить Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      # Установить зависимости и собрать приложение
-      - name: Install dependencies and build
+      - name: Install dependencies
+        working-directory: ./ClientApp # Укажите корректную директорию, если проект не в корне
+        run: npm install
+
+      - name: Build the application
+        working-directory: ./ClientApp # Убедитесь, что это правильная директория
+        run: npm run build
+
+      - name: Deploy to server via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          npm install
-          npm run build
-
-      # Собрать Docker образ
-      - name: Build Docker image
-        run: |
-          docker build -t react-app .
-
-      # Подключение к удаленному серверу по SSH и деплой
-      - name: Deploy to remote server
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: 176.124.211.62
-          username: ${{ secrets.SSH_USERNAME }}  # Имя пользователя для SSH, указано в секретах
-          key: ${{ secrets.SSH_PRIVATE_KEY }}    # Приватный SSH ключ, указано в секретах
-          port: 22
-          script: |
-            docker stop react-app || true        # Остановить контейнер, если он существует
-            docker rm react-app || true          # Удалить контейнер, если он существует
-            docker rmi react-app || true         # Удалить старый образ
-            docker pull react-app                # Вытянуть новый образ с GitHub
-            docker run -d -p 80:80 --name react-app react-app  # Запустить новый контейнер
-
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@176.124.211.62 "
+            cd /var/www/app &&
+            git pull &&
+            docker-compose down &&
+            docker-compose up --build -d
+          "
