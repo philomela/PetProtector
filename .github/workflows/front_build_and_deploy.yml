@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Возможность ручного запуска
+  workflow_dispatch:
 
 jobs:
   build:
@@ -45,7 +45,7 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
-            cd /home/PetProtector &&  # Перейти в директорию фронтенда
+            cd /home/PetProtector &&
             git pull &&
             docker-compose down &&
             docker-compose up -d frontend

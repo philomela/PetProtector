@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Возможность ручного запуска
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,11 +17,12 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0'
+          dotnet-version: '7.x'
 
-      - name: Build the backend application
-        working-directory: ./WebApi
-        run: dotnet build --configuration Release
+      - name: Build the application
+        run: |
+          cd WebApi
+          dotnet build --configuration Release
 
   deploy:
     needs: build
@@ -31,9 +32,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-
       - name: Deploy to server via SSH
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASS }}
@@ -41,7 +39,7 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
-            cd /home/PetProtector &&  # Перейти в директорию бэкенда
+            cd /home/PetProtector &&
             git pull &&
             docker-compose down &&
             docker-compose up -d backend
