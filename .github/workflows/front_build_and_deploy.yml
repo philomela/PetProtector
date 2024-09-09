@@ -35,12 +35,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Deploy to server via SSH
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
           SERVER_IP: ${{ secrets.SERVER_IP }}  # Скрытый IP адрес
+          SSH_PASS: ${{ secrets.SSH_PASS }}  # Пароль к SSH-ключу
         run: |
+          echo "$SSH_PASS" | ssh-add - # Добавляем ключ в агент, используя пароль
+
           ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&  # Перейти в директорию приложения
             git pull &&      # Обновить исходный код
