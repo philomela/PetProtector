@@ -42,8 +42,15 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}  # Скрытый IP адрес
         run: |
           ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
-            cd /var/www/app &&
-            git pull &&
-            docker-compose down &&
-            docker-compose up --build -d
+            cd /home/PetProtector &&  # Перейти в директорию приложения
+            git pull &&      # Обновить исходный код
+
+            # Остановить и удалить существующий контейнер
+            docker stop react-app || true && docker rm react-app || true &&
+
+            # Собрать новый образ Docker
+            docker build -t react-app . &&
+
+            # Запустить новый контейнер на основе собранного образа
+            docker run -d --name react-app -p 80:80 react-app
           "
