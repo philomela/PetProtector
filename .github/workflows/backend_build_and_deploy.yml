@@ -32,6 +32,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Create .env file
+        run: |
+          echo "MSSQL_PASSWORD=${{ secrets.MSSQL_PASSWORD }}" > .env
+          echo "OTHER_SECRET=${{ secrets.OTHER_SECRET }}" >> .env
+
       - name: Deploy to server via SSH
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASS }}
