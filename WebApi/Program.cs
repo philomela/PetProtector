@@ -46,7 +46,7 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.Connection.RemoteIpAddress?.ToString(),
             factory: partition => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10,
+                PermitLimit = 30,
                 Window = TimeSpan.FromHours(1)
             })
     );
@@ -56,8 +56,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.Connection.RemoteIpAddress?.ToString(),
             factory: partition => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10,
-                Window = TimeSpan.FromHours(10)
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(10)
             })
     );
 });

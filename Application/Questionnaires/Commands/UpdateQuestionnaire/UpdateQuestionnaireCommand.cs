@@ -30,7 +30,7 @@ internal record UpdateQuestionnaireCommandHandler : IRequestHandler<UpdateQuesti
         var userId = _executionContextAccessor.UserId;
 
         var entity = await _appDbContext.Questionnaires
-            .AsNoTracking()
+            
             .Include(q => q.Collar)
             .Where(x => x.Id == request.Id).FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
 

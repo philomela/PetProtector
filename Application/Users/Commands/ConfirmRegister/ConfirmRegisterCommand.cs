@@ -25,8 +25,8 @@ internal record ConfirmRegisterCommandHandler : IRequestHandler<ConfirmRegisterC
     {
         var user = await _userManager
             .Users
-            .Where(u => u.Id == request.UserId.ToString())
-            .FirstOrDefaultAsync() ?? throw new NotFoundException("User was not found");
+            .Where(u => u.Id == request.UserId.ToString() && u.EmailConfirmed == false)
+            .FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException("User was not found");
 
         user.EmailConfirmed = true;
 

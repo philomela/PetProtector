@@ -28,7 +28,8 @@ internal record GetCollarsQueryHandler : IRequestHandler<GetCollarsQuery, Collar
     {
         var userId = _executionContextAccessor.UserId;
 
-        var entities = await _appDbContext.Collars.AsNoTracking()
+        var entities = await _appDbContext.Collars
+            .AsNoTracking()
             .Include(c => c.Questionnaire)
             .Include(c => c.Locations)
             .Where(c => c.UserId == userId)
@@ -39,7 +40,8 @@ internal record GetCollarsQueryHandler : IRequestHandler<GetCollarsQuery, Collar
                 {
                     OwnersName = c.Questionnaire.OwnersName,
                     PetsName = c.Questionnaire.PetsName,
-                    PhoneNumber = c.Questionnaire.PhoneNumber
+                    PhoneNumber = c.Questionnaire.PhoneNumber,
+                    LinkQuestionnaire = c.Questionnaire.LinkQuestionnaire
                 },
                 Location = c.Locations
                     .OrderByDescending(l => l.CreatedAt)

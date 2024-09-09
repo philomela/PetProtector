@@ -1,55 +1,45 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Avatar,
-  Button,
-  TextField,
-  Grid,
-  Box,
-  Typography,
-  Paper,
-  CssBaseline,
-} from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Box, FormControl, Typography, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import CssBaseline from "@mui/material/CssBaseline";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../../api/axios";
 
-const REGISTER_URL = "/api/users/register";
+const RESET_PASSWORD_URL = "/api/accounts/reset-password";
 
-const RegistrationForm = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+const ResetPassword = () => {
+  const [email, setEmail] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/profile";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const command = {
-      fullName,
-      email,
-      password,
-    };
-
     try {
       const response = await axios.post(
-        REGISTER_URL,
-        JSON.stringify(command),
+        RESET_PASSWORD_URL,
+        JSON.stringify({ email }),
         {
           headers: { "Content-Type": "application/json" },
         }
       );
 
-      if (response?.status === 200) {
-        navigate(from, { replace: true });
+      setSuccessMsg(
+        "Инструкции по восстановлению пароля отправлены на ваш email."
+      );
+      setEmail("");
+    } catch (err) {
+      if (!err.response) {
+        setErrMsg("Нет ответа от сервера");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Неверный email");
       } else {
-        setErrMsg("Registration Failed");
+        setErrMsg("Не удалось отправить запрос");
       }
-    } catch (error) {
-      setErrMsg("Registration Failed");
     }
   };
 
@@ -82,7 +72,12 @@ const RegistrationForm = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Зарегистрируйтесь
+            Восстановление пароля
+          </Typography>
+          <Typography
+            sx={{ fontSize: "1rem", color: "gray", textAlign: "center" }}
+          >
+            Введите email при регистрации, на него будут отправлены инструкции по восстановлению пароля
           </Typography>
           <Box
             component="form"
@@ -94,44 +89,31 @@ const RegistrationForm = () => {
               margin="normal"
               required
               fullWidth
-              id="fullName"
-              label="Имя"
-              name="fullName"
-              autoComplete="name"
-              
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
               id="email"
               label="Email адрес"
               name="email"
               autoComplete="email"
+              autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Пароль"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            {errMsg && (
+              <Typography color="error" variant="body2">
+                {errMsg}
+              </Typography>
+            )}
+            {successMsg && (
+              <Typography color="primary" variant="body2">
+                {successMsg}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2, bgcolor: "#ED7D31" }}
             >
-              Зарегистрироваться
+              Восстановить
             </Button>
           </Box>
         </Box>
@@ -140,4 +122,4 @@ const RegistrationForm = () => {
   );
 };
 
-export default RegistrationForm;
+export default ResetPassword;

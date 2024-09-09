@@ -23,12 +23,12 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/profile";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [errMsg, setErrMsg] = useState(null);
 
   useEffect(() => {
-    setErrMsg("");
+    setErrMsg(null);
   }, [email, password]);
 
   const handleSubmit = async (e) => {
@@ -97,7 +97,7 @@ const Login = () => {
           <Typography component="h1" variant="h5">
             Войдите в аккаунт
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -132,7 +132,7 @@ const Login = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link to={"/restore"} href="/restore" variant="body2">
                   Забыли пароль?
                 </Link>
               </Grid>

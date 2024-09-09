@@ -20,7 +20,6 @@ public class UsersController : ApiControllerBase
     [HttpGet("UserInfo")]
     public async Task<IActionResult> UserInfo()
     {
-        await Task.Delay(4000); // Убрать в проде.
         return Ok(await Mediator.Send(new GetUserQuery()));
     }
     
@@ -30,5 +29,14 @@ public class UsersController : ApiControllerBase
     public async Task<IActionResult> ConfirmRegister(ConfirmRegisterCommand command)
     {
         return Ok(await Mediator.Send(command)); //Проверить нормально ли пользователю светить его userId в виде guid
+    }
+    
+    [AllowAnonymous]
+    [HttpPost("Restore")]
+    public async Task<IActionResult> Restore(string refreshTokenData)
+    {
+        var token = await Mediator.Send(refreshTokenData);
+
+        return Ok(new { token });
     }
 }

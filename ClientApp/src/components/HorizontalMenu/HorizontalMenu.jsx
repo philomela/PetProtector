@@ -80,9 +80,9 @@ function HorizontalMenu() {
                 <Tooltip title="Открыть профиль">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, bgColor: lightBlue[500] }}>
                     <Avatar
-                      alt={auth.userName}
-                      src="/static/images/avatar/2.jpg"
-                      sx={{ bgcolor: "white", color: "black" }}
+                      
+                      
+                      sx={{ bgcolor: "#fdb750", color: "white" }}
                     />
                   </IconButton>
                 </Tooltip>

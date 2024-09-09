@@ -4,6 +4,7 @@ import Home from "./pages/Home/Home";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Login from "./pages/Login/Login";
+import AccountRestore from "./pages/AccountRestore/AccountRestore";
 import Logout from "./components/Logout/Logout";
 import Questionnaire from "./pages/Questionnaire/Questionnaire";
 import Profile from "./pages/Profile/Profile";
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/" element={<Layout />}>
               <Route path="login" element={<Login />} />
               <Route path="logout" element={<Logout />} />
+              <Route path="restore" element={<AccountRestore />} />
 
               <Route path="/" element={<Home />} />
               <Route path="register" element={<RegistrationForm />} />
@@ -37,8 +39,7 @@ const App = () => {
           </Routes>
        
         </Box>
-      </Container>
-      
+      </Container> 
     </>
   );
 };

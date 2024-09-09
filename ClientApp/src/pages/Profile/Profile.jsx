@@ -32,49 +32,75 @@ const Profile = () => {
   const [searchCollarsInfo, setSearchCollarsInfo] = useState(null);
   const [searchedCollar, setSearchedCollar] = useState(null);
   const [collarInfo, setCollarInfo] = useState([]);
-  const [showHint, setShowHint] = useState(true);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogAgreementInfo, setDialogAgreementInfo] = useState({
+    isOpen: false,
+    collarId: null,
+  });
+  const [dialogSavedDataInfo, setDialogSavedDataInfo] = useState(false);
 
   // Функция для обработки изменений в текстовых полях
   const handleCollarChange = (event, collarId, propName) => {
-    setCollarInfo(
-      collarInfo.map((collar) => {
+    setProfileInfo((prevProfileInfo) => ({
+      ...prevProfileInfo,
+      collars: prevProfileInfo.collars.map((collar) => {
         if (collar.id === collarId) {
-          return { ...collar, [propName]: event.target.value };
+          return {
+            ...collar,
+            questionnaire: {
+              ...collar.questionnaire,
+              [propName]: event.target.value,
+            },
+          };
         }
         return collar;
-      })
-    );
+      }),
+    }));
+  };
+
+  // Функция для подтверждения и сохранения
+  const handleConfirmSaveQuestionnaire = async () => {
+    if (dialogAgreementInfo.collarId) {
+      await saveCollarData(dialogAgreementInfo.collarId);
+      handleCloseDialog(); // Закрываем диалог после сохранения
+      // Обновите состояние, если необходимо
+      setDialogSavedDataInfo(true);
+    }
+  };
+
+  // Функция для открытия диалога
+  const handleOpenDialog = (collarId) => {
+    setDialogAgreementInfo({
+      isOpen: true,
+      collarId: collarId,
+    });
+  };
+
+  // Функция для закрытия диалога
+  const handleCloseDialog = () => {
+    setDialogAgreementInfo({
+      isOpen: false,
+      collarId: null,
+    });
   };
 
   // Функция для сохранения данных ошейника на сервере
   const saveCollarData = async (collarId) => {
-    const collarToUpdate = collarInfo.find((collar) => collar.id === collarId);
+    const collarToUpdate = profileInfo.collars.find(
+      (collar) => collar.id === collarId
+    ).questionnaire;
+    collarToUpdate.id = collarId;
     try {
       const response = await axiosPrivate.put(
-        `/api/collars/${collarId}`,
-        collarToUpdate
+        `/api/questionnaries/`,
+        JSON.stringify(collarToUpdate)
       );
       console.log(response.data);
-      // Обновите состояние collarInfo здесь, если необходимо
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const handleUpdate = async () => {
-    try {
-      const response = await axios.put("/api/profile", {
-        fullName: profileInfo.fullName,
-        email: profileInfo.email,
-        createdAt: profileInfo.createdAt,
-      });
-      console.log("Profile updated:", response.data);
-    } catch (error) {
-      console.error("Error updating profile:", error);
     }
   };
 
@@ -108,29 +134,41 @@ const Profile = () => {
     const controller = new AbortController();
 
     const getUserProfile = async () => {
+      let timeoutId; // переменная для хранения id таймера
+    
       try {
         const responseUserInfo = await axiosPrivate.get("/api/users/UserInfo", {
           signal: controller.signal,
         });
-        const responseUserCollars = await axiosPrivate.get(
-          "/api/collars/GetAll",
-          {
-            signal: controller.signal,
-          }
-        );
+        const responseUserCollars = await axiosPrivate.get("/api/collars/GetAll", {
+          signal: controller.signal,
+        });
         console.log(responseUserInfo.data);
         console.log(responseUserCollars.data);
-
-        isMounted &&
+    
+        if (isMounted) {
           setProfileInfo({
             ...responseUserInfo.data,
             ...responseUserCollars.data,
           });
-        setIsLoading(false);
+    
+          timeoutId = setTimeout(() => {
+            if (isMounted) {
+              setIsLoading(false);
+            }
+          }, 2000);
+        }
       } catch (err) {
         console.error(err);
         navigate("/login", { state: { from: location }, replace: true });
       }
+    
+      return () => {
+        // Очищаем таймер, если компонент размонтирован
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      };
     };
 
     getUserProfile();
@@ -191,20 +229,27 @@ const Profile = () => {
                     sx: { color: "white" }, // Цвет метки
                   }}
                   sx={{
-                    input: { color: "white" }, // Цвет текста ввода
+                    input: {
+                      color: "white", // Цвет текста ввода
+                      "&:hover": {
+                        color: "white", // Цвет текста при наведении
+                      },
+                    },
                     "& .MuiInput-underline:before": {
                       borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
                     },
                     "&:hover .MuiInput-underline:before": {
                       borderBottom: "2px solid white", // Подчеркивание при наведении
                     },
-                    "&.Mui-focused .MuiInput-underline:before": {
-                      borderBottom: "2px solid blue", // Цвет подчеркивания при фокусе
+                    "& .MuiInput-underline:after": {
+                      borderBottom: "2px solid orange", // Подчеркивание при фокусе (оранжевый)
                     },
-                    "&.Mui-focused .MuiInput-underline:after": {
-                      borderBottom: "2px solid blue", // Цвет подчеркивания после фокуса
+                    "& .MuiInputBase-input": {
+                      color: "white", // Оставляем текст белым в состоянии фокуса
                     },
-                    // Вы можете добавить дополнительные стили, если нужно
+                    "& .Mui-focused .MuiInputLabel-root": {
+                      color: "white", // Оставляем цвет метки белым при фокусе
+                    },
                   }}
                   autoComplete="off"
                 />
@@ -226,20 +271,27 @@ const Profile = () => {
                     sx: { color: "white" }, // Цвет метки
                   }}
                   sx={{
-                    input: { color: "white" }, // Цвет текста ввода
+                    input: {
+                      color: "white", // Цвет текста ввода
+                      "&:hover": {
+                        color: "white", // Цвет текста при наведении
+                      },
+                    },
                     "& .MuiInput-underline:before": {
                       borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
                     },
                     "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid #ED7D31", // Подчеркивание при наведении
+                      borderBottom: "2px solid white", // Подчеркивание при наведении
                     },
-                    "&.Mui-focused .MuiInput-underline:before": {
-                      borderBottom: "2px solid blue", // Цвет подчеркивания при фокусе
+                    "& .MuiInput-underline:after": {
+                      borderBottom: "2px solid orange", // Подчеркивание при фокусе (оранжевый)
                     },
-                    "&.Mui-focused .MuiInput-underline:after": {
-                      borderBottom: "2px solid blue", // Цвет подчеркивания после фокуса
+                    "& .MuiInputBase-input": {
+                      color: "white", // Оставляем текст белым в состоянии фокуса
                     },
-                    // Вы можете добавить дополнительные стили, если нужно
+                    "& .Mui-focused .MuiInputLabel-root": {
+                      color: "white", // Оставляем цвет метки белым при фокусе
+                    },
                   }}
                   autoComplete="off"
                 />
@@ -260,20 +312,27 @@ const Profile = () => {
                     sx: { color: "white" }, // Цвет метки
                   }}
                   sx={{
-                    input: { color: "white" }, // Цвет текста ввода
+                    input: {
+                      color: "white", // Цвет текста ввода
+                      "&:hover": {
+                        color: "white", // Цвет текста при наведении
+                      },
+                    },
                     "& .MuiInput-underline:before": {
                       borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
                     },
                     "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid #ED7D31", // Подчеркивание при наведении
+                      borderBottom: "2px solid white", // Подчеркивание при наведении
                     },
-                    "&.Mui-focused .MuiInput-underline:before": {
-                      borderBottom: "2px solid blue", // Цвет подчеркивания при фокусе
+                    "& .MuiInput-underline:after": {
+                      borderBottom: "2px solid orange", // Подчеркивание при фокусе (оранжевый)
                     },
-                    "&.Mui-focused .MuiInput-underline:after": {
-                      borderBottom: "2px solid blue", // Цвет подчеркивания после фокуса
+                    "& .MuiInputBase-input": {
+                      color: "white", // Оставляем текст белым в состоянии фокуса
                     },
-                    // Вы можете добавить дополнительные стили, если нужно
+                    "& .Mui-focused .MuiInputLabel-root": {
+                      color: "white", // Оставляем цвет метки белым при фокусе
+                    },
                   }}
                   autoComplete="off"
                 />
@@ -297,7 +356,6 @@ const Profile = () => {
                 `,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "160% -10%",
-               
               }}
             >
               <Typography variant="h6" component="h6">
@@ -307,155 +365,268 @@ const Profile = () => {
             </Box>
           </Box>
 
-          <Typography
-            variant="h6"
-            component="h6"
-            sx={{ justifyContent: "center", textAlign: "center" }}
+          <Box
+            sx={{
+              background: `
+                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), /* Градиентный фон */
+                  url(/images/png-lk.png) /* Картинка фона */
+                `,
+            }}
           >
-            Ваши адресники
-          </Typography>
-
-          {profileInfo.collars.length > 0 ? (
             <Typography
+              variant="h6"
+              component="h6"
+              sx={{ justifyContent: "center", textAlign: "center", mt: "2%" }}
+            >
+              Ваши адресники
+            </Typography>
+
+            {profileInfo.collars.length > 0 ? (
+              <Typography
+                sx={{
+                  fontSize: "1rem",
+                  color: "gray",
+                  textAlign: "center",
+                }}
+              >
+                Заполните карточку qr-паспорта данными о питомце и нажмите
+                сохранить, Ваш qr-адресник готов{" "}
+                <Link>Как заполнить qr-паспорт?</Link>
+              </Typography>
+            ) : (
+              <Typography
+                sx={{
+                  fontSize: "1rem",
+                  color: "gray",
+                  textAlign: "center",
+                  mb: "2%",
+                }}
+              >
+                Вы пока не привязали ни одного qr-адресника
+                <br /> <Link>Как привязать qr-адресник?</Link>
+              </Typography>
+            )}
+
+            <TableContainer
+              component={Paper}
               sx={{
-                fontSize: "1rem",
-                color: "gray",
-                textAlign: "center",
+                backgroundColor: "#638889",
+                color: "white",
+                mt: 3,
+                mb: 2,
               }}
             >
-              Заполните карточку qr-паспорта данными о питомце и нажмите
-              сохранить, Ваш qr-адресник готов{" "}
-              <Link>Как заполнить qr-паспорт?</Link>
-            </Typography>
-          ) : (
-            <Typography
-              sx={{
-                fontSize: "1rem",
-                color: "gray",
-                textAlign: "center",
-              }}
-            >
-              Вы пока не привязали ни одного qr-адресника
-              <br /> <Link>Как привязать qr-адресник?</Link>
-            </Typography>
-          )}
-
-          <TableContainer
-            component={Paper}
-            sx={{ backgroundColor: "#638889", color: "white", mt: 3 }}
-          >
-            <Table sx={{ color: "white" }}>
-              <TableHead sx={{ color: "white" }}>
-                <TableRow sx={{ color: "white" }}>
-                  {/* Заголовки столбцов */}
-                  <TableCell sx={{ color: "white" }}>ID</TableCell>
-                  <TableCell sx={{ color: "white" }}>Имя владельца</TableCell>
-                  <TableCell sx={{ color: "white" }}>Кличка питомца</TableCell>
-                  <TableCell sx={{ color: "white" }}>Номер телефона</TableCell>
-                  {/* Добавьте другие заголовки столбцов */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {profileInfo.collars.length > 0 ? (
-                  profileInfo.collars.map((collar) => (
-                    <TableRow key={collar.id}>
-                      <TableCell
-                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                      >
-                        <Button>
-                          <Link>Просмотреть qr-паспорт</Link>
-                        </Button>
+              <Table sx={{ color: "white" }}>
+                {profileInfo.collars.length > 0 && (
+                  <TableHead sx={{ color: "white" }}>
+                    <TableRow sx={{ color: "white" }}>
+                      {/* Заголовки столбцов */}
+                      <TableCell sx={{ color: "white" }}>Изображение</TableCell>
+                      <TableCell sx={{ color: "white" }}>QR-паспорт</TableCell>
+                      <TableCell sx={{ color: "white" }}>
+                        Имя владельца
                       </TableCell>
-                      <TableCell
-                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                      >
-                        <TextField
-                          defaultValue={
-                            collar.questionnaire.ownersName ??
-                            "Еще не заполнено"
-                          }
-                          value={collar.questionnaire.ownersName}
-                          onChange={(event) =>
-                            handleCollarChange(event, collar.id, "ownersName")
-                          }
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Edit />
-                              </InputAdornment>
-                            ),
-                            sx: { color: "#638889" },
-                          }}
-                        />
+                      <TableCell sx={{ color: "white" }}>
+                        Кличка питомца
                       </TableCell>
-                      <TableCell
-                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                      >
-                        <TextField
-                          defaultValue={
-                            collar.questionnaire.petsName ?? "Еще не заполнено"
-                          }
-                          value={collar.questionnaire.petsName}
-                          onChange={(event) =>
-                            handleCollarChange(event, collar.id, "petsName")
-                          }
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Edit />
-                              </InputAdornment>
-                            ),
-                            sx: { color: "#638889" },
-                          }}
-                        />
+                      <TableCell sx={{ color: "white" }}>
+                        Номер телефона
                       </TableCell>
-                      <TableCell
-                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                      >
-                        <TextField
-                          defaultValue={
-                            collar.questionnaire.phoneNumber ??
-                            "Еще не заполнено"
-                          }
-                          value={collar.questionnaire.phoneNumber}
-                          onChange={(event) =>
-                            handleCollarChange(event, collar.id, "phoneNumber")
-                          }
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Edit />
-                              </InputAdornment>
-                            ),
-                            sx: { color: "#638889" },
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ color: "#638889", backgroundColor: "#F8FAE5" }}
-                      >
-                        <Button
-                          variant="contained"
-                          onClick={() => saveCollarData(collar.id)}
-                        >
-                          Сохранить
-                        </Button>
-                      </TableCell>
+                      {/* Добавьте другие заголовки столбцов */}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      sx={{ textAlign: "center", color: "white" }}
-                    >
-                      Здесь будут ваши qr-адресники...
-                    </TableCell>
-                  </TableRow>
+                  </TableHead>
                 )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                {profileInfo.collars.length > 0 &&
+                  profileInfo.collars.map((collar) => (
+                    <TableBody>
+                      <TableRow key={collar.id}>
+                        {/* Колонка с изображением */}
+                        <TableCell
+                          sx={{
+                            color: "#638889",
+                            backgroundColor: "white",
+                            textAlign: "center",
+                          }}
+                        >
+                          <img
+                            src="/images/corousel2.png"
+                            alt="Collar"
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              objectFit: "cover",
+                            }} // Настройте размеры по вашему усмотрению
+                          />
+                        </TableCell>
+
+                        {/* Остальные ячейки */}
+                        <TableCell
+                          sx={{ color: "#638889", backgroundColor: "white" }}
+                        >
+                          <Button
+                            onClick={() =>
+                              navigate(
+                                `/quest/${collar.questionnaire.linkQuestionnaire}`
+                              )
+                            }
+                          >
+                            Просмотреть qr-паспорт
+                          </Button>
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "#638889", backgroundColor: "white" }}
+                        >
+                          <TextField
+                            defaultValue={
+                              collar.questionnaire.ownersName ??
+                              "Еще не заполнено"
+                            }
+                            value={collar.questionnaire.ownersName}
+                            onChange={(event) =>
+                              handleCollarChange(event, collar.id, "ownersName")
+                            }
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Edit />
+                                </InputAdornment>
+                              ),
+                              sx: { color: "#638889" },
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "#638889", backgroundColor: "white" }}
+                        >
+                          <TextField
+                            defaultValue={
+                              collar.questionnaire.petsName ??
+                              "Еще не заполнено"
+                            }
+                            value={collar.questionnaire.petsName}
+                            onChange={(event) =>
+                              handleCollarChange(event, collar.id, "petsName")
+                            }
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Edit />
+                                </InputAdornment>
+                              ),
+                              sx: { color: "#638889" },
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "#638889", backgroundColor: "white" }}
+                        >
+                          <TextField
+                            defaultValue={
+                              collar.questionnaire.phoneNumber ??
+                              "Еще не заполнено"
+                            }
+                            value={collar.questionnaire.phoneNumber}
+                            onChange={(event) =>
+                              handleCollarChange(
+                                event,
+                                collar.id,
+                                "phoneNumber"
+                              )
+                            }
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Edit />
+                                </InputAdornment>
+                              ),
+                              sx: { color: "#638889" },
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "#638889", backgroundColor: "white" }}
+                        >
+                          <Button
+                            variant="contained"
+                            onClick={() => handleOpenDialog(collar.id)}
+                            sx={{ backgroundColor: "#fdb750" }}
+                          >
+                            Сохранить
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  ))}
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box
+            sx={{
+              background: `
+                  linear-gradient(to bottom right, rgba(rgba(255, 165, 0, 1)), rgba(248, 250, 229, 0)), /* Градиентный фон */
+                  url(/images/png-lk.png) /* Картинка фона */
+                `,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="h6"
+              sx={{ justifyContent: "center", textAlign: "center", mt: "2%" }}
+            >
+              Ваши браслеты на карте
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "1rem",
+                color: "gray",
+                textAlign: "center",
+              }}
+            >
+              {profileInfo.collars.length > 0
+                ? "Тут отображается последняя геопозиция сканирования адресников"
+                : "У вас пока нет привязанных qr-адресников"}
+            </Typography>
+            <div style={{ width: "100%", height: "500px" }}>
+              <YMaps query={{ apikey: "7c19277f-b6f6-4906-baff-f6e4a7dd9838" }}>
+                <Map
+                  defaultState={{
+                    center: (() => {
+                      const lastValidCollar = profileInfo.collars
+                        .slice() // создаем копию массива
+                        .reverse() // переворачиваем массив
+                        .find(
+                          (collar) =>
+                            collar.location &&
+                            collar.location.latitude !== null &&
+                            collar.location.longitude !== null
+                        );
+                      return lastValidCollar && lastValidCollar.location
+                        ? [
+                            lastValidCollar.location.latitude,
+                            lastValidCollar.location.longitude,
+                          ]
+                        : [55.75, 37.57]; // Использовать центр по умолчанию, если валидных меток нет
+                    })(),
+                    zoom: 9,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  {profileInfo.collars.map((collar, index) => (
+                    <Placemark
+                      key={index}
+                      geometry={[
+                        collar.location?.latitude ?? null,
+                        collar.location?.longitude ?? null,
+                      ]}
+                      options={{
+                        preset: "islands#orangeDotIconWithCaption", // Оранжевая метка
+                      }}
+                    />
+                  ))}
+                </Map>
+              </YMaps>
+            </div>
+          </Box>
           <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
             <DialogTitle>QR-адресник найден</DialogTitle>
             <DialogContent>
@@ -472,42 +643,37 @@ const Profile = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          <div style={{ width: "100%", height: "500px" }}>
-            <YMaps>
-              <Map
-                defaultState={{
-                  center:
-                    profileInfo.collars.length > 0
-                      ? [
-                          profileInfo.collars[profileInfo.collars.length - 1]
-                            .location?.latitude ?? 55.75,
-                          profileInfo.collars[profileInfo.collars.length - 1]
-                            .location?.longitude ?? 37.57,
-                        ]
-                      : [55.75, 37.57], // Если меток нет, использовать центр по умолчанию
-                  zoom: 9,
-                }}
-                style={{ width: "100%", height: "100%" }}
-              >
-                {profileInfo.collars.map((collar, index) => (
-                  <Placemark
-                    key={index}
-                    geometry={[
-                      collar.location?.latitude ?? null,
-                      collar.location?.longitude ?? null,
-                    ]}
-                    properties={{
-                      iconContent: "sdsd", // Название метки
-                      balloonContent: collar.id, // Описание метки во всплывающем окне
-                    }}
-                    options={{
-                      preset: "islands#blueDotIconWithCaption", // Стиль метки
-                    }}
-                  />
-                ))}
-              </Map>
-            </YMaps>
-          </div>
+          <Dialog open={dialogAgreementInfo.isOpen} onClose={handleCloseDialog}>
+            <DialogTitle>Вы уверены, что хотите сохранить данные?</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Данные будут обновлены в QR-паспорте, продолжить?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleConfirmSaveQuestionnaire} color="primary">
+                Да
+              </Button>
+              <Button onClick={handleCloseDialog} color="secondary">
+                Отмена
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog open={dialogSavedDataInfo} onClose={() => setDialogSavedDataInfo(false)}>
+            <DialogTitle>Данные qr-паспорта сохранены</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Данные сохранены, они будут отображаться при сканировании
+                qr-кода
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setDialogSavedDataInfo(false)} color="secondary">
+                Ок
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       )}
     </>
