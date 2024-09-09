@@ -1,4 +1,4 @@
-name: Build and Deploy Frontend
+name: Build and Deploy Backend
 
 on:
   push:
@@ -14,18 +14,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
         with:
-          node-version: '16'
+          dotnet-version: '7.0'
 
-      - name: Install dependencies
-        working-directory: ./ClientApp
-        run: npm install
-
-      - name: Build the application
-        working-directory: ./ClientApp
-        run: npm run build
+      - name: Build the backend application
+        working-directory: ./WebApi
+        run: dotnet build --configuration Release
 
   deploy:
     needs: build
@@ -45,8 +41,8 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
-            cd /home/PetProtector &&  # Перейти в директорию фронтенда
+            cd /home/PetProtector &&  # Перейти в директорию бэкенда
             git pull &&
             docker-compose down &&
-            docker-compose up -d frontend
+            docker-compose up -d backend
           "
