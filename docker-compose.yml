@@ -4,8 +4,7 @@ services:
   frontend:
     image: frontend-app
     build:
-      context: .  # Контекст для сборки фронтенда
-      dockerfile: ClientApp/Dockerfile
+      context: ./ClientApp
     ports:
       - "80:80"
     networks:
@@ -14,8 +13,7 @@ services:
   backend:
     image: backend-app
     build:
-      context: .  # Контекст для сборки бэкенда
-      dockerfile: WebApi/Dockerfile
+      context: ./WebApi
     ports:
       - "5000:80"  # Порт 80 внутри контейнера будет проброшен на 5000 на хосте
     environment:
