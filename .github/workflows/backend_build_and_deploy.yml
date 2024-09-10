@@ -44,6 +44,7 @@ jobs:
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&
             echo \"MSSQL_PASSWORD=$MSSQL_PASSWORD\" > .env &&
+            cat .env &&
             git pull &&
             docker-compose down &&
             docker-compose up -d backend
