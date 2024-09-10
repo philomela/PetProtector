@@ -40,6 +40,8 @@ jobs:
           SSH_PASSWORD: ${{ secrets.SSH_PASS }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          MSSQL_PASSWORD: ${{ secrets.MSSQL_PASSWORD }}
+        
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&
