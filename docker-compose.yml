@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   frontend:
+    container_name: frontend
     build:
       context: .  # Указывает на корневую папку проекта
       dockerfile: ClientApp/Dockerfile
@@ -11,6 +12,7 @@ services:
       - my-network
 
   backend:
+    container_name: backend
     build:
       context: .  # Указывает на корневую папку проекта
       dockerfile: WebApi/Dockerfile
@@ -18,13 +20,14 @@ services:
       - "5000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DbConnection=Server=localhost,1433;Database=PetProtector;User Id=sa;Password=${MSSQL_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__DbConnection=Server=localhost,1433;Database=PetProtector;User Id=sa;Password=StrongPa$$w0rd2024!;TrustServerCertificate=True;
     networks:
       - my-network
     depends_on:
       - mssql
 
   mssql:
+    container_name: mssql
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       SA_PASSWORD: "StrongPa$$w0rd2024!"
