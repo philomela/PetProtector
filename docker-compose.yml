@@ -30,8 +30,8 @@ services:
     container_name: mssql
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
-      SA_PASSWORD: "StrongPa$$w0rd2024!"
-      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: StrongPa$$w0rd2024!
+      ACCEPT_EULA: Y
     ports:
       - "1433:1433"
     networks:
