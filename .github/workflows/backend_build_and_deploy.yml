@@ -37,7 +37,8 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "MSSQL_PASSWORD=${{ secrets.MSSQL_PASSWORD }}" > .env &&
+          echo "MSSQL_PASSWORD=${{ secrets.MSSQL_PASSWORD }}" > .env
+          echo "Checking .env contents:"
           cat .env
 
       - name: Deploy to server via SSH
