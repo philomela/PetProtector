@@ -29,6 +29,7 @@ public class ApplicationDbContextInitialiser
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"An error occurred while initialising the database. {ex}");
             //_logger.LogError(ex, "An error occurred while initialising the database.");
             throw;
         }
