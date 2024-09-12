@@ -19,7 +19,7 @@ const SearchForm = ({ handleSearchInfo }) => {
 
     try {
       const response = await axiosPrivate.get(
-        `https://localhost:7100/api/collars/${secretKey}`
+        `/api/collars/${secretKey}`
       );
 
       if (response.ok) {

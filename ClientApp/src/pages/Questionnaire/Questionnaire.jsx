@@ -37,7 +37,7 @@ const Questionnaire = () => {
     const getQuestionnaireInfo = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7100/api/Questionnaries/${id}`,
+          `/api/Questionnaries/${id}`,
           {
             signal: controller.signal,
           }
