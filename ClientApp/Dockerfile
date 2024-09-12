@@ -21,6 +21,9 @@ FROM nginx:alpine
 # Копируем билдованные файлы из предыдущего этапа
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Копируем кастомную конфигурацию Nginx
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
 # Экспонируем порт
 EXPOSE 80
 

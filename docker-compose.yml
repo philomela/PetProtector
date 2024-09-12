@@ -6,6 +6,8 @@ services:
     build:
       context: .  # Указывает на корневую папку проекта
       dockerfile: ClientApp/Dockerfile
+    ports:
+      - "80:80"
     networks:
       - my-network
 
