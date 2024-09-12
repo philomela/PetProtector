@@ -4,9 +4,7 @@ using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
 using Infrastructure.Percistance;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
-using Org.BouncyCastle.Asn1.Cms;
 using WebApi.Configurations;
 using WebApi.Filters;
 
@@ -65,7 +63,7 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("http://localhost:5173")
+        builder => builder.WithOrigins("http://176.124.211.62") //todo: Прокинуть для прода
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());

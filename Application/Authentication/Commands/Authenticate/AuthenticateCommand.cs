@@ -58,8 +58,8 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
         {
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddDays(7),
-            Secure = true,
-            SameSite = SameSiteMode.None
+            Secure = false,
+            SameSite = SameSiteMode.Strict
         };
 
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
