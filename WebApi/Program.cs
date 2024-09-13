@@ -75,7 +75,7 @@ builder.Services.AddCors(options =>
     {
         // Для продакшн окружения
         options.AddPolicy("CorsPolicy",
-            builder => builder.WithOrigins("http://176.124.211.62")
+            builder => builder.WithOrigins("https://petprotector.ru")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
