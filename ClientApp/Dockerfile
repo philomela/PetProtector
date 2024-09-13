@@ -24,8 +24,13 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Копируем кастомную конфигурацию Nginx
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Экспонируем порт
+# Копируем SSL сертификаты (необходимо заменить пути на реальные)
+COPY /etc/ssl/certs/petprotector.ru.crt /etc/ssl/certs/petprotector.ru.crt
+COPY /etc/ssl/petprotector.ru.key /etc/ssl/private/petprotector.ru.key
+
+# Экспонируем порты 80 и 443 для HTTP и HTTPS
 EXPOSE 80
+EXPOSE 443
 
 # Запускаем Nginx
 CMD ["nginx", "-g", "daemon off;"]
