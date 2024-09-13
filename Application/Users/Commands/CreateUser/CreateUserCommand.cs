@@ -30,7 +30,7 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
             Email = request.Email,
             UserName = request.Email,
             FullName = request.FullName,
-            CreatedAt = DateTime.Now.Date
+            CreatedAt = DateTime.UtcNow.Date
         };
 
         user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.Password);

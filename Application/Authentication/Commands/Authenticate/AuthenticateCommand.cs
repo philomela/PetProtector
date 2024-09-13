@@ -23,8 +23,8 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor,
         IJwtTokenManager tokenManager)
-        => (_userManager, _httpContextAccessor, _tokenManager) 
-        = (userManager, httpContextAccessor, tokenManager);
+        => (_userManager, _httpContextAccessor, _tokenManager)
+            = (userManager, httpContextAccessor, tokenManager);
 
     public async Task<string> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
     {
@@ -34,7 +34,8 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
             throw new UnauthorizedAccessException();
         }
 
-        var verifyedResult = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
+        var verifyedResult =
+            _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
         if (PasswordVerificationResult.Success != verifyedResult)
         {
             throw new UnauthorizedAccessException();
@@ -43,12 +44,13 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
         var token = _tokenManager.GenerateAccessToken(user);
         var refreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
 
-        user.Tokens.Add(new AppRefreshToken { 
-            UserId = user.Id, 
+        user.Tokens.Add(new AppRefreshToken
+        {
+            UserId = user.Id,
             CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
             Token = refreshToken,
-            CreatedOn = DateTime.Now,
-            ExpiryOn = DateTime.Now.AddDays(1),
+            CreatedOn = DateTime.UtcNow,
+            ExpiryOn = DateTime.UtcNow.AddDays(1),
             RevokedByIp = null
         });
 

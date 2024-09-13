@@ -55,7 +55,7 @@ public class ApplicationDbContextInitialiser
             Email = "romaphilomela@yandex.ru",
             UserName = "romaphilomela@yandex.ru",
             FullName = "Roman",
-            CreatedAt = DateTime.Now.Date,
+            CreatedAt = DateTime.UtcNow.Date,
             EmailConfirmed = true
         };
 

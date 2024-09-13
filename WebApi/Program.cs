@@ -62,11 +62,24 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("http://176.124.211.62") //todo: Прокинуть для прода
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
+    if (builder.Environment.IsDevelopment())
+    {
+        // Для локальной разработки
+        options.AddPolicy("CorsPolicy",
+            builder => builder.WithOrigins("http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+    }
+    else
+    {
+        // Для продакшн окружения
+        options.AddPolicy("CorsPolicy",
+            builder => builder.WithOrigins("http://176.124.211.62")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+    }
 });
 
 var app = builder.Build();
@@ -85,13 +98,16 @@ using (var scope = app.Services.CreateScope())
     await initialiser.SeedAsync();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PetProtector API V1");
-        c.RoutePrefix = string.Empty;
-    }
-);
+if (builder.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "PetProtector API V1");
+            c.RoutePrefix = string.Empty;
+        }
+    );
+}
 
 app.UseCors("CorsPolicy");
 app.UseRateLimiter();

@@ -34,7 +34,7 @@ internal record CreateLocationCommandHandler : IRequestHandler<CreateLocationCom
         {
             Latitude = request.Latitude,
             Longitude = request.Longitude,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             CollarId = collarId
         };
         

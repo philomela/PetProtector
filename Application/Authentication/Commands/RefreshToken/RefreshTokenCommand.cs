@@ -43,14 +43,14 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
             throw new UnauthorizedAccessException();
 
         var existingToken =
-            user.Tokens.FirstOrDefault(t => t.Token == currentRefreshToken && t.ExpiryOn >= DateTime.Now);
+            user.Tokens.FirstOrDefault(t => t.Token == currentRefreshToken && t.ExpiryOn >= DateTime.UtcNow);
 
         if (existingToken is null)
             throw new UnauthorizedAccessException();
         
         existingToken.RevokedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-        existingToken.RevokedOn = DateTime.Now;
-        existingToken.ExpiryOn = DateTime.Now.AddDays(-1);
+        existingToken.RevokedOn = DateTime.UtcNow;
+        existingToken.ExpiryOn = DateTime.UtcNow.AddDays(-1);
         
         var newRefreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
         
@@ -58,8 +58,8 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
             UserId = user.Id, 
             CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
             Token = newRefreshToken,
-            CreatedOn = DateTime.Now,
-            ExpiryOn = DateTime.Now.AddDays(1),
+            CreatedOn = DateTime.UtcNow,
+            ExpiryOn = DateTime.UtcNow.AddDays(1),
             RevokedByIp = null
         });
         

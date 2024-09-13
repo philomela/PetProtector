@@ -42,19 +42,19 @@ internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
             throw new UnauthorizedAccessException();
 
         var existingToken =
-            user.Tokens.FirstOrDefault(t => t.Token == currentRefreshToken && t.ExpiryOn >= DateTime.Now);
+            user.Tokens.FirstOrDefault(t => t.Token == currentRefreshToken && t.ExpiryOn >= DateTime.UtcNow);
 
         if (existingToken is null)
             throw new UnauthorizedAccessException();
         
         existingToken.RevokedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-        existingToken.RevokedOn = DateTime.Now;
-        existingToken.ExpiryOn = DateTime.Now.AddDays(1);
+        existingToken.RevokedOn = DateTime.UtcNow;
+        existingToken.ExpiryOn = DateTime.UtcNow.AddDays(1);
         await _userManager.UpdateAsync(user);
         
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", "", new CookieOptions
         {
-            Expires = DateTime.Now.AddDays(-1),
+            Expires = DateTime.UtcNow.AddDays(-1),
             HttpOnly = true,
             SameSite = SameSiteMode.None,
             Secure = true
