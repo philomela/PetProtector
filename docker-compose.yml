@@ -4,18 +4,18 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: .  # Указывает на корневую папку проекта
+      context: .
       dockerfile: ClientApp/Dockerfile
     ports:
       - "80:80"
-      - "443:443"
+      - "443:443"  # Открываем порт для HTTPS
     networks:
       - my-network
 
   backend:
     container_name: backend
     build:
-      context: .  # Указывает на корневую папку проекта
+      context: .
       dockerfile: WebApi/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production

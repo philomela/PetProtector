@@ -1,3 +1,4 @@
+
 # Stage 1: Build the application
 FROM node:16 AS build
 
@@ -24,9 +25,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Копируем кастомную конфигурацию Nginx
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Копируем SSL сертификаты (необходимо заменить пути на реальные)
-COPY /etc/ssl/certs/petprotector.ru.crt /etc/ssl/certs/petprotector.ru.crt
-COPY /etc/ssl/petprotector.ru.key /etc/ssl/private/petprotector.ru.key
+COPY ./petprotector.ru.crt /etc/ssl/certs/petprotector.ru.crt
+COPY ./petprotector.ru.key /etc/ssl/private/petprotector.ru.key
 
 # Экспонируем порты 80 и 443 для HTTP и HTTPS
 EXPOSE 80
