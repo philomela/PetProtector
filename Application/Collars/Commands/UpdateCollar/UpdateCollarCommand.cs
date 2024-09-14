@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Core.Enums;
 using Domain.Core.Events;
 using MediatR;
 
@@ -31,6 +32,7 @@ internal record UpdateCollarCommandHandler : IRequestHandler<UpdateCollarCommand
         }
 
         entity.UserId = userId;
+        entity.State = CollarStates.Linked;
         
         entity.AddDomainEvent(new CollarUpdatedEvent(request.Id));
         

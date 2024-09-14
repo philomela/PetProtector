@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using AutoMapper;
+using Domain.Core.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,8 @@ internal record GetCollarQueryHandler : IRequestHandler<GetCollarQuery, CollarVm
     public async Task<CollarVm> Handle(GetCollarQuery request, CancellationToken cancellationToken)
     {
         var entity = await _appDbContext.Collars
-            .Where(c => c.SecretKey == request.SecretKey)
+            .Where(c => c.SecretKey == request.SecretKey 
+                        && c.State == CollarStates.Unlinked)
             .FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
 
         return _mapper.Map<CollarVm>(entity);
