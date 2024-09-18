@@ -3,9 +3,11 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace Application.Authentication.Commands.Logout;
 
@@ -19,11 +21,14 @@ internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IJwtTokenManager _tokenManager;
+    private readonly IWebHostEnvironment _environment;
 
     public LogoutCommandHandler(UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor,
-        IJwtTokenManager tokenManager) => (_userManager, _httpContextAccessor, _tokenManager)
-    = (userManager, httpContextAccessor, tokenManager);
+        IJwtTokenManager tokenManager,
+        IWebHostEnvironment environment) 
+        => (_userManager, _httpContextAccessor, _tokenManager, _environment)
+    = (userManager, httpContextAccessor, tokenManager, environment);
     
     public async Task<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
@@ -56,8 +61,8 @@ internal record LogoutCommandHandler : IRequestHandler<LogoutCommand, Unit>
         {
             Expires = DateTime.UtcNow.AddDays(-1),
             HttpOnly = true,
-            SameSite = SameSiteMode.None,
-            Secure = true
+            Secure = true,
+            SameSite = _environment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None
         });
 
         return Unit.Value;

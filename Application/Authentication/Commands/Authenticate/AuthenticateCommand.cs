@@ -3,6 +3,7 @@ using Domain.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 
 namespace Application.Authentication.Commands.Authenticate;
 
@@ -18,13 +19,15 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IJwtTokenManager _tokenManager;
+    private readonly IHostEnvironment _environment;
 
     public AuthenticateCommandHandler(
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor,
-        IJwtTokenManager tokenManager)
-        => (_userManager, _httpContextAccessor, _tokenManager)
-            = (userManager, httpContextAccessor, tokenManager);
+        IJwtTokenManager tokenManager,
+        IHostEnvironment environment)
+        => (_userManager, _httpContextAccessor, _tokenManager, _environment)
+            = (userManager, httpContextAccessor, tokenManager, environment);
 
     public async Task<string> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
     {
@@ -61,7 +64,7 @@ internal record AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddDays(7),
             Secure = true,
-            SameSite = SameSiteMode.None
+            SameSite = _environment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None
         };
 
         _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);

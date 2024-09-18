@@ -3,10 +3,11 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Application.Authentication.Commands.RefreshToken;
 
@@ -20,14 +21,14 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
     private readonly UserManager<AppUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IJwtTokenManager _tokenManager;
-    private readonly IConfiguration _configuration;
+    private readonly IWebHostEnvironment _environment;
 
     public RefreshTokenCommandHandler(UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor,
         IJwtTokenManager tokenManager,
-        IConfiguration configuration)
-        => (_userManager, _httpContextAccessor, _tokenManager, _configuration)
-            = (userManager, httpContextAccessor, tokenManager, configuration);
+        IWebHostEnvironment environment)
+        => (_userManager, _httpContextAccessor, _tokenManager, _environment)
+            = (userManager, httpContextAccessor, tokenManager, environment);
 
     public async Task<string> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
@@ -71,8 +72,8 @@ internal record RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand
         {
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddDays(7),
-            SameSite = SameSiteMode.None,
-            Secure = true
+            Secure = true,
+            SameSite = _environment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None
         };
 
         
