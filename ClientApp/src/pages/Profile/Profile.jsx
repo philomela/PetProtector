@@ -13,25 +13,25 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { deepOrange } from "@mui/material/colors";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Preloader from "../../components/Preloader/Preloader";
 import SearchForm from "../../components/SearchForm/SearchForm";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Box, Typography, Avatar, TextField } from "@mui/material";
-import { Email, Person, CalendarToday, Edit } from "@mui/icons-material";
+import { Box, Typography, TextField } from "@mui/material";
+import { Email, Person, CalendarToday, Edit, Pets, Badge } from "@mui/icons-material";
 import { InputAdornment } from "@mui/material";
 import moment from "moment";
 import Link from "@mui/material/Link";
+import { useRef } from 'react';
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
+import { PhoneNumberInput } from "../../utils/Masks/PhoneNumberMask";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [profileInfo, setProfileInfo] = useState(null);
   const [searchCollarsInfo, setSearchCollarsInfo] = useState(null);
   const [searchedCollar, setSearchedCollar] = useState(null);
-  const [collarInfo, setCollarInfo] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +41,8 @@ const Profile = () => {
     collarId: null,
   });
   const [dialogSavedDataInfo, setDialogSavedDataInfo] = useState(false);
+  const phoneInputRef = useRef(null);
+   
 
   // Функция для обработки изменений в текстовых полях
   const handleCollarChange = (event, collarId, propName) => {
@@ -60,6 +62,7 @@ const Profile = () => {
       }),
     }));
   };
+
 
   // Функция для подтверждения и сохранения
   const handleConfirmSaveQuestionnaire = async () => {
@@ -92,17 +95,17 @@ const Profile = () => {
     const collarToUpdate = profileInfo.collars.find(
       (collar) => collar.id === collarId
     ).questionnaire;
+
     collarToUpdate.id = collarId;
+    //collarToUpdate.phoneNumber = phoneNumber;  // Передаем актуальное значение phoneNumber
+
     try {
-      const response = await axiosPrivate.put(
-        `/api/questionnaries/`,
-        JSON.stringify(collarToUpdate)
-      );
-      console.log(response.data);
+      const response = await axiosPrivate.put(`/api/questionnaries/`, JSON.stringify(collarToUpdate));
     } catch (error) {
       console.error(error);
     }
   };
+  
 
   const handleSearchInfo = async (collar) => {
     setSearchCollarsInfo(collar);
@@ -129,29 +132,36 @@ const Profile = () => {
     }
   };
 
+  
+  
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
     const getUserProfile = async () => {
       let timeoutId; // переменная для хранения id таймера
-    
+
       try {
         const responseUserInfo = await axiosPrivate.get("/api/users/UserInfo", {
           signal: controller.signal,
         });
-        const responseUserCollars = await axiosPrivate.get("/api/collars/GetAll", {
-          signal: controller.signal,
-        });
+        const responseUserCollars = await axiosPrivate.get(
+          "/api/collars/GetAll",
+          {
+            signal: controller.signal,
+          }
+        );
         console.log(responseUserInfo.data);
         console.log(responseUserCollars.data);
-    
+
         if (isMounted) {
           setProfileInfo({
             ...responseUserInfo.data,
             ...responseUserCollars.data,
           });
-    
+          
+
           timeoutId = setTimeout(() => {
             if (isMounted) {
               setIsLoading(false);
@@ -162,7 +172,7 @@ const Profile = () => {
         console.error(err);
         navigate("/login", { state: { from: location }, replace: true });
       }
-    
+
       return () => {
         // Очищаем таймер, если компонент размонтирован
         if (timeoutId) {
@@ -418,18 +428,18 @@ const Profile = () => {
             >
               <Table sx={{ color: "white" }}>
                 {profileInfo.collars.length > 0 && (
-                  <TableHead sx={{ color: "white" }}>
-                    <TableRow sx={{ color: "white" }}>
+                  <TableHead sx={{ color: "white"}}>
+                    <TableRow sx={{ color: "white"}}>
                       {/* Заголовки столбцов */}
-                      <TableCell sx={{ color: "white" }}>Изображение</TableCell>
-                      <TableCell sx={{ color: "white" }}>QR-паспорт</TableCell>
-                      <TableCell sx={{ color: "white" }}>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>Изображение</TableCell>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>QR-паспорт</TableCell>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>
                         Имя владельца
                       </TableCell>
-                      <TableCell sx={{ color: "white" }}>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>
                         Кличка питомца
                       </TableCell>
-                      <TableCell sx={{ color: "white" }}>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>
                         Номер телефона
                       </TableCell>
                       {/* Добавьте другие заголовки столбцов */}
@@ -477,18 +487,15 @@ const Profile = () => {
                           sx={{ color: "#638889", backgroundColor: "white" }}
                         >
                           <TextField
-                            defaultValue={
-                              collar.questionnaire.ownersName ??
-                              "Еще не заполнено"
-                            }
-                            value={collar.questionnaire.ownersName}
+                            value={collar.questionnaire.ownersName || ""}
                             onChange={(event) =>
                               handleCollarChange(event, collar.id, "ownersName")
                             }
+                            placeholder="Имя хозяина"
                             InputProps={{
                               startAdornment: (
                                 <InputAdornment position="start">
-                                  <Edit />
+                                  <Badge />
                                 </InputAdornment>
                               ),
                               sx: { color: "#638889" },
@@ -499,50 +506,27 @@ const Profile = () => {
                           sx={{ color: "#638889", backgroundColor: "white" }}
                         >
                           <TextField
-                            defaultValue={
-                              collar.questionnaire.petsName ??
-                              "Еще не заполнено"
-                            }
-                            value={collar.questionnaire.petsName}
+                            value={collar.questionnaire.petsName || ""}
                             onChange={(event) =>
                               handleCollarChange(event, collar.id, "petsName")
                             }
+                            placeholder="Кличка"
                             InputProps={{
                               startAdornment: (
                                 <InputAdornment position="start">
-                                  <Edit />
+                                  <Pets />
                                 </InputAdornment>
                               ),
                               sx: { color: "#638889" },
                             }}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ color: "#638889", backgroundColor: "white" }}
-                        >
-                          <TextField
-                            defaultValue={
-                              collar.questionnaire.phoneNumber ??
-                              "Еще не заполнено"
-                            }
-                            value={collar.questionnaire.phoneNumber}
-                            onChange={(event) =>
-                              handleCollarChange(
-                                event,
-                                collar.id,
-                                "phoneNumber"
-                              )
-                            }
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <Edit />
-                                </InputAdornment>
-                              ),
-                              sx: { color: "#638889" },
-                            }}
-                          />
-                        </TableCell>
+                        <TableCell sx={{ color: "#638889", backgroundColor: "white" }}>
+                <PhoneNumberInput
+                  value={collar.questionnaire.phoneNumber || ""}
+                  onChange={(e) => handleCollarChange(e, collar.id, "phoneNumber")}
+                />
+              </TableCell>
                         <TableCell
                           sx={{ color: "#638889", backgroundColor: "white" }}
                         >
@@ -563,8 +547,8 @@ const Profile = () => {
           <Box
             sx={{
               background: `
-                  linear-gradient(to bottom right, rgba(rgba(255, 165, 0, 1)), rgba(248, 250, 229, 0)), /* Градиентный фон */
-                  url(/images/png-lk.png) /* Картинка фона */
+                  linear-gradient(to bottom right, rgba(rgba(255, 165, 0, 1)), rgba(248, 250, 229, 0)),
+                  url(/images/png-lk.png)
                 `,
             }}
           >
@@ -660,7 +644,10 @@ const Profile = () => {
             </DialogActions>
           </Dialog>
 
-          <Dialog open={dialogSavedDataInfo} onClose={() => setDialogSavedDataInfo(false)}>
+          <Dialog
+            open={dialogSavedDataInfo}
+            onClose={() => setDialogSavedDataInfo(false)}
+          >
             <DialogTitle>Данные qr-паспорта сохранены</DialogTitle>
             <DialogContent>
               <DialogContentText>
@@ -669,7 +656,10 @@ const Profile = () => {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setDialogSavedDataInfo(false)} color="secondary">
+              <Button
+                onClick={() => setDialogSavedDataInfo(false)}
+                color="secondary"
+              >
                 Ок
               </Button>
             </DialogActions>
