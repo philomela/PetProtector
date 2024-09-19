@@ -10,18 +10,18 @@ const Footer = () => {
     <Box
       sx={{
         maxWidth: "lg",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        bgcolor: "#638889",
-        padding: "20px",
-        position: "relative", // Отменяем фиксированное позиционирование
-        bottom: 0, // Не нужен с relative
-        width: "100%", // Растягивается на всю ширину экрана
-        height: "auto", // Автоматическая высота
-        minHeight: "10vh", // Минимальная высота
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    bgcolor: "#638889",
+    padding: "20px",
+    position: "relative",
+    width: "100%",
+    height: "auto",
+    minHeight: "10vh",
+    backgroundImage: "radial-gradient(circle at top, rgba(255, 255, 255, 0.3), transparent 70%)", // Круговое свечение сверху
       }}
     >
       <Typography variant="h6" color="white">

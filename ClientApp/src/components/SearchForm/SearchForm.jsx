@@ -17,6 +17,8 @@ const SearchForm = ({ handleSearchInfo }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!secretKey) return;
+
     try {
       const response = await axiosPrivate.get(
         `/api/collars/${secretKey}`

@@ -115,7 +115,7 @@ function HorizontalMenu() {
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Typography
                   component={Link}
-                  to="login"
+                  to="/login"
                   sx={{ color: 'white', mr: 1 }}
                 >
                   Войти
@@ -123,7 +123,7 @@ function HorizontalMenu() {
                 <Typography sx={{ color: 'white' }}>или</Typography>
                 <Typography
                   component={Link}
-                  to="register"
+                  to="/register"
                   sx={{ color: 'white', ml: 1 }}
                 >
                   зарегистрироваться

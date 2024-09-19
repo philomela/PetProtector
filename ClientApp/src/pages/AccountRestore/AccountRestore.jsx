@@ -7,6 +7,7 @@ import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../../api/axios";
+import Header from "../../components/Header/Header";
 
 const RESET_PASSWORD_URL = "/api/accounts/reset-password";
 
@@ -44,6 +45,7 @@ const ResetPassword = () => {
   };
 
   return (
+    <><Header/>
     <Grid container sx={{ height: "90vh", bgColor: "F8FAE5" }}>
       <CssBaseline />
       <Grid
@@ -119,6 +121,7 @@ const ResetPassword = () => {
         </Box>
       </Grid>
     </Grid>
+    </>
   );
 };
 

@@ -58,6 +58,7 @@ body {
   min-height: 100vh;
   padding-left: 15px;
   padding-right: 15px;
+  background: #F8FAE5 !important;
 }
 
 .wrapper_container {

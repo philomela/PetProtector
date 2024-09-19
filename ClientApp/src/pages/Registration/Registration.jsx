@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../../api/axios";
+import Header from "../../components/Header/Header"
 
 const REGISTER_URL = "/api/users/register";
 
@@ -54,6 +55,7 @@ const RegistrationForm = () => {
   };
 
   return (
+    <><Header/>
     <Grid container sx={{ height: "90vh", bgColor: "F8FAE5" }}>
       <CssBaseline />
       <Grid
@@ -137,6 +139,7 @@ const RegistrationForm = () => {
         </Box>
       </Grid>
     </Grid>
+    </>
   );
 };
 

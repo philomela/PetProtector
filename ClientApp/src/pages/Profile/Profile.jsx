@@ -26,6 +26,7 @@ import Link from "@mui/material/Link";
 import { useRef } from 'react';
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { PhoneNumberInput } from "../../utils/Masks/PhoneNumberMask";
+import Header from "../../components/Header/Header"
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -140,7 +141,7 @@ const Profile = () => {
     const controller = new AbortController();
 
     const getUserProfile = async () => {
-      let timeoutId; // переменная для хранения id таймера
+      
 
       try {
         const responseUserInfo = await axiosPrivate.get("/api/users/UserInfo", {
@@ -162,7 +163,7 @@ const Profile = () => {
           });
           
 
-          timeoutId = setTimeout(() => {
+          setTimeout(() => {
             if (isMounted) {
               setIsLoading(false);
             }
@@ -195,6 +196,7 @@ const Profile = () => {
         <Preloader />
       ) : (
         <>
+        <Header />
           <Box
             sx={{
               display: "flex",
@@ -236,29 +238,39 @@ const Profile = () => {
                     readOnly: true,
                   }}
                   InputLabelProps={{
-                    sx: { color: "white" }, // Цвет метки
+                    sx: {
+                      color: "white !important", // Устанавливаем постоянный цвет лейбла
+                      "&.Mui-focused": {
+                        color: "white !important", // Оставляем цвет белым даже при фокусе
+                      },
+                    },
                   }}
                   sx={{
                     input: {
-                      color: "white", // Цвет текста ввода
-                      "&:hover": {
-                        color: "white", // Цвет текста при наведении
-                      },
+                      color: "white !important",
+                      caretColor: "white !important"
                     },
                     "& .MuiInput-underline:before": {
-                      borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
+                      borderBottom: "2px solid white !important", // Белая полоса до фокуса
                     },
                     "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid white", // Подчеркивание при наведении
+                      borderBottom: "2px solid white !important", // Белая полоса при наведении
                     },
                     "& .MuiInput-underline:after": {
-                      borderBottom: "2px solid orange", // Подчеркивание при фокусе (оранжевый)
+                      borderBottom: "2px solid orange !important", // Оранжевая полоса при фокусе
                     },
                     "& .MuiInputBase-input": {
-                      color: "white", // Оставляем текст белым в состоянии фокуса
+                      color: "white !important",
+                      caretColor: "white !important"
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "white !important", // Цвет лейбла
+                    },
+                    "&:hover .MuiInputLabel-root": {
+                      color: "white !important", // Цвет лейбла при наведении
                     },
                     "& .Mui-focused .MuiInputLabel-root": {
-                      color: "white", // Оставляем цвет метки белым при фокусе
+                      color: "white !important", // Цвет лейбла при фокусе
                     },
                   }}
                   autoComplete="off"
@@ -278,29 +290,39 @@ const Profile = () => {
                     readOnly: true,
                   }}
                   InputLabelProps={{
-                    sx: { color: "white" }, // Цвет метки
+                    sx: {
+                      color: "white !important", // Устанавливаем постоянный цвет лейбла
+                      "&.Mui-focused": {
+                        color: "white !important", // Оставляем цвет белым даже при фокусе
+                      },
+                    },
                   }}
                   sx={{
                     input: {
-                      color: "white", // Цвет текста ввода
-                      "&:hover": {
-                        color: "white", // Цвет текста при наведении
-                      },
+                      color: "white !important",
+                      caretColor: "white !important"
                     },
                     "& .MuiInput-underline:before": {
-                      borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
+                      borderBottom: "2px solid white !important", // Белая полоса до фокуса
                     },
                     "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid white", // Подчеркивание при наведении
+                      borderBottom: "2px solid white !important", // Белая полоса при наведении
                     },
                     "& .MuiInput-underline:after": {
-                      borderBottom: "2px solid orange", // Подчеркивание при фокусе (оранжевый)
+                      borderBottom: "2px solid orange !important", // Оранжевая полоса при фокусе
                     },
                     "& .MuiInputBase-input": {
-                      color: "white", // Оставляем текст белым в состоянии фокуса
+                      color: "white !important",
+                      caretColor: "white !important"
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "white !important", // Цвет лейбла
+                    },
+                    "&:hover .MuiInputLabel-root": {
+                      color: "white !important", // Цвет лейбла при наведении
                     },
                     "& .Mui-focused .MuiInputLabel-root": {
-                      color: "white", // Оставляем цвет метки белым при фокусе
+                      color: "white !important", // Цвет лейбла при фокусе
                     },
                   }}
                   autoComplete="off"
@@ -319,29 +341,39 @@ const Profile = () => {
                     readOnly: true,
                   }}
                   InputLabelProps={{
-                    sx: { color: "white" }, // Цвет метки
+                    sx: {
+                      color: "white !important", // Устанавливаем постоянный цвет лейбла
+                      "&.Mui-focused": {
+                        color: "white !important", // Оставляем цвет белым даже при фокусе
+                      },
+                    },
                   }}
                   sx={{
                     input: {
-                      color: "white", // Цвет текста ввода
-                      "&:hover": {
-                        color: "white", // Цвет текста при наведении
-                      },
+                      color: "white !important",
+                      caretColor: "white !important"
                     },
                     "& .MuiInput-underline:before": {
-                      borderBottom: "2px solid white", // Подчеркивание в неактивном состоянии
+                      borderBottom: "2px solid white !important", // Белая полоса до фокуса
                     },
                     "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid white", // Подчеркивание при наведении
+                      borderBottom: "2px solid white !important", // Белая полоса при наведении
                     },
                     "& .MuiInput-underline:after": {
-                      borderBottom: "2px solid orange", // Подчеркивание при фокусе (оранжевый)
+                      borderBottom: "2px solid orange !important", // Оранжевая полоса при фокусе
                     },
                     "& .MuiInputBase-input": {
-                      color: "white", // Оставляем текст белым в состоянии фокуса
+                      color: "white !important",
+                      caretColor: "white !important"
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "white !important", // Цвет лейбла
+                    },
+                    "&:hover .MuiInputLabel-root": {
+                      color: "white !important", // Цвет лейбла при наведении
                     },
                     "& .Mui-focused .MuiInputLabel-root": {
-                      color: "white", // Оставляем цвет метки белым при фокусе
+                      color: "white !important", // Цвет лейбла при фокусе
                     },
                   }}
                   autoComplete="off"
@@ -361,8 +393,8 @@ const Profile = () => {
                 borderRadius: 1,
                 marginLeft: 1,
                 background: `
-                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), /* Градиентный фон */
-                  url(/images/png-lk.png) /* Картинка фона */
+                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), 
+                  url(/images/png-lk.png) 
                 `,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "160% -10%",
@@ -378,8 +410,8 @@ const Profile = () => {
           <Box
             sx={{
               background: `
-                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), /* Градиентный фон */
-                  url(/images/png-lk.png) /* Картинка фона */
+                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), 
+                  url(/images/png-lk.png) 
                 `,
             }}
           >

@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import axios from "../../api/axios";
+import Header from "../../components/Header/Header"
 
 const LOGIN_URL = "/api/accounts/login";
 
@@ -67,6 +68,9 @@ const Login = () => {
   };
 
   return (
+    <>
+    <Header/>
+    <Box sx={{width: '100%', bgColor: 'F8FAE5'}}>
     <Grid container  sx={{ height: '90vh', bgColor: 'F8FAE5' }}>
       <CssBaseline />
       <Grid
@@ -141,6 +145,8 @@ const Login = () => {
         </Box>
       </Grid>
     </Grid>
+    </Box>
+    </>
   );
 };
 

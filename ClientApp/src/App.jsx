@@ -20,11 +20,11 @@ const App = () => {
     <>
       <Container maxWidth="lg" sx={{width: "100%"}}>
         <Box sx={{ bgcolor: "#F8FAE5", height: "100vh" }}>
-          <Header />
+          
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="login" element={<Login />} />
-              <Route path="logout" element={<Logout />} />
+              
               <Route path="restore" element={<AccountRestore />} />
 
               <Route path="/" element={<Home />} />
@@ -34,6 +34,7 @@ const App = () => {
 
               <Route element={<PrivateRoute allowedRole={"User"} />}>
                 <Route path="profile" element={<Profile />} />
+                <Route path="logout" element={<Logout />} />
               </Route>
             </Route>
           </Routes>

@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
+import Header from "../../components/Header/Header"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Carousel } from "react-responsive-carousel";
@@ -9,13 +9,27 @@ import ShopIcon from "@mui/icons-material/Shop";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Footer from "../../components/Footer/Footer";
+import Preloader from "../../components/Preloader/Preloader";
 
 const Home = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+        setIsLoading(false);
+    }, 2000);
+  });
+
   return (
+    <>
+    {isLoading ? (
+      <Preloader />
+    ) : (
+      <><Header />
     <Box
       sx={{
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
       }}
     >
       {/* Главный контент */}
@@ -74,7 +88,7 @@ const Home = () => {
           </Button>
         </Box>
         <Box sx={{ width: "30%" }}>
-          <Carousel          
+          <Carousel
             showIndicators={false}
             autoPlay={true}
             infiniteLoop={true}
@@ -116,7 +130,8 @@ const Home = () => {
 
       {/* Футер */}
       <Footer />
-    </Box>
+    </Box></>)}
+    </>
   );
 };
 
