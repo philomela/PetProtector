@@ -19,6 +19,7 @@ services:
       dockerfile: WebApi/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
     networks:
       - my-network
     depends_on:

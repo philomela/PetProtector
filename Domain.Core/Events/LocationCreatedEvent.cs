@@ -5,7 +5,7 @@ namespace Domain.Core.Events;
 public class LocationCreatedEvent : BaseEvent
 {
     public LocationCreatedEvent(Guid questionnaireId) 
-        => QuestionnaireId = questionnaireId;
+        => CollarId = questionnaireId;
     
-    public Guid QuestionnaireId { get; }
+    public Guid CollarId { get; }
 }

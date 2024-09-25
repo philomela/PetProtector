@@ -36,8 +36,7 @@ internal record ConfirmRegisterCommandHandler : IRequestHandler<ConfirmRegisterC
             throw new Exception("User was not updated");
 
         await _emailSender.SendAsync(
-            new EmailMessage("romaphilomela@yandex.ru", "romaphilomela@yandex.ru", $"Благодарим за регистрацию, ознакомьтесь с инструкцией как привязать браслет",
-                "Инструкция"), cancellationToken);
+            new EmailMessage("noreply@petprotector.ru", user?.Email, $"Благодарим за регистрацию, ознакомьтесь с инструкцией как привязать браслет", "Инструкция"), cancellationToken);
 
         return Unit.Value;
     }

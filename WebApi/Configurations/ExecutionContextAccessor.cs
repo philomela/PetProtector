@@ -30,7 +30,9 @@ namespace WebApi.Configurations
                 throw new ApplicationException("User context is not available");
             }
         }
-        
+
+        public string BaseUrl => $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+
         //string EmailAddress добавить
 
         //public Guid CorrelationId

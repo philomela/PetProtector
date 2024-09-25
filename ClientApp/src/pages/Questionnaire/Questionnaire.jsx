@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
+import Header from "../../components/Header/Header";
 
 const Questionnaire = () => {
   const { id } = useParams();
@@ -45,8 +46,7 @@ const Questionnaire = () => {
         if (response.status === 200 && isMounted) {
           setQuestionnaireInfo(response.data);
         } else {
-          console.error("No data or unexpected status code:", response.status);
-          setQuestionnaireInfo(null);
+          navigate('/');
         }
       } catch (err) {
         if (err.response && err.response.status === 429) {
@@ -117,6 +117,8 @@ const Questionnaire = () => {
   }
 
   return (
+    <>
+    <Header/>
     <Box>
       <Dialog
         open={showDialog}
@@ -267,22 +269,6 @@ const Questionnaire = () => {
                 >
                   Позвонить
                 </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<EmailIcon />}
-                  href={`mailto:${questionnaireInfo.email}`}
-                  sx={{
-                    flex: 1,
-                    marginLeft: 1,
-                    color: "white",
-                    "&:hover": {
-                      color: "white",
-                    },
-                  }}
-                >
-                  Написать
-                </Button>
               </Box>
             </>
           ) : (
@@ -301,88 +287,10 @@ const Questionnaire = () => {
               </Typography>
             </Box>
           )}
-
-          {coordinates.latitude && coordinates.longitude ? (
-            <>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ mt: 4, color: "white" }}
-              >
-                Ваши координаты:
-              </Typography>
-              <TextField
-                label="Широта"
-                value={coordinates.latitude}
-                fullWidth
-                margin="normal"
-                InputProps={{
-                  readOnly: true,
-                  style: { color: "white", caretColor: "white" },
-                }}
-                InputLabelProps={{ style: { color: "white" } }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white",
-                    },
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "white",
-                    caretColor: "white",
-                  },
-                }}
-              />
-              <TextField
-                label="Долгота"
-                value={coordinates.longitude}
-                fullWidth
-                margin="normal"
-                InputProps={{
-                  readOnly: true,
-                  style: { color: "white", caretColor: "white" },
-                }}
-                InputLabelProps={{ style: { color: "white" } }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white",
-                    },
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "white",
-                    caretColor: "white",
-                  },
-                }}
-              />
-            </>
-          ) : (
-            <Typography
-              variant="body1"
-              color="error"
-              gutterBottom
-              sx={{ mt: 2, color: "white" }}
-            >
-              {locationError
-                ? `Ошибка: ${locationError}`
-                : "Получение координат..."}
-            </Typography>
-          )}
         </Box>
       )}
     </Box>
+    </>
   );
 };
 

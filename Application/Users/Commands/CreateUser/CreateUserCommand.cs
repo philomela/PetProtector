@@ -41,7 +41,7 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
             throw new Exception("User was not created");
         
         await _emailSender.SendAsync(
-            new EmailMessage("romaphilomela@yandex.ru", "romaphilomela@yandex.ru", $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: https://localhost:5173/confirmRegister/{user.Id}",
+            new EmailMessage("noreply@petprotector.ru", user.Email, $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: https://localhost:5173/confirmRegister/{user.Id}",
                 "Подтверждение регистрации"), cancellationToken);
 
         return Unit.Value;

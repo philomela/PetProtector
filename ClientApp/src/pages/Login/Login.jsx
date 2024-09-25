@@ -27,6 +27,7 @@ const Login = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [errMsg, setErrMsg] = useState(null);
+  const errMsgRef = useRef(null);
 
   useEffect(() => {
     setErrMsg(null);
@@ -58,9 +59,12 @@ const Login = () => {
       if (!err.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
+        setErrMsg("Неверный логин или пароль");
       } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
+        setErrMsg("Неверный логин или пароль");
+        if (errMsgRef.current) {
+          errMsgRef.current.focus(); // Фокусируемся на элементе с сообщением об ошибке
+        }
       } else {
         setErrMsg("Login Failed");
       }
@@ -110,7 +114,6 @@ const Login = () => {
               label="Email адрес"
               name="email"
               autoComplete="email"
-              autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -126,6 +129,16 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {errMsg && (
+                  <Typography
+                    color="error"
+                    variant="body2"
+                    ref={errMsgRef} // Присваиваем реф
+                    tabIndex="-1" // Убираем элемент из табуляции
+                  >
+                    {errMsg}
+                  </Typography>
+                )}
             <Button
               type="submit"
               fullWidth
@@ -136,7 +149,7 @@ const Login = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link to={"/restore"} href="/restore" variant="body2">
+                <Link to={"/forgot-password"} href="/forgot-password" variant="body2">
                   Забыли пароль?
                 </Link>
               </Grid>

@@ -1,5 +1,7 @@
 ﻿using Application.Users.Commands.ConfirmRegister;
 using Application.Users.Commands.CreateUser;
+using Application.Users.Commands.ForgotPassword;
+using Application.Users.Commands.Restore;
 using Application.Users.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +18,7 @@ public class UsersController : ApiControllerBase
         return Ok();
     }
 
-    [Authorize(Policy = "UserIdPolicy")] //Добавить для админа.
+    [Authorize(Policy = "UserIdPolicy")]
     [HttpGet("UserInfo")]
     public async Task<IActionResult> UserInfo()
     {
@@ -32,11 +34,16 @@ public class UsersController : ApiControllerBase
     }
     
     [AllowAnonymous]
-    [HttpPost("Restore")]
-    public async Task<IActionResult> Restore(string refreshTokenData)
+    [HttpPost("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command)
     {
-        var token = await Mediator.Send(refreshTokenData);
-
-        return Ok(new { token });
+        return Ok(await Mediator.Send(command));
+    }
+    
+    [AllowAnonymous]
+    [HttpPost("Restore")]
+    public async Task<IActionResult> Restore(RestoreUserCommand command)
+    {
+        return Ok(await Mediator.Send(command));
     }
 }

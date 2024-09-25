@@ -1,10 +1,8 @@
 import React from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
 import Login from "./pages/Login/Login";
-import AccountRestore from "./pages/AccountRestore/AccountRestore";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import Logout from "./components/Logout/Logout";
 import Questionnaire from "./pages/Questionnaire/Questionnaire";
 import Profile from "./pages/Profile/Profile";
@@ -14,6 +12,8 @@ import RegistrationForm from "./pages/Registration/Registration";
 import Box from '@mui/system/Box';
 import Container from '@mui/material/Container';
 import ConfirmRegistration from "./components/ConfirmRegistration/ConfirmRegistration";
+import RestoreAccount from "./components/RestoreAccount/RestoreAccount";
+import NotFound from "./pages/NotFound/NotFound";
 
 const App = () => {
   return (
@@ -23,20 +23,22 @@ const App = () => {
           
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route path="login" element={<Login />} />
+              <Route path="/login" element={<Login />} />
               
-              <Route path="restore" element={<AccountRestore />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
               <Route path="/" element={<Home />} />
-              <Route path="register" element={<RegistrationForm />} />
-              <Route path="quest/:id" element={<Questionnaire />} />
-              <Route path="confirmRegister/:userId" element={<ConfirmRegistration />} />
+              <Route path="/register" element={<RegistrationForm />} />
+              <Route path="/quest/:id" element={<Questionnaire />} />
+              <Route path="/confirmRegister/:userId" element={<ConfirmRegistration />} />
+              <Route path="/restore" element={<RestoreAccount />} />
 
               <Route element={<PrivateRoute allowedRole={"User"} />}>
-                <Route path="profile" element={<Profile />} />
-                <Route path="logout" element={<Logout />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/logout" element={<Logout />} />
               </Route>
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
        
         </Box>

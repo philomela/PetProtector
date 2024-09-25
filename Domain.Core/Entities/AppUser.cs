@@ -8,6 +8,6 @@ public class AppUser : IdentityUser //Разобраться как для по�
     public string FullName { get; set; }
 
     public DateTime CreatedAt { get; set; }
-
+    
     public ICollection<AppRefreshToken> Tokens { get; } = new List<AppRefreshToken>();
 }
