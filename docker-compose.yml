@@ -24,6 +24,7 @@ services:
       - SmtpConfigurations__Port=${SMTP_PORT}
       - SmtpConfigurations__Login=${SMTP_LOGIN}
       - SmtpConfigurations__Password=${SMTP_PASS}
+      - JwtSettings__Secret=${JWT_SECRET}
     networks:
       - my-network
     depends_on:
