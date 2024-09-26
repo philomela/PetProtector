@@ -50,12 +50,12 @@ jobs:
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&
-            export MSSQL_SA_PASSWORD='$MSSQL_PASSWORD' &&
-            export SMTP_SERVER='$SMTP_SERVER' &&
-            export SMTP_PORT='$SMTP_PORT' &&
-            export SMTP_LOGIN='$SMTP_LOGIN' &&
-            export SMTP_PASS='$SMTP_PASS' &&
-            export JWT_SECRET='$JWT_SECRET' &&
+            export MSSQL_SA_PASSWORD=$MSSQL_PASSWORD &&
+            export SMTP_SERVER=$SMTP_SERVER &&
+            export SMTP_PORT=$SMTP_PORT &&
+            export SMTP_LOGIN=$SMTP_LOGIN &&
+            export SMTP_PASS=$SMTP_PASS &&
+            export JWT_SECRET=$JWT_SECRET &&
             git pull &&
             docker-compose down &&
             docker-compose up -d backend
