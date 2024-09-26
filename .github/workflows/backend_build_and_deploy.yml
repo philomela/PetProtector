@@ -47,8 +47,7 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
         
         run: |
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP 
-          "
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             git pull &&
             docker-compose down &&
             docker-compose up -d backend
