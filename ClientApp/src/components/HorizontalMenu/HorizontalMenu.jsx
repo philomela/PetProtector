@@ -15,7 +15,7 @@ import useAuth from "../../hooks/useAuth";
 import { lightBlue } from "@mui/material/colors";
 import MyCustomIcon from '../../utils/MyIcon';
 
-const pages = ["Помощь"];
+const pages = ["Помощь", "Инструкция"];
 const menuItems = [
   { label: "Профиль", path: "/profile" },
   { label: "Выйти", path: "/logout" },

@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers(options => { options.Filters.Add<ApiExceptionFilterAttribute>(); })
     .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

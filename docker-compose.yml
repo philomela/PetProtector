@@ -19,7 +19,7 @@ services:
       dockerfile: WebApi/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=PetProtector;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
     networks:
       - my-network
     depends_on:
