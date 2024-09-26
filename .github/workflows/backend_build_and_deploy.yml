@@ -57,8 +57,8 @@ jobs:
             export SMTP_PASS=\"$SMTP_PASS\" &&
             export JWT_SECRET=\"$JWT_SECRET\" &&
             git pull &&
-            docker-compose stop backend
-            docker-compose rm -f backend
-            docker rmi $(docker images -q backend)
+            docker-compose stop backend &&
+            docker-compose rm -f backend &&
+            docker rmi $(docker images -q backend) &&
             docker-compose up --build -d backend
           "
