@@ -20,6 +20,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - DbConnection=Server=mssql,1433;Database=PetProtector;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+      - SmtpConfigurations__Server=${SMTP_SERVER}
+      - SmtpConfigurations__Port=${SMTP_PORT}
+      - SmtpConfigurations__Login=${SMTP_LOGIN}
+      - SmtpConfigurations__Password=${SMTP_PASS}
     networks:
       - my-network
     depends_on:

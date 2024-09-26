@@ -41,12 +41,14 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
           MSSQL_PASSWORD: ${{ secrets.MSSQL_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_LOGIN: ${{ secrets.SMTP_LOGIN }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
         
         run: |
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
-            cd /home/PetProtector &&
-            echo \"MSSQL_SA_PASSWORD=$MSSQL_PASSWORD\" > .env &&
-            cat .env &&
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP 
+          "
             git pull &&
             docker-compose down &&
             docker-compose up -d backend
