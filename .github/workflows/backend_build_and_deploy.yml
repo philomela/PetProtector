@@ -59,6 +59,5 @@ jobs:
             git pull &&
             docker-compose stop backend &&
             docker-compose rm -f backend &&
-            docker rmi $(docker images -q backend) &&
             docker-compose up --build -d backend
           "

@@ -49,6 +49,5 @@ jobs:
             git pull &&
             docker-compose stop frontend &&
             docker-compose rm -f frontend &&
-            docker rmi $(docker images -q frontend) &&
             docker-compose up --build -d frontend
           "
