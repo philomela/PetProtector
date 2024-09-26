@@ -34,6 +34,7 @@ public class EmailSender : IEmailSender
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             //_logger логируем исключение. 
         }
     }
