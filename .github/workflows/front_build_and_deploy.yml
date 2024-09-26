@@ -47,6 +47,8 @@ jobs:
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
             cd /home/PetProtector &&
             git pull &&
-            docker-compose down &&
-            docker-compose up -d frontend
+            docker-compose stop frontend
+            docker-compose rm -f frontend
+            docker rmi $(docker images -q frontend)
+            docker-compose up --build -d frontend
           "
