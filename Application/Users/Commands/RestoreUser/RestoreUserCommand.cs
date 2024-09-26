@@ -34,7 +34,7 @@ public record RestoreUserCommandHandler : IRequestHandler<RestoreUserCommand, Un
         {
             throw new BadRequestException("Invalid request");
         }
-        
+        //todo: После сброса пароля, необходимо разлогинить и деактивировать токен
         return Unit.Value;
     }
 }

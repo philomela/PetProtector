@@ -42,7 +42,7 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
         
         await _emailSender.SendAsync(
             new EmailMessage("noreply@petprotector.ru", user.Email, $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: https://localhost:5173/confirmRegister/{user.Id}",
-                "Подтверждение регистрации"), cancellationToken);
+                "Подтверждение регистрации"), cancellationToken); //todo: брать базовый url приложения
 
         return Unit.Value;
 

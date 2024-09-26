@@ -16,6 +16,7 @@ public class EmailSender : IEmailSender
     {
         try
         {
+            Console.WriteLine(_config.Login + " " + _config.Password + " " + _config.Server + " " + _config.Port);
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(msg.From));
             message.To.Add(MailboxAddress.Parse(msg.To));
