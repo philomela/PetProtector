@@ -41,6 +41,8 @@ public record ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComma
         };
 
         var callback = QueryHelpers.AddQueryString($"{_executionContextAccessor.BaseUrl}/restore", queryParams!);
+
+        Console.WriteLine(callback);
         
         await _emailSender.SendAsync(new EmailMessage("noreply@petprotector.ru", user.Email,  $"Пожалуйста, сбросьте пароль, перейдя по ссылке: <a href='{callback}'>ссылка</a>", "Сброс пароля"), cancellationToken);
 
