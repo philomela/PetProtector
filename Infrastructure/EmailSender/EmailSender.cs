@@ -27,6 +27,7 @@ public class EmailSender : IEmailSender
                 int.TryParse(_config.Port, out var otp)
                     ? otp
                     : throw new Exception("EmailSender smpt port was not initialise"), true, cancellationToken);
+            Console.WriteLine(_config.Login + " " + _config.Password + " " + _config.Server + " " + _config.Port);
             await client.AuthenticateAsync(_config.Login, _config.Password, cancellationToken);
             await client.SendAsync(message, cancellationToken);
             await client.DisconnectAsync(true, cancellationToken);
