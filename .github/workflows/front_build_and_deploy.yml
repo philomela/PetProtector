@@ -51,3 +51,9 @@ jobs:
             docker-compose rm -f frontend &&
             docker-compose up --build -d frontend
           "
+          
+      - name: Release deployment lock
+        uses: stefanzweifel/lock-action@v2
+        with:
+          key: deploy-lock
+          release: true

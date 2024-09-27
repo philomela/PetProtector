@@ -61,3 +61,9 @@ jobs:
             docker-compose rm -f backend &&
             docker-compose up --build -d backend
           "
+          
+      - name: Release deployment lock
+        uses: stefanzweifel/lock-action@v2
+        with:
+          key: deploy-lock
+          release: true

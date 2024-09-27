@@ -19,9 +19,10 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IEmailSender _emailSender;
+    private readonly IExecutionContextAccessor _executionContextAccessor;
 
-    public CreateUserCommandHandler(UserManager<AppUser> userManager, IEmailSender emailSender) 
-        => (_userManager, _emailSender) = (userManager, emailSender);
+    public CreateUserCommandHandler(UserManager<AppUser> userManager, IEmailSender emailSender, IExecutionContextAccessor executionContextAccessor) 
+        => (_userManager, _emailSender, _executionContextAccessor) = (userManager, emailSender, executionContextAccessor);
 
     public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
@@ -41,7 +42,7 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
             throw new Exception("User was not created");
         
         await _emailSender.SendAsync(
-            new EmailMessage("noreply@petprotector.ru", user.Email, $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: https://localhost:5173/confirmRegister/{user.Id}",
+            new EmailMessage("noreply@petprotector.ru", user.Email, $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: {_executionContextAccessor.BaseUrl}/confirmRegister/{user.Id}",
                 "Подтверждение регистрации"), cancellationToken); //todo: брать базовый url приложения
 
         return Unit.Value;
