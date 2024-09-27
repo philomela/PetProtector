@@ -4,6 +4,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
 using Application.Common.Dtos.EmailSender;
+using MailKit.Security;
 
 namespace Infrastructure.EmailSender;
 
@@ -27,7 +28,7 @@ public class EmailSender : IEmailSender
             await client.ConnectAsync(_config.Server,
                 int.TryParse(_config.Port, out var otp)
                     ? otp
-                    : throw new Exception("EmailSender smpt port was not initialise"), true, cancellationToken);
+                    : throw new Exception("EmailSender smpt port was not initialise"), SecureSocketOptions.SslOnConnect, cancellationToken);
             Console.WriteLine(_config.Login + " " + _config.Password + " " + _config.Server + " " + _config.Port);
             await client.AuthenticateAsync(_config.Login, _config.Password, cancellationToken);
             await client.SendAsync(message, cancellationToken);
