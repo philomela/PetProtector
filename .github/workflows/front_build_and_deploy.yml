@@ -37,6 +37,12 @@ jobs:
 
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
+        
+      - name: Acquire deployment lock
+        uses: stefanzweifel/lock-action@v2
+        with:
+          key: deploy-lock
+          timeout: 300 # Максимальное время ожидания в секундах (5 минут)
 
       - name: Deploy to server via SSH
         env:
