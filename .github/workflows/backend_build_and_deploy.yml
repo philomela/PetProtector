@@ -5,6 +5,10 @@ on:
     branches:
       - main
   workflow_dispatch:
+  
+  concurrency:
+  group: deploy-group
+  cancel-in-progress: false  # Не отменять текущий деплой, новый будет ждать
 
 jobs:
   build:
@@ -34,12 +38,6 @@ jobs:
 
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
-        
-      - name: Acquire deployment lock
-        uses: stefanzweifel/lock-action@v2
-        with:
-          key: deploy-lock
-          timeout: 300 # Максимальное время ожидания в секундах (5 минут)
 
       - name: Deploy to server via SSH
         env:
@@ -67,9 +65,3 @@ jobs:
             docker-compose rm -f backend &&
             docker-compose up --build -d backend
           "
-          
-      - name: Release deployment lock
-        uses: stefanzweifel/lock-action@v2
-        with:
-          key: deploy-lock
-          release: true
