@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch:
   
-  concurrency:
+concurrency:
   group: deploy-group
   cancel-in-progress: false  # Не отменять текущий деплой, новый будет ждать
 
