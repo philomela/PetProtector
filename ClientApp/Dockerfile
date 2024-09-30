@@ -29,7 +29,7 @@ COPY ./petprotector.ru.crt /etc/ssl/certs/petprotector.ru.crt
 COPY ./petprotector.ru.key /etc/ssl/private/petprotector.ru.key
 
 # Экспонируем порты 80 и 443 для HTTP и HTTPS
-EXPOSE 80
+
 EXPOSE 443
 
 # Запускаем Nginx
