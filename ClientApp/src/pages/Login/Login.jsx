@@ -57,16 +57,16 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (err) {
       if (!err.response) {
-        setErrMsg("No Server Response");
+        setErrMsg("Нет ответа от сервера");
       } else if (err.response?.status === 400) {
         setErrMsg("Неверный логин или пароль");
       } else if (err.response?.status === 401) {
         setErrMsg("Неверный логин или пароль");
-        if (errMsgRef.current) {
-          errMsgRef.current.focus(); // Фокусируемся на элементе с сообщением об ошибке
-        }
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Невозможно войти");
+      }
+      if (errMsgRef.current) {
+        errMsgRef.current.focus(); // Фокусируемся на элементе с сообщением об ошибке
       }
     }
   };
@@ -84,9 +84,7 @@ const Login = () => {
         md={7}
         sx={{
           backgroundRepeat: 'no-repeat',
-          backgroundColor: 'F8FAE5',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundColor: '#F8FAE5', // Добавьте символ '#'
         }}
       />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>

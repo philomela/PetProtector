@@ -46,7 +46,7 @@ const Questionnaire = () => {
         if (response.status === 200 && isMounted) {
           setQuestionnaireInfo(response.data);
         } else {
-          navigate('/');
+          navigate("/notfound");
         }
       } catch (err) {
         if (err.response && err.response.status === 429) {
