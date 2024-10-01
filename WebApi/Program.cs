@@ -4,7 +4,6 @@ using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
 using Infrastructure.Percistance;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 using WebApi.Configurations;
 using WebApi.Filters;
@@ -13,11 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
-builder.Services.Configure<ForwardedHeadersOptions>(opt =>
-{
-    opt.KnownNetworks.Clear();
-    opt.KnownProxies.Clear();
-});
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers(options => { options.Filters.Add<ApiExceptionFilterAttribute>(); })
@@ -91,10 +85,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
 app.UseRouting();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

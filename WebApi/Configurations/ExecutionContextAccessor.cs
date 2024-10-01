@@ -6,22 +6,25 @@ namespace WebApi.Configurations
     public class ExecutionContextAccessor : IExecutionContextAccessor
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
 
-        public ExecutionContextAccessor(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
+        public ExecutionContextAccessor(
+            IHttpContextAccessor httpContextAccessor, 
+            IConfiguration configuration) => 
+            (_httpContextAccessor, _configuration) 
+            = (httpContextAccessor, configuration);
+        
 
         public Guid UserId
         {
             get
             {
                 if (_httpContextAccessor
-                    .HttpContext?
-                    .User?
-                    .Claims?
-                    .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?
-                    .Value != null)
+                        .HttpContext?
+                        .User?
+                        .Claims?
+                        .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?
+                        .Value != null)
                 {
                     return Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.Single(
                         x => x.Type == ClaimTypes.NameIdentifier).Value);
@@ -31,7 +34,7 @@ namespace WebApi.Configurations
             }
         }
 
-        public string BaseUrl => $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+        public string BaseUrl => _configuration["BaseUrl"]!;
 
         //string EmailAddress добавить
 
