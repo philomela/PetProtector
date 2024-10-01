@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Footer from "../../components/Footer/Footer";
 import Preloader from "../../components/Preloader/Preloader";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +23,26 @@ const Home = () => {
 
   return (
     <>
+    <Helmet>
+        <title>PetProtector - Главная</title>
+        <meta
+          name="description"
+          content="Защитите своего питомца от потери с помощью нашего QR-адресника. Простая регистрация, удобный интерфейс, надежная защита."
+        />
+        <meta
+          name="keywords"
+          content="QR-адресник, защита питомцев, потерянный питомец, PetProtector, QR-паспорт, пропавший питомец, защита qr-кодом, qr код, потеря питомца, потеря домашнего животного, владелец питомца, координаты питомца."
+        />
+        <meta property="og:title" content="PetProtector - Главная" />
+        <meta
+          property="og:description"
+          content="Лучший способ защитить своего питомца от потери — наш QR-адресник. Простота и удобство в использовании, удобный интерфейс, надежная защита, металлический qr-адресник, получение координат питомца при сканировании qr-адресника."
+        />
+        <meta property="og:image" content="/images/main-slide-origin.png" />
+        <meta property="og:url" content="https://petprotector.ru" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
     {isLoading ? (
       <Preloader />
     ) : (

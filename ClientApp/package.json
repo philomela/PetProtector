@@ -28,6 +28,7 @@
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-input-mask": "^2.0.4",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.16.0",
