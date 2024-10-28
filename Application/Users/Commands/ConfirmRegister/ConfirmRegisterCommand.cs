@@ -10,7 +10,9 @@ namespace Application.Users.Commands.ConfirmRegister;
 
 public record ConfirmRegisterCommand : IRequest<Unit>
 {
-    public Guid UserId { get; set; }
+    public string Email { get; set; }
+    
+    public string Token { get; set; }
 }
 
 internal record ConfirmRegisterCommandHandler : IRequestHandler<ConfirmRegisterCommand, Unit>
@@ -23,17 +25,13 @@ internal record ConfirmRegisterCommandHandler : IRequestHandler<ConfirmRegisterC
 
     public async Task<Unit> Handle(ConfirmRegisterCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager
-            .Users
-            .Where(u => u.Id == request.UserId.ToString() && u.EmailConfirmed == false)
-            .FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException("User was not found");
+        var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new NotFoundException("User was not found");;
 
-        user.EmailConfirmed = true;
-
-        var result = await _userManager.UpdateAsync(user);
-
+        if (user.EmailConfirmed) throw new BadRequestException("Request invalid");
+        
+        var result = await _userManager.ConfirmEmailAsync(user, request.Token);
         if (!result.Succeeded && result.Errors.Any())
-            throw new Exception("User was not updated");
+            throw new BadRequestException("Request invalid");
 
         await _emailSender.SendAsync(
             new EmailMessage("noreply@petprotector.ru", user?.Email, $"Благодарим за регистрацию, ознакомьтесь с инструкцией как привязать браслет", "Инструкция"), cancellationToken);

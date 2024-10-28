@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Application.Users.Commands.CreateUser;
 
@@ -40,9 +41,19 @@ public record CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit
 
         if (!result.Succeeded && result.Errors.Any())
             throw new Exception("User was not created");
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        
+        var queryParams = new Dictionary<string, string>()
+        {
+            { "token", token },
+            { "email", request.Email }
+        };
+       
+        var callback = QueryHelpers.AddQueryString($"{_executionContextAccessor.BaseUrl}/confirmRegister", queryParams!);
         
         await _emailSender.SendAsync(
-            new EmailMessage("noreply@petprotector.ru", user.Email, $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: {_executionContextAccessor.BaseUrl}/confirmRegister/{user.Id}",
+            new EmailMessage("noreply@petprotector.ru", user.Email, $"Спасибо за регистрацию! Подтвердите регистрацию по ссылке: {callback}",
                 "Подтверждение регистрации"), cancellationToken); //todo: брать базовый url приложения
 
         return Unit.Value;

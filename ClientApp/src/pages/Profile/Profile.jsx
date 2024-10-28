@@ -19,14 +19,21 @@ import Preloader from "../../components/Preloader/Preloader";
 import SearchForm from "../../components/SearchForm/SearchForm";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Box, Typography, TextField } from "@mui/material";
-import { Email, Person, CalendarToday, Edit, Pets, Badge } from "@mui/icons-material";
+import {
+  Email,
+  Person,
+  CalendarToday,
+  Edit,
+  Pets,
+  Badge,
+} from "@mui/icons-material";
 import { InputAdornment } from "@mui/material";
 import moment from "moment";
 import Link from "@mui/material/Link";
-import { useRef } from 'react';
+import { useRef } from "react";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { PhoneNumberInput } from "../../utils/Masks/PhoneNumberMask";
-import Header from "../../components/Header/Header"
+import Header from "../../components/Header/Header";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +50,6 @@ const Profile = () => {
   });
   const [dialogSavedDataInfo, setDialogSavedDataInfo] = useState(false);
   const phoneInputRef = useRef(null);
-   
 
   // Функция для обработки изменений в текстовых полях
   const handleCollarChange = (event, collarId, propName) => {
@@ -63,7 +69,6 @@ const Profile = () => {
       }),
     }));
   };
-
 
   // Функция для подтверждения и сохранения
   const handleConfirmSaveQuestionnaire = async () => {
@@ -101,12 +106,14 @@ const Profile = () => {
     //collarToUpdate.phoneNumber = phoneNumber;  // Передаем актуальное значение phoneNumber
 
     try {
-      const response = await axiosPrivate.put(`/api/questionnaries/`, JSON.stringify(collarToUpdate));
+      const response = await axiosPrivate.put(
+        `/api/questionnaries/`,
+        JSON.stringify(collarToUpdate)
+      );
     } catch (error) {
       console.error(error);
     }
   };
-  
 
   const handleSearchInfo = async (collar) => {
     setSearchCollarsInfo(collar);
@@ -133,16 +140,11 @@ const Profile = () => {
     }
   };
 
-  
-  
-
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
     const getUserProfile = async () => {
-      
-
       try {
         const responseUserInfo = await axiosPrivate.get("/api/users/UserInfo", {
           signal: controller.signal,
@@ -161,7 +163,6 @@ const Profile = () => {
             ...responseUserInfo.data,
             ...responseUserCollars.data,
           });
-          
 
           setTimeout(() => {
             if (isMounted) {
@@ -196,7 +197,7 @@ const Profile = () => {
         <Preloader />
       ) : (
         <>
-        <Header />
+          <Header />
           <Box
             sx={{
               display: "flex",
@@ -248,7 +249,7 @@ const Profile = () => {
                   sx={{
                     input: {
                       color: "white !important",
-                      caretColor: "white !important"
+                      caretColor: "white !important",
                     },
                     "& .MuiInput-underline:before": {
                       borderBottom: "2px solid white !important", // Белая полоса до фокуса
@@ -261,7 +262,7 @@ const Profile = () => {
                     },
                     "& .MuiInputBase-input": {
                       color: "white !important",
-                      caretColor: "white !important"
+                      caretColor: "white !important",
                     },
                     "& .MuiInputLabel-root": {
                       color: "white !important", // Цвет лейбла
@@ -300,7 +301,7 @@ const Profile = () => {
                   sx={{
                     input: {
                       color: "white !important",
-                      caretColor: "white !important"
+                      caretColor: "white !important",
                     },
                     "& .MuiInput-underline:before": {
                       borderBottom: "2px solid white !important", // Белая полоса до фокуса
@@ -313,7 +314,7 @@ const Profile = () => {
                     },
                     "& .MuiInputBase-input": {
                       color: "white !important",
-                      caretColor: "white !important"
+                      caretColor: "white !important",
                     },
                     "& .MuiInputLabel-root": {
                       color: "white !important", // Цвет лейбла
@@ -351,7 +352,7 @@ const Profile = () => {
                   sx={{
                     input: {
                       color: "white !important",
-                      caretColor: "white !important"
+                      caretColor: "white !important",
                     },
                     "& .MuiInput-underline:before": {
                       borderBottom: "2px solid white !important", // Белая полоса до фокуса
@@ -364,7 +365,7 @@ const Profile = () => {
                     },
                     "& .MuiInputBase-input": {
                       color: "white !important",
-                      caretColor: "white !important"
+                      caretColor: "white !important",
                     },
                     "& .MuiInputLabel-root": {
                       color: "white !important", // Цвет лейбла
@@ -460,11 +461,15 @@ const Profile = () => {
             >
               <Table sx={{ color: "white" }}>
                 {profileInfo.collars.length > 0 && (
-                  <TableHead sx={{ color: "white"}}>
-                    <TableRow sx={{ color: "white"}}>
+                  <TableHead sx={{ color: "white" }}>
+                    <TableRow sx={{ color: "white" }}>
                       {/* Заголовки столбцов */}
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>Изображение</TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>QR-паспорт</TableCell>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>
+                        Изображение
+                      </TableCell>
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>
+                        QR-паспорт
+                      </TableCell>
                       <TableCell sx={{ color: "white", textAlign: "center" }}>
                         Имя владельца
                       </TableCell>
@@ -553,12 +558,16 @@ const Profile = () => {
                             }}
                           />
                         </TableCell>
-                        <TableCell sx={{ color: "#638889", backgroundColor: "white" }}>
-                <PhoneNumberInput
-                  value={collar.questionnaire.phoneNumber || ""}
-                  onChange={(e) => handleCollarChange(e, collar.id, "phoneNumber")}
-                />
-              </TableCell>
+                        <TableCell
+                          sx={{ color: "#638889", backgroundColor: "white" }}
+                        >
+                          <PhoneNumberInput
+                            value={collar.questionnaire.phoneNumber || ""}
+                            onChange={(e) =>
+                              handleCollarChange(e, collar.id, "phoneNumber")
+                            }
+                          />
+                        </TableCell>
                         <TableCell
                           sx={{ color: "#638889", backgroundColor: "white" }}
                         >

@@ -25,12 +25,11 @@ public class UsersController : ApiControllerBase
         return Ok(await Mediator.Send(new GetUserQuery()));
     }
     
-    //[Authorize(Policy = "UserIdPolicy")] //Добавить политику для незарегестрированных.
     [AllowAnonymous]
     [HttpPut("ConfirmRegister")]
     public async Task<IActionResult> ConfirmRegister(ConfirmRegisterCommand command)
     {
-        return Ok(await Mediator.Send(command)); //Проверить нормально ли пользователю светить его userId в виде guid
+        return Ok(await Mediator.Send(command));
     }
     
     [AllowAnonymous]

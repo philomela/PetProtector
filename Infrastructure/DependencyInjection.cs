@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddIdentity<AppUser, IdentityRole>(options =>
         {
             options.Tokens.PasswordResetTokenProvider = "PetProtector";
+            options.Tokens.EmailConfirmationTokenProvider = "PetProtector";
         }).AddEntityFrameworkStores<AuthDbContext>()
         .AddTokenProvider<DataProtectorTokenProvider<AppUser>>("PetProtector");
 

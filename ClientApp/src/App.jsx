@@ -30,7 +30,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/register" element={<RegistrationForm />} />
               <Route path="/quest/:id" element={<Questionnaire />} />
-              <Route path="/confirmRegister/:userId" element={<ConfirmRegistration />} />
+              <Route path="/confirmRegister" element={<ConfirmRegistration />} />
               <Route path="/restore" element={<RestoreAccount />} />
 
               <Route element={<PrivateRoute allowedRole={"User"} />}>
