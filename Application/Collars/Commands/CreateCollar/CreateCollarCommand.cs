@@ -37,7 +37,6 @@ internal record CreateCollarCommandHandler : IRequestHandler<CreateCollarCommand
                 LinkQuestionnaire = request.LinkQuestionnaire,
                 State = QuestionnaireStates.WaitingFilling,
             },
-            
         };
         
         entity.AddDomainEvent(new CollarCreatedEvent(entity.Id));

@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using System.Security.Claims;
+using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Jwt;
@@ -10,8 +11,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
+using Infrastructure.Cache;
 using Infrastructure.EmailSender.Configurations;
 using Infrastructure.Percistance.Interceptors;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 
@@ -37,9 +44,11 @@ public static class DependencyInjection
 
         services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+           // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = "Yandex"; // Используется для вызова Yandex OAuth
+        }).AddCookie()
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
         {
             cfg.TokenValidationParameters = new TokenValidationParameters()
             {
@@ -54,10 +63,48 @@ public static class DependencyInjection
                 RequireExpirationTime = true,
                 ValidateIssuerSigningKey = true
             };
+        }).AddOAuth("Yandex", options =>
+        {
+            options.ClientId = config["Authentication:Yandex:ClientId"];
+            options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
+            options.CallbackPath = new PathString("/api/users/yandex-callback");
+
+            options.AuthorizationEndpoint = "https://oauth.yandex.ru/authorize";
+            options.TokenEndpoint = "https://oauth.yandex.ru/token";
+            options.UserInformationEndpoint = "https://login.yandex.ru/info";
+
+            options.SaveTokens = true; // Сохраняем токены
+
+            //options.Scope.Add("email");
+            
+            options.Events.OnCreatingTicket = async context =>
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, options.UserInformationEndpoint);
+                request.Headers.Add("Authorization", "Bearer " + context.AccessToken);
+
+                var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                response.EnsureSuccessStatusCode();
+
+                var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
+
+                var email = user.GetString("default_email");
+                var name = user.GetString("first_name");
+
+                if (!string.IsNullOrEmpty(email))
+                {
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Email, email));
+                }
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Name, name));
+                }
+            };
         });
 
         services.AddAuthorization(options =>
             options.AddPolicy("UserIdPolicy", policy => policy.RequireRole("User")));
+        
 
         services.AddDbContext<AppDbContext>((provider, options) =>
         {
@@ -67,6 +114,14 @@ public static class DependencyInjection
 
         services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
         services.AddScoped<ApplicationDbContextInitialiser>();
+        
+        services.AddStackExchangeRedisCache(options =>
+        {
+            var conn = config["RedisConnection"];
+            options.Configuration = config["RedisConnection"];
+        });
+
+        services.AddScoped<IRedisCache, RedisCache>();
         
         services.AddTransient<IJwtTokenManager, JwtTokenManager>();
         

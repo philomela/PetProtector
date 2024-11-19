@@ -46,7 +46,7 @@ const RegistrationForm = () => {
       });
 
       if (response?.status === 200) {
-        navigate(from, { replace: true });
+        navigate(from, { replace: true }); //Отобразить диалоговое окно, об успешной регистрации и проверки почты и обратным отсчетом
       }
     } catch (error) {
       if (!error?.response) {

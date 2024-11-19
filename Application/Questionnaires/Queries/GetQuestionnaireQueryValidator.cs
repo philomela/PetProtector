@@ -6,6 +6,9 @@ public class GetQuestionnaireQueryValidator : AbstractValidator<GetQuestionnaire
 {
     public GetQuestionnaireQueryValidator()
     {
-        RuleFor(q => q.LinkQuestionnaire).NotNull().NotEmpty();
+        RuleFor(x => x.LinkQuestionnaire)
+            .NotNull().WithMessage("LinkQuestionnaire is required")
+            .NotEmpty().WithMessage("LinkQuestionnaire cannot be empty")
+            .Must(id => Guid.TryParse(id.ToString(), out _)).WithMessage("LinkQuestionnaire must be a valid");
     }
 }

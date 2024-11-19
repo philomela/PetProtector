@@ -43,7 +43,8 @@ public class ApplicationDbContextInitialiser
         }
         catch (Exception ex)
         {
-            // _logger.LogError(ex, "An error occurred while seeding the database.");
+            Console.WriteLine("An error occurred while seeding the database");
+             //_logger.LogError(ex, "An error occurred while seeding the database.");
             throw;
         }
     }
@@ -52,8 +53,8 @@ public class ApplicationDbContextInitialiser
     {
         var user = new AppUser
         {
-            Email = "romaphilomela@yandex.ru",
-            UserName = "romaphilomela@yandex.ru",
+            Email = "romaphilomelatest@yandex.ru",
+            UserName = "romaphilomelatest@yandex.ru",
             FullName = "Roman",
             CreatedAt = DateTime.UtcNow.Date,
             EmailConfirmed = true
@@ -75,7 +76,7 @@ public class ApplicationDbContextInitialiser
             var collar = new Collar()
             {
                 Id = Id,
-                SecretKey = "petprotector",
+                SecretKey = "petprotector46",
                 Questionnaire = new Questionnaire()
                 {
                     Id = Id,

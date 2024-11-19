@@ -1,25 +1,19 @@
 import { useRef, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
 import { Button, Box, FormControl, Typography, TextField } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import axios from "../../api/axios";
 import Header from "../../components/Header/Header"
 
-const LOGIN_URL = "/api/accounts/login";
-
+const LOGIN_URL = "/api/accounts/login"; // Если планируется использовать JWT для обычного логина
 
 const Login = () => {
   const { setAuth } = useAuth();
-
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/profile";
@@ -71,6 +65,11 @@ const Login = () => {
     }
   };
 
+  // Этот метод перенаправляет на серверный маршрут, который инициирует OAuth с Яндекс
+  const handleLoginWithYandex = () => {
+    window.location.href = "https://localhost:7100/api/users/sign-in-yandex"; // Указываем URL для редиректа
+  };
+
   return (
     <>
     <Header/>
@@ -84,7 +83,7 @@ const Login = () => {
         md={7}
         sx={{
           backgroundRepeat: 'no-repeat',
-          backgroundColor: '#F8FAE5', // Добавьте символ '#'
+          backgroundColor: '#F8FAE5',
         }}
       />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -131,8 +130,8 @@ const Login = () => {
                   <Typography
                     color="error"
                     variant="body2"
-                    ref={errMsgRef} // Присваиваем реф
-                    tabIndex="-1" // Убираем элемент из табуляции
+                    ref={errMsgRef} 
+                    tabIndex="-1" 
                   >
                     {errMsg}
                   </Typography>
@@ -145,6 +144,9 @@ const Login = () => {
             >
               Войти
             </Button>
+            <div>
+              <button onClick={handleLoginWithYandex}>Войти через Яндекс</button>
+            </div>
             <Grid container>
               <Grid item xs>
                 <Link to={"/forgot-password"} href="/forgot-password" variant="body2">

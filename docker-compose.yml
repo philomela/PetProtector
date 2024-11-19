@@ -40,6 +40,14 @@ services:
       - "1433:1433"
     networks:
       - my-network
+      
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
 
 networks:
   my-network:

@@ -14,6 +14,8 @@ import Container from '@mui/material/Container';
 import ConfirmRegistration from "./components/ConfirmRegistration/ConfirmRegistration";
 import RestoreAccount from "./components/RestoreAccount/RestoreAccount";
 import NotFound from "./pages/NotFound/NotFound";
+import YandexCallback from "./pages/Yandex/YandexCallback";
+import SignInYandex from "./pages/Yandex/SignInYandex";
 
 const App = () => {
   return (
@@ -24,6 +26,10 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/login" element={<Login />} />
+             
+              <Route path="/sign-in-yandex" element={< SignInYandex />} />
+              <Route path="/yandex-callback" element={<YandexCallback />} />
+              
               
               <Route path="/forgot-password" element={<ForgotPassword />} />
 

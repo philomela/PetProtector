@@ -1,8 +1,12 @@
-﻿using Application.Users.Commands.ConfirmRegister;
+﻿using System.Security.Claims;
+using Application.Users.Commands.ConfirmRegister;
 using Application.Users.Commands.CreateUser;
+using Application.Users.Commands.CreateUserYandex;
 using Application.Users.Commands.ForgotPassword;
 using Application.Users.Commands.Restore;
 using Application.Users.Queries;
+using Domain.Core.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,4 +49,37 @@ public class UsersController : ApiControllerBase
     {
         return Ok(await Mediator.Send(command));
     }
+    
+    
+    [HttpGet("sign-in-yandex")]
+    public IActionResult SignInWithYandex()
+    {
+        // Запускаем процесс аутентификации
+        return Challenge(new AuthenticationProperties
+        {
+            RedirectUri = "http://localhost:5173/profile",
+            AllowRefresh = true// URL для обработки после авторизации
+        }, "Yandex");
+    }
+    
+    [HttpGet("yandex-callback")]
+    public async Task<IActionResult> YandexCallback(string state, string code)
+    {
+        var result = await HttpContext.AuthenticateAsync("Yandex");
+
+        if (result.Succeeded)
+        {
+            var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+
+            return Ok(await Mediator.Send(new CreateUserYandexCommand
+            {
+                Email = email,
+                Name = name
+            }));
+        }
+
+        return Unauthorized();
+    }
+
 }

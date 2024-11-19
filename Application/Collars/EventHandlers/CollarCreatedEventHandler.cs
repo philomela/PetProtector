@@ -14,16 +14,5 @@ public class CollarCreatedEventHandler : INotificationHandler<CollarCreatedEvent
     
     public async Task Handle(CollarCreatedEvent notification, CancellationToken cancellationToken)
     {
-        // await _appDbContext.Questionnaires.AddAsync(new Questionnaire()
-        // {
-        //     Id = new Random().Next(),
-        //     OwnersName = "Roman",
-        //     State = "Created",
-        //     PetsName = "Jessy",
-        //     PhoneNumber = "79998458109",
-        //     CollarId = notification.CollarId
-        // });
-
-        //await _appDbContext.SaveChangesAsync(cancellationToken);
     }
 }

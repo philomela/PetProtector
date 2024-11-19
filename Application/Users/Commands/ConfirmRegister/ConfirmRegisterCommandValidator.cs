@@ -6,11 +6,12 @@ public class ConfirmRegisterCommandValidator : AbstractValidator<ConfirmRegister
 {
     public ConfirmRegisterCommandValidator()
     {
-        RuleFor(u => u.Email)
+        RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("Email was empty");
-        RuleFor(u => u.Token)
+            .WithMessage("Email must not be empty")
+            .EmailAddress().WithMessage("Email format is invalid.");
+        RuleFor(x => x.Token)
             .NotEmpty()
-            .WithMessage("Token was empty");
+            .WithMessage("Token must not be empty");
     }
 }

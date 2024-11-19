@@ -49,6 +49,9 @@ const Questionnaire = () => {
           navigate("/notfound");
         }
       } catch (err) {
+        if (err.response && err.response.status === 404) {
+          navigate("/notfound");
+        }
         if (err.response && err.response.status === 429) {
           setShowDialog(true); // Show dialog on status 429
         } else {

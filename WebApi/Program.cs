@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
-using System.Threading.RateLimiting;
 using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
 using Infrastructure.Percistance;
 using Microsoft.OpenApi.Models;
+using WebApi;
 using WebApi.Configurations;
 using WebApi.Filters;
 
@@ -16,7 +16,7 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers(options => { options.Filters.Add<ApiExceptionFilterAttribute>(); })
     .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
+//builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PetProtector API", Version = "v1" });
@@ -32,34 +32,9 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<AuthResponsesOperationFilter>();
 });
 
-//builder.Services.AddControllersWithViews();
-
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    
-    options.AddPolicy("RequestLimiterOneHour", context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString(),
-            factory: partition => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 30,
-                Window = TimeSpan.FromHours(1)
-            })
-    );
-    
-    options.AddPolicy("RequestLimiterTenMinutes", context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString(),
-            factory: partition => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 20,
-                Window = TimeSpan.FromMinutes(10)
-            })
-    );
-});
+builder.Services.AddRateLimiters();
 
 builder.Services.AddCors(options =>
 {
@@ -89,8 +64,6 @@ app.UseRouting();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
-
-
 
 using (var scope = app.Services.CreateScope())
 {

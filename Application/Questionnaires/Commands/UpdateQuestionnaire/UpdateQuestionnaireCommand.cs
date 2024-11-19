@@ -30,7 +30,6 @@ internal record UpdateQuestionnaireCommandHandler : IRequestHandler<UpdateQuesti
         var userId = _executionContextAccessor.UserId;
 
         var entity = await _appDbContext.Questionnaires
-            
             .Include(q => q.Collar)
             .Where(x => x.Id == request.Id).FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
 
@@ -44,6 +43,8 @@ internal record UpdateQuestionnaireCommandHandler : IRequestHandler<UpdateQuesti
         entity.PhoneNumber = request.PhoneNumber;
         entity.State = QuestionnaireStates.Filled; //Вынести в enum, возможно сстоит прикрутить стейт машину, если потребуется
         
+        
+        //todo: Добавить логику инвалидации по ключу.
         entity.AddDomainEvent(new QuestionnaireUpdatedEvent());
 
         await _appDbContext.SaveChangesAsync(cancellationToken);
