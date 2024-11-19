@@ -63,6 +63,9 @@ jobs:
             export SMTP_LOGIN=\"$SMTP_LOGIN\" &&
             export SMTP_PASS=\"$SMTP_PASS\" &&
             export JWT_SECRET=\"$JWT_SECRET\" &&
+            export REDIS_CONN=\"$REDIS_CONN\" &&
+            export YANDEX_CLIENT_ID=\"$YANDEX_CLIENT_ID\" &&
+            export YANDEX_CLIENT_SECRET=\"$YANDEX_CLIENT_SECRET\" &&
             git pull &&
             docker-compose stop backend &&
             docker-compose rm -f backend &&
