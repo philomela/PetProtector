@@ -16,7 +16,7 @@ const SignInYandex = () => {
         try {
           // Отправляем код на сервер для проверки и создания пользователя
          // const response = await axios.get(`/api/users/sign-in-yandex`);
-          window.location.href = "http://localhost:7100/api/users/sign-in-yandex";
+          window.location.href = "/api/users/sign-in-yandex";
 
           // Навигация на страницу профиля
           navigate("/profile");
