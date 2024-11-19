@@ -57,7 +57,7 @@ public class UsersController : ApiControllerBase
         // Запускаем процесс аутентификации
         return Challenge(new AuthenticationProperties
         {
-            RedirectUri = "http://localhost:5173/profile",
+            RedirectUri = "https://petprotector.ru/profile",
             AllowRefresh = true// URL для обработки после авторизации
         }, "Yandex");
     }

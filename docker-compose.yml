@@ -20,6 +20,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - DbConnection=Server=mssql,1433;Database=PetProtector;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+      - RedisConnection=${REDIS_CONN}
+      - Authentication__Yandex__ClientId=${YANDEX_CLIENT_ID}
+      - Authentication__Yandex__ClientSecret=${YANDEX_CLIENT_SECRET}
       - SmtpConfigurations__Server=${SMTP_SERVER}
       - SmtpConfigurations__Port=${SMTP_PORT}
       - SmtpConfigurations__Login=${SMTP_LOGIN}
