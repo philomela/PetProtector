@@ -57,7 +57,7 @@ public class UsersController : ApiControllerBase
         // Запускаем процесс аутентификации
         return Challenge(new AuthenticationProperties
         {
-            RedirectUri = "https://petprotector.ru/profile",
+            RedirectUri = "https://petprotector.ru/api/users/yandex-callback",
             AllowRefresh = true// URL для обработки после авторизации
         }, "Yandex");
     }

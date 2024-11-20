@@ -67,7 +67,7 @@ public static class DependencyInjection
         {
             options.ClientId = config["Authentication:Yandex:ClientId"];
             options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
-            options.CallbackPath = new PathString("/api/users/yandex-callback");
+            options.CallbackPath = new PathString("/profile");
 
             options.AuthorizationEndpoint = "https://oauth.yandex.ru/authorize";
             options.TokenEndpoint = "https://oauth.yandex.ru/token";
