@@ -76,28 +76,38 @@ public static class DependencyInjection
             options.SaveTokens = true; // Сохраняем токены
 
             //options.Scope.Add("email");
-            
-            options.Events.OnCreatingTicket = async context =>
+
+            options.Events = new OAuthEvents
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, options.UserInformationEndpoint);
-                request.Headers.Add("Authorization", "Bearer " + context.AccessToken);
-
-                var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
-                response.EnsureSuccessStatusCode();
-
-                var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
-
-                var email = user.GetString("default_email");
-                var name = user.GetString("first_name");
-
-                if (!string.IsNullOrEmpty(email))
+                OnCreatingTicket = async context =>
                 {
-                    context.Identity.AddClaim(new Claim(ClaimTypes.Email, email));
-                }
+                    try
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Get, options.UserInformationEndpoint);
+                        request.Headers.Add("Authorization", "Bearer " + context.AccessToken);
 
-                if (!string.IsNullOrEmpty(name))
-                {
-                    context.Identity.AddClaim(new Claim(ClaimTypes.Name, name));
+                        var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                        response.EnsureSuccessStatusCode();
+
+                        var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
+
+                        var email = user.GetProperty("default_email").GetString();
+                        var name = user.GetProperty("first_name").GetString();
+
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            context.Identity.AddClaim(new Claim(ClaimTypes.Email, email));
+                        }
+
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            context.Identity.AddClaim(new Claim(ClaimTypes.Name, name));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        context.Fail($"Error retrieving user information: {ex.Message}");
+                    }
                 }
             };
         });
