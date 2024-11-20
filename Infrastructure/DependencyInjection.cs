@@ -36,84 +36,118 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services.AddIdentity<AppUser, IdentityRole>(options =>
-        {
-            options.Tokens.PasswordResetTokenProvider = "PetProtector";
-            options.Tokens.EmailConfirmationTokenProvider = "PetProtector";
-        }).AddEntityFrameworkStores<AuthDbContext>()
-        .AddTokenProvider<DataProtectorTokenProvider<AppUser>>("PetProtector");
+            {
+                options.Tokens.PasswordResetTokenProvider = "PetProtector";
+                options.Tokens.EmailConfirmationTokenProvider = "PetProtector";
+            }).AddEntityFrameworkStores<AuthDbContext>()
+            .AddTokenProvider<DataProtectorTokenProvider<AppUser>>("PetProtector");
 
         services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-           // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = "Yandex"; // Используется для вызова Yandex OAuth
-        }).AddCookie()
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "Yandex"; // Используется для вызова Yandex OAuth
+            }).AddCookie()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
-        {
-            cfg.TokenValidationParameters = new TokenValidationParameters()
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-                    config["JwtSettings:Secret"]
-                    ?? throw new Exception("Secret key was not found"))),
-                //ValidIssuer = config["JwtSettings:Issuer"]
-                    //?? throw new Exception("Secret key was not found"),
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateLifetime = true,
-                RequireExpirationTime = true,
-                ValidateIssuerSigningKey = true
-            };
-        }).AddOAuth("Yandex", options =>
-        {
-            options.ClientId = config["Authentication:Yandex:ClientId"];
-            options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
-            options.CallbackPath = new PathString("/api/users/yandex-callback");
-
-            options.AuthorizationEndpoint = "https://oauth.yandex.ru/authorize";
-            options.TokenEndpoint = "https://oauth.yandex.ru/token";
-            options.UserInformationEndpoint = "https://login.yandex.ru/info";
-
-            options.SaveTokens = true; // Сохраняем токены
-
-            //options.Scope.Add("email");
-
-            options.Events = new OAuthEvents
-            {
-                OnCreatingTicket = async context =>
+                cfg.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    try
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+                        config["JwtSettings:Secret"]
+                        ?? throw new Exception("Secret key was not found"))),
+                    //ValidIssuer = config["JwtSettings:Issuer"]
+                    //?? throw new Exception("Secret key was not found"),
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = true,
+                    RequireExpirationTime = true,
+                    ValidateIssuerSigningKey = true
+                };
+            }).AddOAuth("Yandex", options =>
+            {
+                options.ClientId = config["Authentication:Yandex:ClientId"];
+                options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
+                options.CallbackPath = new PathString("/api/users/yandex-callback");
+
+                options.AuthorizationEndpoint = "https://oauth.yandex.ru/authorize";
+                options.TokenEndpoint = "https://oauth.yandex.ru/token";
+                options.UserInformationEndpoint = "https://login.yandex.ru/info";
+
+                options.SaveTokens = true; // Сохраняем токены
+
+                //options.Scope.Add("email");
+
+                services.AddAuthentication(options =>
                     {
-                        Console.WriteLine("OnTicker started");
-                        var request = new HttpRequestMessage(HttpMethod.Get, options.UserInformationEndpoint);
-                        request.Headers.Add("Authorization", "Bearer " + context.AccessToken);
-
-                        var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
-                        response.EnsureSuccessStatusCode();
-
-                        var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
-
-                        var email = user.GetProperty("default_email").GetString();
-                        var name = user.GetProperty("first_name").GetString();
-
-                        Console.WriteLine("OnTicker finished");
-                        
-                        if (!string.IsNullOrEmpty(email))
-                        {
-                            context.Identity.AddClaim(new Claim(ClaimTypes.Email, email));
-                        }
-
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            context.Identity.AddClaim(new Claim(ClaimTypes.Name, name));
-                        }
-                    }
-                    catch (Exception ex)
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = "Yandex";
+                    })
+                    .AddOAuth("Yandex", options =>
                     {
-                        context.Fail($"Error retrieving user information: {ex.Message}");
-                    }
-                }
-            };
-        });
+                        options.ClientId = config["Authentication:Yandex:ClientId"];
+                        options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
+                        options.CallbackPath = new PathString("/api/users/yandex-callback");
+
+                        options.AuthorizationEndpoint = "https://oauth.yandex.ru/authorize";
+                        options.TokenEndpoint = "https://oauth.yandex.ru/token";
+                        options.UserInformationEndpoint = "https://login.yandex.ru/info";
+
+                        options.SaveTokens = true;
+
+                        options.Events = new OAuthEvents
+                        {
+                            OnRedirectToAuthorizationEndpoint = context =>
+                            {
+                                // Удаление параметра state
+                                var uri = context.RedirectUri;
+                                uri = uri.Replace("&state=", "&nostate=");
+                                context.Response.Redirect(uri);
+                                return Task.CompletedTask;
+                            },
+                            OnRemoteFailure = context =>
+                            {
+                                // Логирование ошибки
+                                Console.WriteLine($"Remote Failure: {context.Failure?.Message}");
+                                context.HandleResponse();
+                                return Task.CompletedTask;
+                            },
+                            OnCreatingTicket = async context =>
+                            {
+                                try
+                                {
+                                    Console.WriteLine("OnCreatingTicket started");
+                                    var request = new HttpRequestMessage(HttpMethod.Get, options.UserInformationEndpoint);
+                                    request.Headers.Add("Authorization", "Bearer " + context.AccessToken);
+
+                                    var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                                    response.EnsureSuccessStatusCode();
+
+                                    var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
+
+                                    var email = user.GetProperty("default_email").GetString();
+                                    var name = user.GetProperty("first_name").GetString();
+
+                                    if (!string.IsNullOrEmpty(email))
+                                    {
+                                        context.Identity.AddClaim(new Claim(ClaimTypes.Email, email));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(name))
+                                    {
+                                        context.Identity.AddClaim(new Claim(ClaimTypes.Name, name));
+                                    }
+
+                                    Console.WriteLine("OnCreatingTicket finished");
+                                }
+                                catch (Exception ex)
+                                {
+                                    context.Fail($"Error retrieving user information: {ex.Message}");
+                                }
+                            }
+                        };
+                    });
+
+            });
 
         services.AddAuthorization(options =>
             options.AddPolicy("UserIdPolicy", policy => policy.RequireRole("User")));
