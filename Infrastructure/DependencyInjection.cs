@@ -48,22 +48,23 @@ public static class DependencyInjection
                 // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = "Yandex"; // Используется для вызова Yandex OAuth
             }).AddCookie()
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
-            {
-                cfg.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-                        config["JwtSettings:Secret"]
-                        ?? throw new Exception("Secret key was not found"))),
-                    //ValidIssuer = config["JwtSettings:Issuer"]
-                    //?? throw new Exception("Secret key was not found"),
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateLifetime = true,
-                    RequireExpirationTime = true,
-                    ValidateIssuerSigningKey = true
-                };
-            }).AddOAuth("Yandex", options =>
+            // .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
+            // {
+            //     cfg.TokenValidationParameters = new TokenValidationParameters()
+            //     {
+            //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+            //             config["JwtSettings:Secret"]
+            //             ?? throw new Exception("Secret key was not found"))),
+            //         //ValidIssuer = config["JwtSettings:Issuer"]
+            //         //?? throw new Exception("Secret key was not found"),
+            //         ValidateAudience = false,
+            //         ValidateIssuer = false,
+            //         ValidateLifetime = true,
+            //         RequireExpirationTime = true,
+            //         ValidateIssuerSigningKey = true
+            //     };
+            //})
+    .AddOAuth("Yandex", options =>
             {
                 options.ClientId = config["Authentication:Yandex:ClientId"];
                 options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
@@ -76,24 +77,6 @@ public static class DependencyInjection
                 options.SaveTokens = true; // Сохраняем токены
 
                 //options.Scope.Add("email");
-
-                services.AddAuthentication(options =>
-                    {
-                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = "Yandex";
-                    })
-                    .AddOAuth("Yandex", options =>
-                    {
-                        options.ClientId = config["Authentication:Yandex:ClientId"];
-                        options.ClientSecret = config["Authentication:Yandex:ClientSecret"];
-                        options.CallbackPath = new PathString("/api/users/yandex-callback");
-
-                        options.AuthorizationEndpoint = "https://oauth.yandex.ru/authorize";
-                        options.TokenEndpoint = "https://oauth.yandex.ru/token";
-                        options.UserInformationEndpoint = "https://login.yandex.ru/info";
-
-                        options.SaveTokens = true;
-
                         options.Events = new OAuthEvents
                         {
                             OnRedirectToAuthorizationEndpoint = context =>
@@ -145,7 +128,7 @@ public static class DependencyInjection
                                 }
                             }
                         };
-                    });
+                   
 
             });
 
