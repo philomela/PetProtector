@@ -54,16 +54,17 @@ public class UsersController : ApiControllerBase
     [HttpGet("sign-in-yandex")]
     public IActionResult SignInWithYandex()
     {
-        // Запускаем процесс аутентификации
-        return Challenge(new AuthenticationProperties
-        {
-            RedirectUri = "https://petprotector.ru/api/users/yandex-callback",
-            AllowRefresh = true// URL для обработки после авторизации
-        }, "Yandex");
+        var redirectUri = "https://petprotector.ru/api/users/yandex-callback";
+        var clientId = "e98eb93b84224ac4ac06e2e2ceecf803";
+        var state = Guid.NewGuid().ToString();
+
+        var authUrl = $"https://oauth.yandex.ru/authorize?response_type=code&client_id={clientId}&redirect_uri={redirectUri}&state={state}";
+
+        return Redirect(authUrl);
     }
     
     [HttpGet("yandex-callback")]
-    public async Task<IActionResult> YandexCallback(string state, string code)
+    public async Task<IActionResult> YandexCallback(string state)
     {
         var result = await HttpContext.AuthenticateAsync("Yandex");
 

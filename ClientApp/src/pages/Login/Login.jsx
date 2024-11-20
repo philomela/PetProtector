@@ -67,7 +67,7 @@ const Login = () => {
 
   // Этот метод перенаправляет на серверный маршрут, который инициирует OAuth с Яндекс
   const handleLoginWithYandex = () => {
-    window.location.href = "/api/users/sign-in-yandex"; // Указываем URL для редиректа
+    window.location.href = "https://petprotector.ru/api/users/sign-in-yandex"; // Указываем URL для редиректа
   };
 
   return (
