@@ -54,7 +54,7 @@ public class UsersController : ApiControllerBase
     [HttpGet("sign-in-yandex")]
     public IActionResult SignInWithYandex()
     {
-        var redirectUri = "https://petprotector.ru/api/users/yandex-callback";
+        var redirectUri = "https://petprotector.ru/profile";
         var clientId = "e98eb93b84224ac4ac06e2e2ceecf803";
         var state = Guid.NewGuid().ToString();
 
