@@ -83,6 +83,7 @@ public static class DependencyInjection
                 {
                     try
                     {
+                        Console.WriteLine("OnTicker started");
                         var request = new HttpRequestMessage(HttpMethod.Get, options.UserInformationEndpoint);
                         request.Headers.Add("Authorization", "Bearer " + context.AccessToken);
 
