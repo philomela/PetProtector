@@ -94,6 +94,8 @@ public static class DependencyInjection
                         var email = user.GetProperty("default_email").GetString();
                         var name = user.GetProperty("first_name").GetString();
 
+                        Console.WriteLine("OnTicker finished");
+                        
                         if (!string.IsNullOrEmpty(email))
                         {
                             context.Identity.AddClaim(new Claim(ClaimTypes.Email, email));

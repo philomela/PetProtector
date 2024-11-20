@@ -66,6 +66,7 @@ public class UsersController : ApiControllerBase
     [HttpGet("yandex-callback")]
     public async Task<IActionResult> YandexCallback(string state)
     {
+        Console.WriteLine("ya-callback started");
         var result = await HttpContext.AuthenticateAsync("Yandex");
 
         if (result.Succeeded)
