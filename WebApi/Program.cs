@@ -16,7 +16,7 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers(options => { options.Filters.Add<ApiExceptionFilterAttribute>(); })
     .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-//builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PetProtector API", Version = "v1" });
