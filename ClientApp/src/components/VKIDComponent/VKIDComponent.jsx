@@ -10,7 +10,7 @@ const VKIDComponent = () => {
 
         VKID.Config.init({
           app: 52743816,
-          redirectUrl: 'https://patprotector.ru/api/vk-callback',
+          redirectUrl: 'https://patprotector.ru/api/users/vk-callback',
           responseMode: VKID.ConfigResponseMode.Callback,
           source: VKID.ConfigSource.LOWCODE,
         });
