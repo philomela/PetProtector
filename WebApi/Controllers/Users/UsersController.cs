@@ -129,6 +129,7 @@ public async Task<IActionResult> VkCallback([FromQuery] string code, [FromQuery]
 
         // Сохранение пользователя через Mediator
         var user = userData.Response.FirstOrDefault();
+        Console.WriteLine(user.Id + " " + user.LastName + " " + user.FirstName);
         return Ok(user
         //     await Mediatoddr.Send(new CreateUserVkCommand
         // {
