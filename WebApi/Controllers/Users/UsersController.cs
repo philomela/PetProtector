@@ -89,6 +89,7 @@ public class UsersController : ApiControllerBase
     [HttpGet("vk-callback")]
 public async Task<IActionResult> VkCallback([FromQuery] string code, [FromQuery] string state)
 {
+    Console.WriteLine("This is " + code);
     if (string.IsNullOrEmpty(code))
     {
         return BadRequest(new { error = "Authorization code is missing." });
