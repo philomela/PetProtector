@@ -67,11 +67,6 @@ const Login = () => {
     }
   };
 
-  // Этот метод перенаправляет на серверный маршрут, который инициирует OAuth с Яндекс
-  const handleLoginWithYandex = () => {
-    window.location.href = "https://petprotector.ru/api/users/sign-in-yandex"; // Указываем URL для редиректа
-  };
-
   return (
     <>
     <Header/>
@@ -149,9 +144,6 @@ const Login = () => {
             <div>
       <VKIDComponent />
     </div>
-            <div>
-              <button onClick={handleLoginWithYandex}>Войти через Яндекс</button>
-            </div>
             <Grid container>
               <Grid item xs>
                 <Link to={"/forgot-password"} href="/forgot-password" variant="body2">
