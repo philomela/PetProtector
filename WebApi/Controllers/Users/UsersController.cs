@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 using Application.Users.Commands.ConfirmRegister;
 using Application.Users.Commands.CreateUser;
 using Application.Users.Commands.CreateUserYandex;
@@ -83,5 +84,84 @@ public class UsersController : ApiControllerBase
 
         return Unauthorized();
     }
+    
+    
+    [HttpGet("vk-callback")]
+public async Task<IActionResult> VkCallback([FromQuery] string code, [FromQuery] string state)
+{
+    if (string.IsNullOrEmpty(code))
+    {
+        return BadRequest(new { error = "Authorization code is missing." });
+    }
+
+    try
+    {
+        var clientId = "52743816";  // Укажите ваш Client ID
+        var clientSecret = "your_vk_client_secret"; // Укажите ваш Client Secret
+        var redirectUri = "https://petprotector.ru/profile";
+
+        // Обмен кода на токен
+        using var httpClient = new HttpClient();
+        var tokenResponse = await httpClient.GetAsync(
+            $"https://oauth.vk.com/access_token?" +
+            $"client_id={clientId}&client_secret={clientSecret}&redirect_uri={redirectUri}&code={code}");
+
+        if (!tokenResponse.IsSuccessStatusCode)
+        {
+            return BadRequest(new { error = "Failed to exchange code for access token." });
+        }
+
+        var tokenContent = await tokenResponse.Content.ReadAsStringAsync();
+        var tokenData = JsonSerializer.Deserialize<TokenResponse>(tokenContent);
+
+        // Получение информации о пользователе
+        var userResponse = await httpClient.GetAsync(
+            $"https://api.vk.com/method/users.get?" +
+            $"user_ids={tokenData.UserId}&fields=email&access_token={tokenData.AccessToken}&v=5.131");
+
+        if (!userResponse.IsSuccessStatusCode)
+        {
+            return BadRequest(new { error = "Failed to retrieve user information." });
+        }
+
+        var userContent = await userResponse.Content.ReadAsStringAsync();
+        var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
+
+        // Сохранение пользователя через Mediator
+        var user = userData.Response.FirstOrDefault();
+        return Ok(user
+        //     await Mediatoddr.Send(new CreateUserVkCommand
+        // {
+        //     Email = tokenData.Email, // Email приходит из токен-ответа
+        //     Name = $"{user.FirstName} {user.LastName}"
+        // })d
+            );
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { error = ex.Message });
+    }
+}
+
+
+private class TokenResponse
+{
+    public string AccessToken { get; set; }
+    public string Email { get; set; } // VK возвращает email в токене
+    public string UserId { get; set; }
+}
+
+private class VKUserResponse
+{
+    public List<VKUser> Response { get; set; }
+
+    public class VKUser
+    {
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+}
 
 }
+

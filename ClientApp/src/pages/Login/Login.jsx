@@ -9,6 +9,8 @@ import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "../../api/axios";
 import Header from "../../components/Header/Header"
+import VKIDComponent from '../../components/VKIDComponent/VKIDComponent';
+
 
 const LOGIN_URL = "/api/accounts/login"; // Если планируется использовать JWT для обычного логина
 
@@ -144,6 +146,9 @@ const Login = () => {
             >
               Войти
             </Button>
+            <div>
+      <VKIDComponent />
+    </div>
             <div>
               <button onClick={handleLoginWithYandex}>Войти через Яндекс</button>
             </div>

@@ -48,22 +48,22 @@ public static class DependencyInjection
                 // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = "Yandex"; // Используется для вызова Yandex OAuth
             }).AddCookie()
-            // .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
-            // {
-            //     cfg.TokenValidationParameters = new TokenValidationParameters()
-            //     {
-            //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-            //             config["JwtSettings:Secret"]
-            //             ?? throw new Exception("Secret key was not found"))),
-            //         //ValidIssuer = config["JwtSettings:Issuer"]
-            //         //?? throw new Exception("Secret key was not found"),
-            //         ValidateAudience = false,
-            //         ValidateIssuer = false,
-            //         ValidateLifetime = true,
-            //         RequireExpirationTime = true,
-            //         ValidateIssuerSigningKey = true
-            //     };
-            //})
+             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, cfg =>
+             {
+                 cfg.TokenValidationParameters = new TokenValidationParameters()
+                 {
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+                         config["JwtSettings:Secret"]
+                         ?? throw new Exception("Secret key was not found"))),
+                     //ValidIssuer = config["JwtSettings:Issuer"]
+                     //?? throw new Exception("Secret key was not found"),
+                     ValidateAudience = false,
+                     ValidateIssuer = false,
+                     ValidateLifetime = true,
+                     RequireExpirationTime = true,
+                     ValidateIssuerSigningKey = true
+                 };
+            })
     .AddOAuth("Yandex", options =>
             {
                 options.ClientId = config["Authentication:Yandex:ClientId"];
