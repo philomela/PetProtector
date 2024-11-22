@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import axios from "../../api/axios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const VKIDComponent = () => {
   const containerRef = useRef(null);
+  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     const loadVKIDSDK = () => {
@@ -41,10 +43,10 @@ const VKIDComponent = () => {
           const accessToken = data.token; // Токен, полученный от VKID SDK
 
            // Отправляем токен на сервер с использованием axios
-           axios
-           .post('/api/users/create-user-vk', {
-             accessToken,
-           })
+           axiosPrivate
+           .post('/api/users/create-user-vk', 
+             JSON.stringify(accessToken)
+           )
            .then(response => {
              console.log('User created or fetched:', response.data);
              // Здесь можно выполнить дополнительные действия, например, сохранить токен или выполнить редирект
