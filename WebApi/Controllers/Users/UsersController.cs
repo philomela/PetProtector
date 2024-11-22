@@ -51,21 +51,17 @@ public class UsersController : ApiControllerBase
         return Ok(await Mediator.Send(command));
     }
     
-    [HttpPost("vk-callback")]
-    public async Task<IActionResult> VkCallback([FromBody] VkTokenRequest request)
+    [HttpGet("vk-callback")]
+    public async Task<IActionResult> VkCallback([FromQuery] string code, [FromQuery] string state)
     {
         Console.WriteLine("start method vk-callback");
-        if (string.IsNullOrEmpty(request.Token))
-        {
-            return BadRequest(new { error = "Token is missing." });
-        }
-
+       
         try
         {
             // Запрос информации о пользователе
             using var httpClient = new HttpClient();
             var response = await httpClient.GetAsync(
-                $"https://api.vk.com/method/users.get?access_token={request.Token}&v=5.131");
+                $"https://api.vk.com/method/users.get?access_token=&v=5.131");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -107,7 +103,7 @@ public class UsersController : ApiControllerBase
     [HttpPost("crete-user-vk")]
     public async Task<IActionResult> CreateUserVk([FromBody] VkTokenRequest request)
     {
-        Console.WriteLine("start method vk-callback");
+        Console.WriteLine("start method crete-user-vk");
         if (string.IsNullOrEmpty(request.Token))
         {
             return BadRequest(new { error = "Token is missing." });
