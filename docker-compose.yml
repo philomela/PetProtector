@@ -32,6 +32,7 @@ services:
       - my-network
     depends_on:
       - mssql
+      - redis
 
   mssql:
     container_name: mssql
