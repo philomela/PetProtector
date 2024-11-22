@@ -10,6 +10,7 @@ const VKIDComponent = () => {
 
         VKID.Config.init({
           app: 52743816,
+          redirectUrl: 'https://patprotector.ru/api/users/vk-callback',
           responseMode: VKID.ConfigResponseMode.Callback, // Используем Callback
           source: VKID.ConfigSource.LOWCODE,
         });
@@ -34,7 +35,7 @@ const VKIDComponent = () => {
 
                 // Отправка токена на бэкенд
                 const response = await fetch(
-                  'https://patprotector.ru/api/users/vk-callback',
+                  'https://patprotector.ru/api/users/create-user-vk',
                   {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

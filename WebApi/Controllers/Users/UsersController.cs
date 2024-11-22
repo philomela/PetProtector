@@ -54,6 +54,60 @@ public class UsersController : ApiControllerBase
     [HttpPost("vk-callback")]
     public async Task<IActionResult> VkCallback([FromBody] VkTokenRequest request)
     {
+        Console.WriteLine("start method vk-callback");
+        if (string.IsNullOrEmpty(request.Token))
+        {
+            return BadRequest(new { error = "Token is missing." });
+        }
+
+        try
+        {
+            // Запрос информации о пользователе
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(
+                $"https://api.vk.com/method/users.get?access_token={request.Token}&v=5.131");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest(new { error = "Failed to retrieve user information." });
+            }
+
+            var userContent = await response.Content.ReadAsStringAsync();
+            var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
+
+            if (userData?.Response == null || !userData.Response.Any())
+            {
+                return BadRequest(new { error = "User information is invalid." });
+            }
+
+            var user = userData.Response.First();
+            Console.WriteLine(user.Email + user.FirstName);
+            //var userExists = await _userRepository.ExistsAsync(user.Id);
+
+            // if (!userExists)
+            // {
+            //     // Создание нового пользователя
+            //     await _userRepository.AddAsync(new User
+            //     {
+            //         VkId = user.Id,
+            //         Name = $"{user.FirstName} {user.LastName}",
+            //         Email = user.Email
+            //     });
+            // }
+
+            return Ok(new { success = true, user = user });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+    
+    
+    [HttpPost("crete-user-vk")]
+    public async Task<IActionResult> CreateUserVk([FromBody] VkTokenRequest request)
+    {
+        Console.WriteLine("start method vk-callback");
         if (string.IsNullOrEmpty(request.Token))
         {
             return BadRequest(new { error = "Token is missing." });
