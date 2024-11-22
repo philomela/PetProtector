@@ -51,7 +51,7 @@ public class UsersController : ApiControllerBase
         return Ok(await Mediator.Send(command));
     }
     
-    [HttpPost("crete-user-vk")]
+    [HttpPost("CreteUserVk")]
     public async Task<IActionResult> CreateUserVk([FromBody] VkTokenRequest request)
     {
         Console.WriteLine("start method crete-user-vk");
