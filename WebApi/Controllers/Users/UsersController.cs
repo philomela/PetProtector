@@ -51,119 +51,76 @@ public class UsersController : ApiControllerBase
         return Ok(await Mediator.Send(command));
     }
     
-    
-    [HttpGet("sign-in-yandex")]
-    public IActionResult SignInWithYandex()
+    [HttpPost("vk-callback")]
+    public async Task<IActionResult> VkCallback([FromBody] VkTokenRequest request)
     {
-        var redirectUri = "https://petprotector.ru/api/users/yandex-callback";
-        var clientId = "e98eb93b84224ac4ac06e2e2ceecf803";
-        var state = Guid.NewGuid().ToString();
-
-        var authUrl = $"https://oauth.yandex.ru/authorize?response_type=code&client_id={clientId}&redirect_uri={redirectUri}&state={state}";
-
-        return Redirect(authUrl);
-    }
-    
-    [HttpGet("yandex-callback")]
-    public async Task<IActionResult> YandexCallback(string state, string code, string cid)
-    {
-        Console.WriteLine("ya-callback started");
-        var result = await HttpContext.AuthenticateAsync("Yandex");
-
-        if (result.Succeeded)
+        if (string.IsNullOrEmpty(request.Token))
         {
-            var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
-            var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+            return BadRequest(new { error = "Token is missing." });
+        }
 
-            return Ok(await Mediator.Send(new CreateUserYandexCommand
+        try
+        {
+            // Запрос информации о пользователе
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(
+                $"https://api.vk.com/method/users.get?access_token={request.Token}&v=5.131");
+
+            if (!response.IsSuccessStatusCode)
             {
-                Email = email,
-                Name = name
-            }));
+                return BadRequest(new { error = "Failed to retrieve user information." });
+            }
+
+            var userContent = await response.Content.ReadAsStringAsync();
+            var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
+
+            if (userData?.Response == null || !userData.Response.Any())
+            {
+                return BadRequest(new { error = "User information is invalid." });
+            }
+
+            var user = userData.Response.First();
+            Console.WriteLine(user.Email + user.FirstName);
+            //var userExists = await _userRepository.ExistsAsync(user.Id);
+
+            // if (!userExists)
+            // {
+            //     // Создание нового пользователя
+            //     await _userRepository.AddAsync(new User
+            //     {
+            //         VkId = user.Id,
+            //         Name = $"{user.FirstName} {user.LastName}",
+            //         Email = user.Email
+            //     });
+            // }
+
+            return Ok(new { success = true, user = user });
         }
-
-        return Unauthorized();
-    }
-    
-    
-    [HttpGet("vk-callback")]
-public async Task<IActionResult> VkCallback([FromQuery] string code, [FromQuery] string state)
-{
-    Console.WriteLine("This is " + code);
-    if (string.IsNullOrEmpty(code))
-    {
-        return BadRequest(new { error = "Authorization code is missing." });
-    }
-
-    try
-    {
-        var clientId = "52743816";  // Укажите ваш Client ID
-        var clientSecret = "your_vk_client_secret"; // Укажите ваш Client Secret
-        var redirectUri = "https://petprotector.ru/profile";
-
-        // Обмен кода на токен
-        using var httpClient = new HttpClient();
-        var tokenResponse = await httpClient.GetAsync(
-            $"https://oauth.vk.com/access_token?" +
-            $"client_id={clientId}&client_secret={clientSecret}&redirect_uri={redirectUri}&code={code}");
-
-        if (!tokenResponse.IsSuccessStatusCode)
+        catch (Exception ex)
         {
-            return BadRequest(new { error = "Failed to exchange code for access token." });
+            return StatusCode(500, new { error = ex.Message });
         }
-
-        var tokenContent = await tokenResponse.Content.ReadAsStringAsync();
-        var tokenData = JsonSerializer.Deserialize<TokenResponse>(tokenContent);
-
-        // Получение информации о пользователе
-        var userResponse = await httpClient.GetAsync(
-            $"https://api.vk.com/method/users.get?" +
-            $"user_ids={tokenData.UserId}&fields=email&access_token={tokenData.AccessToken}&v=5.131");
-
-        if (!userResponse.IsSuccessStatusCode)
-        {
-            return BadRequest(new { error = "Failed to retrieve user information." });
-        }
-
-        var userContent = await userResponse.Content.ReadAsStringAsync();
-        var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
-
-        // Сохранение пользователя через Mediator
-        var user = userData.Response.FirstOrDefault();
-        Console.WriteLine(user.Id + " " + user.LastName + " " + user.FirstName);
-        return Ok(user
-        //     await Mediatoddr.Send(new CreateUserVkCommand
-        // {
-        //     Email = tokenData.Email, // Email приходит из токен-ответа
-        //     Name = $"{user.FirstName} {user.LastName}"
-        // })d
-            );
     }
-    catch (Exception ex)
+
+// Модель для запроса
+    public class VkTokenRequest
     {
-        return StatusCode(500, new { error = ex.Message });
+        public string Token { get; set; }
     }
-}
 
-
-private class TokenResponse
-{
-    public string AccessToken { get; set; }
-    public string Email { get; set; } // VK возвращает email в токене
-    public string UserId { get; set; }
-}
-
-private class VKUserResponse
-{
-    public List<VKUser> Response { get; set; }
-
-    public class VKUser
+// Модели ответа от VK
+    public class VKUserResponse
     {
-        public string Id { get; set; }
+        public List<UserInfoVk> Response { get; set; }
+    }
+
+    public class UserInfoVk
+    {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
     }
-}
+
 
 }
-

@@ -10,8 +10,7 @@ const VKIDComponent = () => {
 
         VKID.Config.init({
           app: 52743816,
-          redirectUrl: 'https://patprotector.ru/api/vk-callback',
-          responseMode: VKID.ConfigResponseMode.Callback,
+          responseMode: VKID.ConfigResponseMode.Callback, // Используем Callback
           source: VKID.ConfigSource.LOWCODE,
         });
 
@@ -21,31 +20,47 @@ const VKIDComponent = () => {
           .render({
             container: containerRef.current,
             showAlternativeLogin: true,
-            oauthList: ['ok_ru', 'mail_ru'],
+            oauthList: ['ok_ru', 'mail_ru'], // Другие способы входа
           })
-          .on(VKID.WidgetEvents.ERROR, vkidOnError)
-          .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, function (payload) {
-            const code = payload.code;
-            const deviceId = payload.device_id;
+          .on(VKID.WidgetEvents.ERROR, handleError)
+          .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, async (payload) => {
+            const { code, device_id: deviceId } = payload;
 
-            VKID.Auth.exchangeCode(code, deviceId)
-              .then(vkidOnSuccess)
-              .catch(vkidOnError);
+            try {
+              const tokenData = await VKID.Auth.exchangeCode(code, deviceId);
+
+              if (tokenData) {
+                console.log('Access token received:', tokenData);
+
+                // Отправка токена на бэкенд
+                const response = await fetch(
+                  'https://patprotector.ru/api/users/vk-callback',
+                  {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accessToken: tokenData.token }),
+                  }
+                );
+
+                if (response.ok) {
+                  const user = await response.json();
+                  console.log('User saved:', user);
+                } else {
+                  console.error('Backend error:', await response.text());
+                }
+              }
+            } catch (error) {
+              console.error('Error exchanging code for token:', error);
+            }
           });
 
-        function vkidOnSuccess(data) {
-          console.log('Login successful:', data);
-          // Обработка успешного входа
-        }
-
-        function vkidOnError(error) {
-          console.error('Login error:', error);
-          // Обработка ошибок
+        function handleError(error) {
+          console.error('VKID error:', error);
         }
       }
     };
 
-    // Загружаем SDK VKID, если его ещё нет
+    // Загружаем SDK VKID, если он еще не загружен
     if (!window.VKIDSDK) {
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js';
@@ -56,11 +71,7 @@ const VKIDComponent = () => {
     }
   }, []);
 
-  return (
-    <div>
-      <div ref={containerRef}></div>
-    </div>
-  );
+  return <div ref={containerRef}></div>;
 };
 
 export default VKIDComponent;
