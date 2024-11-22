@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import axios from "../../api/axios";
 
 const VKIDComponent = () => {
   const containerRef = useRef(null);
@@ -39,21 +40,18 @@ const VKIDComponent = () => {
           // После успешного обмена на токен отправляем его на бэкенд
           const accessToken = data.token; // Токен, полученный от VKID SDK
 
-          fetch('https://patprotector.ru/api/users/create-user-vk', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ accessToken }),
-          })
-            .then(response => response.json())
-            .then(userData => {
-              console.log('User created or fetched:', userData);
-              // Здесь можно выполнить дополнительные действия, например, сохранить токен в localStorage или редирект
-            })
-            .catch(error => {
-              console.error('Error calling API:', error);
-            });
+           // Отправляем токен на сервер с использованием axios
+           axios
+           .post('/api/users/create-user-vk', {
+             accessToken,
+           })
+           .then(response => {
+             console.log('User created or fetched:', response.data);
+             // Здесь можно выполнить дополнительные действия, например, сохранить токен или выполнить редирект
+           })
+           .catch(error => {
+             console.error('Error calling API:', error.response || error.message);
+           });
         }
 
         function vkidOnError(error) {
