@@ -44,7 +44,7 @@ const VKIDComponent = () => {
 
            // Отправляем токен на сервер с использованием axios
            axiosPrivate
-           .post('/api/users/create-user-vk', 
+           .post('/api/users/CreateUserVk', 
              JSON.stringify(accessToken)
            )
            .then(response => {

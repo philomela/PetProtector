@@ -1,13 +1,9 @@
-﻿using System.Security.Claims;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Application.Users.Commands.ConfirmRegister;
 using Application.Users.Commands.CreateUser;
-using Application.Users.Commands.CreateUserYandex;
 using Application.Users.Commands.ForgotPassword;
 using Application.Users.Commands.Restore;
 using Application.Users.Queries;
-using Domain.Core.Entities;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
