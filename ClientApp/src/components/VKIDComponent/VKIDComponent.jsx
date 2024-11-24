@@ -42,11 +42,13 @@ const VKIDComponent = () => {
 
           // После успешного обмена на токен отправляем его на бэкенд
           const accessToken = data.token; // Токен, полученный от VKID SDK
+          const email = data.email;
+          console.log(email);
 
            // Отправляем токен на сервер с использованием axios
            axiosPrivate
            .post('/api/users/LoginVk', 
-             JSON.stringify({accessToken: accessToken})
+             JSON.stringify({accessToken: accessToken, email: email})
            )
            .then(response => {
              console.log('User created or fetched:', response.data);

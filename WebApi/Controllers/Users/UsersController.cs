@@ -52,11 +52,11 @@ public class UsersController : ApiControllerBase
     public async Task<IActionResult> CreateUserVk([FromBody] VkTokenRequest request)
     {
         Console.WriteLine("start method LoginVk");
-        if (string.IsNullOrEmpty(request.AccessToken))
+        if (string.IsNullOrEmpty(request.AccessToken) || string.IsNullOrEmpty(request.Email))
         {
             return BadRequest(new { error = "Token is missing." });
         }
-
+        
         try
         {
             // Запрос информации о пользователе
@@ -107,6 +107,7 @@ public class UsersController : ApiControllerBase
     public class VkTokenRequest
     {
         public string AccessToken { get; set; }
+        public string Email { get; set; }
     }
 
 // Модели ответа от VK
