@@ -48,10 +48,10 @@ public class UsersController : ApiControllerBase
     }
     
     [AllowAnonymous]
-    [HttpPost("CreateUserVk")]
+    [HttpPost("LoginVk")]
     public async Task<IActionResult> CreateUserVk([FromBody] VkTokenRequest request)
     {
-        Console.WriteLine("start method crete-user-vk");
+        Console.WriteLine("start method LoginVk");
         if (string.IsNullOrEmpty(request.AccessToken))
         {
             return BadRequest(new { error = "Token is missing." });

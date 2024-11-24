@@ -16,6 +16,7 @@ const VKIDComponent = () => {
           redirectUrl: 'https://petprotector.ru/profile', // Укажите ваш redirectUrl
           responseMode: VKID.ConfigResponseMode.Callback,
           source: VKID.ConfigSource.LOWCODE,
+          scope: ['email']
         });
 
         const oneTap = new VKID.OneTap();
@@ -44,7 +45,7 @@ const VKIDComponent = () => {
 
            // Отправляем токен на сервер с использованием axios
            axiosPrivate
-           .post('/api/users/CreateUserVk', 
+           .post('/api/users/LoginVk', 
              JSON.stringify({accessToken: accessToken})
            )
            .then(response => {
