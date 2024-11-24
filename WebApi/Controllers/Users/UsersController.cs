@@ -47,7 +47,8 @@ public class UsersController : ApiControllerBase
         return Ok(await Mediator.Send(command));
     }
     
-    [HttpPost("CreteUserVk")]
+    [AllowAnonymous]
+    [HttpPost("CreateUserVk")]
     public async Task<IActionResult> CreateUserVk([FromBody] VkTokenRequest request)
     {
         Console.WriteLine("start method crete-user-vk");
@@ -69,12 +70,15 @@ public class UsersController : ApiControllerBase
             }
 
             var userContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"{userContent.ToString()}");
             var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
 
             if (userData?.Response == null || !userData.Response.Any())
             {
                 return BadRequest(new { error = "User information is invalid." });
             }
+            
+            Console.WriteLine($"{userData}");
 
             var user = userData.Response.First();
             Console.WriteLine(user.Email + user.FirstName);
