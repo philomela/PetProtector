@@ -57,72 +57,57 @@ public class UsersController : ApiControllerBase
             return BadRequest(new { error = "Token is missing." });
         }
         
-        try
-        {
-            // Запрос информации о пользователе
-            using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(
-                $"https://api.vk.com/method/users.get?access_token={request.AccessToken}&v=5.131");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return BadRequest(new { error = "Failed to retrieve user information." });
-            }
-
-            var userContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"{userContent.ToString()}");
-            var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
-
-            if (userData?.Response == null || !userData.Response.Any())
-            {
-                return BadRequest(new { error = "User information is invalid." });
-            }
-            
-            Console.WriteLine($"{userData}");
-
-            var user = userData.Response.First();
-            Console.WriteLine(user.Email + user.FirstName);
-            //var userExists = await _userRepository.ExistsAsync(user.Id);
-
-            // if (!userExists)
-            // {
-            //     // Создание нового пользователя
-            //     await _userRepository.AddAsync(new User
-            //     {
-            //         VkId = user.Id,
-            //         Name = $"{user.FirstName} {user.LastName}",
-            //         Email = user.Email
-            //     });
-            // }
-
-            return Ok(new { success = true, user = user });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
+        // try
+        // {
+        //     // Запрос информации о пользователе
+        //     using var httpClient = new HttpClient();
+        //     var response = await httpClient.GetAsync(
+        //         $"https://api.vk.com/method/users.get?access_token={request.AccessToken}&v=5.131");
+        //
+        //     if (!response.IsSuccessStatusCode)
+        //     {
+        //         return BadRequest(new { error = "Failed to retrieve user information." });
+        //     }
+        //
+        //     var userContent = await response.Content.ReadAsStringAsync();
+        //     Console.WriteLine($"{userContent.ToString()}");
+        //     var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
+        //
+        //     if (userData?.Response == null || !userData.Response.Any())
+        //     {
+        //         return BadRequest(new { error = "User information is invalid." });
+        //     }
+        //     
+        //     Console.WriteLine($"{userData}");
+        //
+        //     var user = userData.Response.First();
+        //     Console.WriteLine(user.Email + user.FirstName);
+        //     //var userExists = await _userRepository.ExistsAsync(user.Id);
+        //
+        //     // if (!userExists)
+        //     // {
+        //     //     // Создание нового пользователя
+        //     //     await _userRepository.AddAsync(new User
+        //     //     {
+        //     //         VkId = user.Id,
+        //     //         Name = $"{user.FirstName} {user.LastName}",
+        //     //         Email = user.Email
+        //     //     });
+        //     // }
+        //
+        //     return Ok(new { success = true, user = user });
+        // }
+        // catch (Exception ex)
+        // {
+        //     return StatusCode(500, new { error = ex.Message });
+        // }
+        return Ok();
     }
-
-// Модель для запроса
+    
+    // Модель для запроса
     public class VkTokenRequest
     {
         public string AccessToken { get; set; }
         public string Email { get; set; }
     }
-
-// Модели ответа от VK
-    public class VKUserResponse
-    {
-        public List<UserInfoVk> Response { get; set; }
-    }
-
-    public class UserInfoVk
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-    }
-
-
 }

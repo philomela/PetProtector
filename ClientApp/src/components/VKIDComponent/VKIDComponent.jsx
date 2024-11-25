@@ -16,7 +16,7 @@ const VKIDComponent = () => {
           redirectUrl: 'https://petprotector.ru/profile', // Укажите ваш redirectUrl
           responseMode: VKID.ConfigResponseMode.Callback,
           source: VKID.ConfigSource.LOWCODE,
-          scope: ['email']
+          scope: 'email phone'
         });
 
         const oneTap = new VKID.OneTap();
