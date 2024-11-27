@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import axios from "../../api/axios";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const VKIDComponent = () => {
@@ -13,9 +12,8 @@ const VKIDComponent = () => {
 
         VKID.Config.init({
           app: 52743816,
-          redirectUrl: 'https://petprotector.ru/profile', // Укажите ваш redirectUrl
-          responseMode: VKID.ConfigResponseMode.Callback,
-          source: VKID.ConfigSource.LOWCODE,
+          redirectUrl: 'https://petprotector.ru/api/users/CallbackVk', // Укажите ваш redirectUrl
+          responseMode: VKID.ConfigResponseMode.Redirect,
           scope: 'email'
         });
 
