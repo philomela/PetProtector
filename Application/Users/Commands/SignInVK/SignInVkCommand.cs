@@ -45,29 +45,21 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         {
 
         }
-
-        // Извлекаем сохранённый codeVerifier из Redis по state
+        
         var cacheKey = request.State;
-        var cachedData = await _cache.GetAsync<string>(cacheKey, cancellationToken);
+        var codeVerifier = await _cache.GetAsync<string>(cacheKey, cancellationToken);
 
-        Console.WriteLine("CachedData:" + " " + cachedData);
-
-        if (cachedData == null)
+        if (codeVerifier == null)
         {
-
+            throw new BadRequestException("Invalid state");
         }
-
-        // Преобразуем кэшированные данные
-        var codeVerifier = cachedData;
 
         // Удаляем state из Redis после проверки (одноразовый токен)
         //await _cache.RemoveAsync(cacheKey);
 
         // Выполняем запрос на получение токена
         var httpClient = new HttpClient();
-        Console.WriteLine(_configuration["Authentication:Yandex:ClientSecret"]);
-        Console.WriteLine(request.Code);
-        Console.WriteLine(codeVerifier);
+  
         var tokenResponse = await httpClient.PostAsync("https://id.vk.com/oauth2/auth", new FormUrlEncodedContent(
             new Dictionary<string, string>
             {
@@ -80,8 +72,6 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
                 {"device_id", request.DeviceId},
                 {"state", request.State}
             }));
-
-        Console.WriteLine(await tokenResponse.RequestMessage.Content.ReadAsStringAsync());
         
         if (!tokenResponse.IsSuccessStatusCode)
         {
@@ -90,10 +80,31 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
 
         // Обрабатываем успешный ответ
         var responseContent = await tokenResponse.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContent);
         var responseData = JsonConvert.DeserializeObject<VkTokenResponse>(responseContent);
-        Console.WriteLine(responseData);
 
+        var userInfoResponse = await httpClient.GetAsync($"https://id.vk.com/oauth2/user_info?access_token={responseData.AccessToken}&client_id={request.DeviceId}");
+        if (!userInfoResponse.IsSuccessStatusCode)
+        {
+            throw new BadRequestException("Failed to fetch user info");
+        }
+
+        var userInfoContent = await userInfoResponse.Content.ReadAsStringAsync();
+        var userInfoData = JsonConvert.DeserializeObject<VkUserInfoResponse>(userInfoContent);
+
+        if (userInfoData == null || userInfoData.Response == null || !userInfoData.Response.Any())
+        {
+            throw new BadRequestException("Failed to parse user info response");
+        }
+
+        var user = userInfoData.Response.First();
+
+        // Логируем данные пользователя
+        Console.WriteLine($"User ID: {user.Id}");
+        Console.WriteLine($"Full Name: {user.FirstName} {user.LastName}");
+        Console.WriteLine($"Email: {responseData.Email}");
+        Console.WriteLine($"Email: {user.Email}");
+        
+        
         // Дополнительная обработка полученного токена
         return responseData.AccessToken;
     }
@@ -105,17 +116,24 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         public string Email { get; set; }
     }
 
-// Модели ответа от VK
-    public class VKUserResponse
+    public class VkUserInfoResponse
     {
-        public List<UserInfoVk> Response { get; set; }
+        [JsonProperty("response")]
+        public List<VkUserInfo> Response { get; set; }
     }
 
-    public class UserInfoVk
+    public class VkUserInfo
     {
-        public int Id { get; set; }
+        [JsonProperty("id")]
+        public long Id { get; set; }
+
+        [JsonProperty("first_name")]
         public string FirstName { get; set; }
+
+        [JsonProperty("last_name")]
         public string LastName { get; set; }
+        
+        [JsonProperty("email")]
         public string Email { get; set; }
     }
 
@@ -131,4 +149,6 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         [JsonProperty("email")] public string Email { get; set; } // Nullable, если email не запрашивался в scope
     }
 
+    
+    
 }
