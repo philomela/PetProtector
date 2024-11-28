@@ -88,7 +88,12 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
             throw new BadRequestException("Failed to fetch user info");
         }
 
+        
+        
         var userInfoContent = await userInfoResponse.Content.ReadAsStringAsync();
+        
+        Console.WriteLine(userInfoContent);
+        
         var userInfoData = JsonConvert.DeserializeObject<VkUserInfoResponse>(userInfoContent);
 
         if (userInfoData == null || userInfoData.Response == null || !userInfoData.Response.Any())
