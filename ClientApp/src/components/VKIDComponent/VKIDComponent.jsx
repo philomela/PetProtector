@@ -10,7 +10,7 @@ const VKIDComponent = () => {
       if ('VKIDSDK' in window) {
         const VKID = window.VKIDSDK;
 
-        const response = await axios.get('/api/account/GetPKCE');
+        const response = await axiosPrivate.get('/api/account/GetPKCE');
         const { state, codeChallenge } = response.data;
 
         VKID.Config.init({
