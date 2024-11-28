@@ -6,15 +6,20 @@ const VKIDComponent = () => {
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    const loadVKIDSDK = () => {
+    const loadVKIDSDK = async () => {
       if ('VKIDSDK' in window) {
         const VKID = window.VKIDSDK;
 
+        const response = await axios.get('/api/account/GetPKCE');
+        const { state, codeChallenge } = response.data;
+
         VKID.Config.init({
           app: 52743816,
-          redirectUrl: 'https://petprotector.ru/api/users/CallbackVk', // Укажите ваш redirectUrl
+          redirectUrl: 'https://petprotector.ru/api/account/CallbackVk',
           responseMode: VKID.ConfigResponseMode.Redirect,
-          scope: 'email'
+          scope: 'email',
+          state: state,
+          codeChallenge: codeChallenge,
         });
 
         const oneTap = new VKID.OneTap();
@@ -26,36 +31,6 @@ const VKIDComponent = () => {
             oauthList: ['ok_ru', 'mail_ru'],
           })
           .on(VKID.WidgetEvents.ERROR, vkidOnError)
-          .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, function (payload) {
-            const code = payload.code;
-            const deviceId = payload.device_id;
-
-            VKID.Auth.exchangeCode(code, deviceId)
-              .then(vkidOnSuccess)
-              .catch(vkidOnError);
-          });
-
-        function vkidOnSuccess(data) {
-          console.log('Login successful:', data);
-
-          // После успешного обмена на токен отправляем его на бэкенд
-          const accessToken = data.token; // Токен, полученный от VKID SDK
-          const email = data.email;
-          console.log(email);
-
-           // Отправляем токен на сервер с использованием axios
-           axiosPrivate
-           .post('/api/users/LoginVk', 
-             JSON.stringify({accessToken: accessToken, email: email})
-           )
-           .then(response => {
-             console.log('User created or fetched:', response.data);
-             // Здесь можно выполнить дополнительные действия, например, сохранить токен или выполнить редирект
-           })
-           .catch(error => {
-             console.error('Error calling API:', error.response || error.message);
-           });
-        }
 
         function vkidOnError(error) {
           console.error('Login error:', error);

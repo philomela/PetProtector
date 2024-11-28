@@ -5,15 +5,19 @@ using Domain.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace Application.Users.Commands.CreateUserYandex;
 
-public class SignInVkCommand : IRequest<string>
+public record SignInVkCommand : IRequest<string>
 {
-    public string AccessToken;
-
-    public string Email;
+    public string State { get; set; } 
+    
+    public string Code { get; set; } 
+    
+    public string DeviceId { get; set; }
 }
 
 public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
@@ -22,110 +26,101 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
     private readonly IJwtTokenManager _tokenManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IHostEnvironment _environment;
+    private readonly IRedisCache _cache;
+    private readonly IConfiguration _configuration;
 
     public SignInVkCommandHandler(
-        UserManager<AppUser> userManager, 
+        UserManager<AppUser> userManager,
         IJwtTokenManager tokenManager,
         IHttpContextAccessor httpContextAccessor,
-        IHostEnvironment environment)
-        => (_userManager, _tokenManager, _httpContextAccessor, _environment) = (userManager, tokenManager, httpContextAccessor, environment);
-    
+        IRedisCache cache,
+        IHostEnvironment environment,
+        IConfiguration configuration)
+        => (_userManager, _tokenManager, _httpContextAccessor, _environment, _cache, _configuration)
+            = (userManager, tokenManager, httpContextAccessor, environment, cache, configuration);
+
     public async Task<string> Handle(SignInVkCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.AccessToken) || string.IsNullOrEmpty(request.Email))
+        if (string.IsNullOrEmpty(request.State) || string.IsNullOrEmpty(request.Code))
         {
-            throw new BadRequestException("Token is missing");
-        }
-        // Запрос информации о пользователе
-        using var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync(
-            $"https://api.vk.com/method/users.get?access_token={request.AccessToken}&v=5.131");
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new BadRequestException("Failed to retrieve user information");
         }
 
-        var userContent = await response.Content.ReadAsStringAsync();
-        var userData = JsonSerializer.Deserialize<VKUserResponse>(userContent);
+        // Извлекаем сохранённый codeVerifier из Redis по state
+        var cacheKey = request.State;
+        var cachedData = await _cache.GetAsync<string>(cacheKey, cancellationToken);
 
-        if (userData?.Response == null || !userData.Response.Any())
+        Console.WriteLine("CachedData:" + " " + cachedData);
+
+        if (cachedData == null)
         {
-            throw new BadRequestException("User information is invalid");
+
         }
-            
-        var userVk = userData.Response.First();
-            
-        // Проверка, существует ли пользователь
-        var user = await _userManager.FindByEmailAsync(request.Email);
 
-        if (user == null)
-        {
-            user = new AppUser()
+        // Преобразуем кэшированные данные
+        var codeVerifier = cachedData;
+
+        // Удаляем state из Redis после проверки (одноразовый токен)
+        //await _cache.RemoveAsync(cacheKey);
+
+        // Выполняем запрос на получение токена
+        var httpClient = new HttpClient();
+        var tokenResponse = await httpClient.PostAsync("https://oauth.vk.com/access_token", new FormUrlEncodedContent(
+            new Dictionary<string, string>
             {
-                Email = request.Email,
-                UserName = request.Email,
-                FullName = userVk.FirstName,
-                CreatedAt = DateTime.UtcNow.Date
-            };
+                { "client_id", "52743816" },
+                { "client_secret", _configuration["Authentication:Yandex:ClientSecret"] },
+                { "redirect_uri", "https://petprotector.ru/api/account/CallbackVk" },
+                { "code", request.Code },
+                { "code_verifier", codeVerifier }
+            }));
 
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, "Hello46!");
-
-            var result = await _userManager.CreateAsync(user);
-
-            if (!result.Succeeded && result.Errors.Any())
-                throw new Exception("User was not created");
+        if (!tokenResponse.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Failed to exchange code for token");
         }
-        var token = _tokenManager.GenerateAccessToken(user);
-        var refreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
-            
-        return "true";
-        
-        
 
-        user.Tokens.Add(new AppRefreshToken
-        {
-            UserId = user.Id,
-            CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-            Token = refreshToken,
-            CreatedOn = DateTime.UtcNow,
-            ExpiryOn = DateTime.UtcNow.AddDays(1),
-            RevokedByIp = null
-        });
+        // Обрабатываем успешный ответ
+        var responseContent = await tokenResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(responseContent);
+        var responseData = JsonConvert.DeserializeObject<VkTokenResponse>(responseContent);
+        Console.WriteLine(responseData);
 
-        await _userManager.UpdateAsync(user);
-
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Expires = DateTime.UtcNow.AddDays(7),
-            Secure = true,
-            SameSite = _environment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None
-        };
-
-        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-
-        return token;
+        // Дополнительная обработка полученного токена
+        return responseData.AccessToken;
     }
-}
 
 // Модель для запроса
-public class VkTokenRequest
-{
-    public string AccessToken { get; set; }
-    public string Email { get; set; }
-}
+    public class VkTokenRequest
+    {
+        public string AccessToken { get; set; }
+        public string Email { get; set; }
+    }
 
 // Модели ответа от VK
-public class VKUserResponse
-{
-    public List<UserInfoVk> Response { get; set; }
-}
+    public class VKUserResponse
+    {
+        public List<UserInfoVk> Response { get; set; }
+    }
 
-public class UserInfoVk
-{
-    public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
+    public class UserInfoVk
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+    }
+
+
+    public class VkTokenResponse
+    {
+        [JsonProperty("access_token")] public string AccessToken { get; set; }
+
+        [JsonProperty("expires_in")] public int ExpiresIn { get; set; }
+
+        [JsonProperty("user_id")] public long UserId { get; set; }
+
+        [JsonProperty("email")] public string Email { get; set; } // Nullable, если email не запрашивался в scope
+    }
+
 }
