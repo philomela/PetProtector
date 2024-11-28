@@ -78,6 +78,8 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
                 { "code_verifier", codeVerifier }
             }));
 
+        Console.WriteLine(await tokenResponse.RequestMessage.Content.ReadAsStringAsync());
+        
         if (!tokenResponse.IsSuccessStatusCode)
         {
             Console.WriteLine("Failed to exchange code for token");
