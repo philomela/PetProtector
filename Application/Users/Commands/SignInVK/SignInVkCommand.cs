@@ -101,33 +101,26 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         
         Console.WriteLine(userInfoContent);
         
-        var userInfoData = JsonConvert.DeserializeObject<VkUserInfoResponse>(userInfoContent);
+        var userInfoData = JsonConvert.DeserializeObject<VkUserInfo>(userInfoContent);
 
-        if (userInfoData == null || userInfoData.Response == null || !userInfoData.Response.Any())
+        if (userInfoData == null)
         {
             throw new BadRequestException("Failed to parse user info response");
         }
 
-        var user = userInfoData.Response.First();
+
 
         // Логируем данные пользователя
-        Console.WriteLine($"User ID: {user.Id}");
-        Console.WriteLine($"Full Name: {user.FirstName} {user.LastName}");
+        Console.WriteLine($"User ID: {userInfoData.Id}");
+        Console.WriteLine($"Full Name: {userInfoData.FirstName} {userInfoData.LastName}");
         Console.WriteLine($"Email: {responseData.Email}");
-        Console.WriteLine($"Email: {user.Email}");
+        Console.WriteLine($"Email: {userInfoData.Email}");
         
         
         // Дополнительная обработка полученного токена
         return responseData.AccessToken;
     }
-
-// Модель для запроса
-    public class VkTokenRequest
-    {
-        public string AccessToken { get; set; }
-        public string Email { get; set; }
-    }
-
+    
     public class VkUserInfoResponse
     {
         [JsonProperty("response")]
