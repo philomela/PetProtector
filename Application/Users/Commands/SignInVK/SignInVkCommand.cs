@@ -101,20 +101,18 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         
         Console.WriteLine(userInfoContent);
         
-        var userInfoData = JsonConvert.DeserializeObject<VkUserInfo>(userInfoContent);
+        var userInfoData = JsonConvert.DeserializeObject<VkUserInfoResponse>(userInfoContent);
 
         if (userInfoData == null)
         {
             throw new BadRequestException("Failed to parse user info response");
         }
 
-
-
+        
         // Логируем данные пользователя
-        Console.WriteLine($"User ID: {userInfoData.Id}");
-        Console.WriteLine($"Full Name: {userInfoData.FirstName} {userInfoData.LastName}");
-        Console.WriteLine($"Email: {responseData.Email}");
-        Console.WriteLine($"Email: {userInfoData.Email}");
+        Console.WriteLine($"User ID: {userInfoData.User.Id}");
+        Console.WriteLine($"Full Name: {userInfoData.User.FirstName} {userInfoData.User.LastName}");
+        Console.WriteLine($"Email: {userInfoData.User.Email}");
         
         
         // Дополнительная обработка полученного токена
@@ -123,13 +121,13 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
     
     public class VkUserInfoResponse
     {
-        [JsonProperty("response")]
-        public List<VkUserInfo> Response { get; set; }
+        [JsonProperty("user")]
+        public VkUserInfo User { get; set; }
     }
 
     public class VkUserInfo
     {
-        [JsonProperty("id")]
+        [JsonProperty("user_id")]
         public long Id { get; set; }
 
         [JsonProperty("first_name")]
