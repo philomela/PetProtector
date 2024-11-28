@@ -82,7 +82,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         var responseContent = await tokenResponse.Content.ReadAsStringAsync();
         var responseData = JsonConvert.DeserializeObject<VkTokenResponse>(responseContent);
 
-        var userInfoResponse = await httpClient.GetAsync($"https://id.vk.com/oauth2/user_info?access_token={responseData.AccessToken}&client_id={request.DeviceId}");
+        var userInfoResponse = await httpClient.GetAsync($"https://id.vk.com/oauth2/user_info?access_token={responseData.AccessToken}&client_id=52743816");
         if (!userInfoResponse.IsSuccessStatusCode)
         {
             throw new BadRequestException("Failed to fetch user info");
