@@ -68,14 +68,17 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         Console.WriteLine(_configuration["Authentication:Yandex:ClientSecret"]);
         Console.WriteLine(request.Code);
         Console.WriteLine(codeVerifier);
-        var tokenResponse = await httpClient.PostAsync("https://oauth.vk.com/access_token", new FormUrlEncodedContent(
+        var tokenResponse = await httpClient.PostAsync("https://id.vk.com/oauth2/auth", new FormUrlEncodedContent(
             new Dictionary<string, string>
             {
+                {"grant_type", "authorization_code"},
                 { "client_id", "52743816" },
                 { "client_secret", _configuration["Authentication:Yandex:ClientSecret"] },
                 { "redirect_uri", "https://petprotector.ru/api/accounts/CallbackVk" },
                 { "code", request.Code },
-                { "code_verifier", codeVerifier }
+                { "code_verifier", codeVerifier },
+                {"device_id", request.DeviceId},
+                {"state", request.State}
             }));
 
         Console.WriteLine(await tokenResponse.RequestMessage.Content.ReadAsStringAsync());
