@@ -81,9 +81,6 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         // Обрабатываем успешный ответ
         var responseContent = await tokenResponse.Content.ReadAsStringAsync();
         var responseData = JsonConvert.DeserializeObject<VkTokenResponse>(responseContent);
-
-        Console.WriteLine(responseData.AccessToken);
-        
         
         var userInfoResponse = await httpClient.PostAsync("https://id.vk.com/oauth2/user_info", new FormUrlEncodedContent(
             new Dictionary<string, string>
@@ -108,15 +105,53 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
             throw new BadRequestException("Failed to parse user info response");
         }
 
+
+        var user = await _userManager.FindByEmailAsync(userInfoData.User.Email);
+
+        if (user is null)
+        {
+            user = new AppUser()
+            {
+                Email = userInfoData.User.Email,
+                UserName = userInfoData.User.Email,
+                FullName = userInfoData.User.FirstName,
+                CreatedAt = DateTime.UtcNow.Date
+            };
+
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, "Hello46!");
+
+            var result = await _userManager.CreateAsync(user);
+
+            if (!result.Succeeded && result.Errors.Any())
+                throw new Exception("User was not created");
+        }
         
-        // Логируем данные пользователя
-        Console.WriteLine($"User ID: {userInfoData.User.Id}");
-        Console.WriteLine($"Full Name: {userInfoData.User.FirstName} {userInfoData.User.LastName}");
-        Console.WriteLine($"Email: {userInfoData.User.Email}");
-        
-        
-        // Дополнительная обработка полученного токена
-        return responseData.AccessToken;
+        var token = _tokenManager.GenerateAccessToken(user);
+        var refreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
+
+        user.Tokens.Add(new AppRefreshToken
+        {
+            UserId = user.Id,
+            CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
+            Token = refreshToken,
+            CreatedOn = DateTime.UtcNow,
+            ExpiryOn = DateTime.UtcNow.AddDays(1),
+            RevokedByIp = null
+        });
+
+        await _userManager.UpdateAsync(user);
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.UtcNow.AddDays(7),
+            Secure = true,
+            SameSite = _environment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None
+        };
+
+        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+
+        return token;
     }
     
     public class VkUserInfoResponse

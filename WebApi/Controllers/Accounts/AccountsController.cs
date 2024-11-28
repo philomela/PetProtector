@@ -54,7 +54,7 @@ public class AccountsController : ApiControllerBase
             return BadRequest(new { error = "Parameters is missing" });
         }
 
-        await Mediator.Send(new SignInVkCommand()
+        var result = await Mediator.Send(new SignInVkCommand()
         {
             Code = code,
             DeviceId = device_id,
@@ -104,6 +104,6 @@ public class AccountsController : ApiControllerBase
         // {
         //     return StatusCode(500, new { error = ex.Message });
         // }
-        return Ok();
+        return Ok(result);
     }
 }
