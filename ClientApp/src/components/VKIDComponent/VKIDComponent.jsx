@@ -10,12 +10,12 @@ const VKIDComponent = () => {
       if ('VKIDSDK' in window) {
         const VKID = window.VKIDSDK;
 
-        const response = await axiosPrivate.get('/api/account/GetPKCE');
+        const response = await axiosPrivate.get('/api/accounts/GetPKCE');
         const { state, codeChallenge } = response.data;
 
         VKID.Config.init({
           app: 52743816,
-          redirectUrl: 'https://petprotector.ru/api/account/CallbackVk',
+          redirectUrl: 'https://petprotector.ru/api/accounts/CallbackVk',
           responseMode: VKID.ConfigResponseMode.Redirect,
           scope: 'email',
           state: state,
