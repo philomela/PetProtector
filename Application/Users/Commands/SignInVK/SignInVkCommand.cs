@@ -70,7 +70,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
             {
                 { "client_id", "52743816" },
                 { "client_secret", _configuration["Authentication:Yandex:ClientSecret"] },
-                { "redirect_uri", "https://petprotector.ru/api/account/CallbackVk" },
+                { "redirect_uri", "https://petprotector.ru/api/accounts/CallbackVk" },
                 { "code", request.Code },
                 { "code_verifier", codeVerifier }
             }));
