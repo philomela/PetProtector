@@ -65,6 +65,9 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
 
         // Выполняем запрос на получение токена
         var httpClient = new HttpClient();
+        Console.WriteLine(_configuration["Authentication:Yandex:ClientSecret"]);
+        Console.WriteLine(request.Code);
+        Console.WriteLine(codeVerifier);
         var tokenResponse = await httpClient.PostAsync("https://oauth.vk.com/access_token", new FormUrlEncodedContent(
             new Dictionary<string, string>
             {
