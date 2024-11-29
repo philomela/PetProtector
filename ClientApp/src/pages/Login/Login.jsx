@@ -25,6 +25,28 @@ const Login = () => {
   const [errMsg, setErrMsg] = useState(null);
   const errMsgRef = useRef(null);
 
+
+   // Добавляем обработку редиректа с VK OAuth
+   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get("accessToken"); // Предполагаем, что токен возвращается
+    const redirectUrl = params.get("redirect"); // Сохраненный путь до авторизации
+
+    if (accessToken) {
+      // Сохраняем токен и авторизационные данные
+      localStorage.setItem("accessToken", accessToken);
+
+      setAuth({
+        accessToken,
+        isAuth: true,
+      });
+
+      // Перенаправляем пользователя на сохранённый или стандартный маршрут
+      navigate(redirectUrl || from, { replace: true });
+    }
+  }, [location, navigate, setAuth, from]);
+  
+
   useEffect(() => {
     setErrMsg(null);
   }, [email, password]);

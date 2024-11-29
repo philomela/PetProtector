@@ -18,7 +18,7 @@ const VKIDComponent = () => {
           redirectUrl: 'https://petprotector.ru/api/accounts/CallbackVk',
           responseMode: VKID.ConfigResponseMode.Redirect,
           scope: 'email',
-          state: state,
+          state: `${state}|${encodeURIComponent(window.location.pathname)}`,
           codeChallenge: codeChallenge,
         });
 
