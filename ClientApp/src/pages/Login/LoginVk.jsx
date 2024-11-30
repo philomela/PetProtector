@@ -31,6 +31,7 @@ const LoginVk = () => {
     const params = new URLSearchParams(location.search);
     const state = params.get("state"); // Предполагаем, что токен возвращается
     const redirectUrl = params.get("redirectUrl"); // Сохраненный путь до авторизации
+    const from = location.state?.from?.pathname || "/profile";
 
       try {
         const response = await axios.post(
@@ -59,7 +60,7 @@ const LoginVk = () => {
 
       
     
-  }, [location, navigate, setAuth, from]);
+  }, [location, navigate, setAuth]);
   
 
   return (
