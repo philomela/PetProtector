@@ -104,7 +104,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
             throw new BadRequestException("Failed to parse user info response");
         }
 
-
+        Console.WriteLine("User is: "userInfoData.User.Email);        
         var user = await _userManager.FindByEmailAsync(userInfoData.User.Email);
 
         if (user is null)
