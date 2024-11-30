@@ -12,7 +12,7 @@ const VKIDComponent = () => {
       if ('VKIDSDK' in window) {
         const VKID = window.VKIDSDK;
 
-        const response = await axiosPrivate.get('/api/accounts/GetPKCE'); //Передать redirectionUrl сюда
+        const response = await axiosPrivate.get(`/api/accounts/GetPKCE?redirectUrl=${encodeURIComponent(from)}`); //Передать redirectionUrl сюда
         const { state, codeChallenge } = response.data;
 
         VKID.Config.init({

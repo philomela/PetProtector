@@ -24,7 +24,7 @@ public class GeneratePkceQueryHandler : IRequestHandler<GetPkceQuery, PkceVm>
 
     public async Task<PkceVm> Handle(GetPkceQuery request, CancellationToken cancellationToken)
     {
-        var state = Guid.NewGuid().ToString();
+        var state = Guid.NewGuid().ToString() + "|" + request.RedirectUri;
         var codeVerifier = GenerateRandomString(64); // Длина от 43 до 128 символов
         var codeChallenge = GenerateCodeChallenge(codeVerifier);
 

@@ -40,9 +40,9 @@ public class AccountsController : ApiControllerBase
     
     [AllowAnonymous]
     [HttpGet("GetPKCE")]
-    public async Task<IActionResult> GenerateStateAndChallenge()
+    public async Task<IActionResult> GenerateStateAndChallenge(string redirectUrl)
     {
-        return Ok(await Mediator.Send(new GetPkceQuery() {}));
+        return Ok(await Mediator.Send(new GetPkceQuery() {RedirectUri = redirectUrl}));
     }
 
     [AllowAnonymous]

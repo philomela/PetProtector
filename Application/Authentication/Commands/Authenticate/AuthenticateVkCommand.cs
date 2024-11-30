@@ -53,12 +53,12 @@ public class AuthenticateVkCommandHandler : IRequestHandler<AuthenticateVkComman
             throw new BadRequestException("Invalid state");
         }
 
+        var user = await _userManager.FindByIdAsync(userInfo.Email);
         
-        
-        var token = _tokenManager.GenerateAccessToken(userInfo);
-        var refreshToken = _tokenManager.GenerateRefreshTokenAsync(userInfo);
+        var token = _tokenManager.GenerateAccessToken(user);
+        var refreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
 
-        userInfo.Tokens.Add(new AppRefreshToken
+        user.Tokens.Add(new AppRefreshToken
         {
             UserId = userInfo.Id,
             CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
@@ -82,8 +82,4 @@ public class AuthenticateVkCommandHandler : IRequestHandler<AuthenticateVkComman
 
         return token;
     }
-    
-
-    
-    
 }
