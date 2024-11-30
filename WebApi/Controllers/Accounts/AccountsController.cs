@@ -59,7 +59,7 @@ public class AccountsController : ApiControllerBase
         var originalState = stateParts[0];
         var redirectUrl = stateParts.Length > 1 ? stateParts[1] : "/";
         
-        var result = await Mediator.Send(new SignInVkCommand()
+        var stateResponse = await Mediator.Send(new SignInVkCommand()
         {
             Code = code,
             DeviceId = device_id,
@@ -67,6 +67,20 @@ public class AccountsController : ApiControllerBase
         });
         
         // Возвращаем токен и redirect URL
-        return Redirect($"{redirectUrl}?accessToken={result}");
+        return Redirect($"https://petprotector.ru/LoginVk?state={stateResponse}&redirectUrl={redirectUrl}");
+        
+        
     }
+    
+    [AllowAnonymous]
+    [HttpPost("LoginVk")]
+    public async Task<IActionResult> LoginVk(AuthenticateVkCommand request)
+    {
+        var result = await Mediator.Send(request);
+        
+        return Ok(result);
+        
+    }
+
+   
 }

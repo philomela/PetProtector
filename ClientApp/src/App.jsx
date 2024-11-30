@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
+import LoginVk from "./pages/Login/LoginVk";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import Logout from "./components/Logout/Logout";
 import Questionnaire from "./pages/Questionnaire/Questionnaire";
@@ -23,7 +24,9 @@ const App = () => {
           
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route path="/login" element={<Login />} />              
+              <Route path="/login" element={<Login />} />  
+
+              <Route path="/auth-redirect" element={<LoginVk />} />            
               
               <Route path="/forgot-password" element={<ForgotPassword />} />
 

@@ -4,13 +4,15 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 const VKIDComponent = () => {
   const containerRef = useRef(null);
   const axiosPrivate = useAxiosPrivate();
+  const from = location.state?.from?.pathname || "/profile";
+  console.log(from) //Для отладки
 
   useEffect(() => {
     const loadVKIDSDK = async () => {
       if ('VKIDSDK' in window) {
         const VKID = window.VKIDSDK;
 
-        const response = await axiosPrivate.get('/api/accounts/GetPKCE');
+        const response = await axiosPrivate.get('/api/accounts/GetPKCE'); //Передать redirectionUrl сюда
         const { state, codeChallenge } = response.data;
 
         VKID.Config.init({
@@ -18,7 +20,7 @@ const VKIDComponent = () => {
           redirectUrl: 'https://petprotector.ru/api/accounts/CallbackVk',
           responseMode: VKID.ConfigResponseMode.Redirect,
           scope: 'email',
-          state: `${state}|${encodeURIComponent(window.location.pathname)}`,
+          state: `${state}|${encodeURIComponent(from)}`,
           codeChallenge: codeChallenge,
         });
 

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Core.Entities;
 using MediatR;
@@ -46,8 +45,8 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
 
         }
         
-        var cacheKey = request.State;
-        var codeVerifier = await _cache.GetAsync<string>(cacheKey, cancellationToken);
+        var cacheKeyState = request.State;
+        var codeVerifier = await _cache.GetAsync<string>(cacheKeyState, cancellationToken);
 
         if (codeVerifier == null)
         {
@@ -126,32 +125,10 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
                 throw new Exception("User was not created");
         }
         
-        var token = _tokenManager.GenerateAccessToken(user);
-        var refreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
-
-        user.Tokens.Add(new AppRefreshToken
-        {
-            UserId = user.Id,
-            CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-            Token = refreshToken,
-            CreatedOn = DateTime.UtcNow,
-            ExpiryOn = DateTime.UtcNow.AddDays(1),
-            RevokedByIp = null
-        });
-
-        await _userManager.UpdateAsync(user);
-
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Expires = DateTime.UtcNow.AddDays(7),
-            Secure = true,
-            SameSite = _environment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None
-        };
-
-        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-
-        return token;
+        var cacheKeyStateResponse = request.State + codeVerifier;
+        await _cache.SetAsync(cacheKeyStateResponse, user, cancellationToken, TimeSpan.FromMinutes(1));
+        
+        return cacheKeyStateResponse;
     }
     
     public class VkUserInfoResponse
