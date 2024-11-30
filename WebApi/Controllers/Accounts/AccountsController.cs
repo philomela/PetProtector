@@ -67,7 +67,7 @@ public class AccountsController : ApiControllerBase
         });
         
         // Возвращаем токен и redirect URL
-        return Redirect($"https://petprotector.ru/LoginVk?state={stateResponse}&redirectUrl={redirectUrl}");
+        return Redirect($"https://petprotector.ru/auth-redirect?state={stateResponse}&redirectUrl={redirectUrl}");
         
         
     }
