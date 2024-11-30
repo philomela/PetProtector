@@ -42,6 +42,8 @@ public class AuthenticateVkCommandHandler : IRequestHandler<AuthenticateVkComman
         {
             throw new BadRequestException("Invalid request");
         }
+
+        Console.WriteLine($"Started {nameof(AuthenticateVkCommand)}");
         
         var cacheKeyState = request.State;
         var userInfo = await _cache.GetAsync<AppUser>(cacheKeyState, cancellationToken);

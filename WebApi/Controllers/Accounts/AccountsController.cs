@@ -65,6 +65,8 @@ public class AccountsController : ApiControllerBase
             DeviceId = device_id,
             State = state
         });
+
+        Console.WriteLine("Redirect on url auth-redirect");
         
         // Возвращаем токен и redirect URL
         return Redirect($"https://petprotector.ru/auth-redirect?state={stateResponse}&redirectUrl={redirectUrl}");

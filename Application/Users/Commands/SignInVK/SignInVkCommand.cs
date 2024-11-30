@@ -114,7 +114,8 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
                 Email = userInfoData.User.Email,
                 UserName = userInfoData.User.Email,
                 FullName = userInfoData.User.FirstName,
-                CreatedAt = DateTime.UtcNow.Date
+                CreatedAt = DateTime.UtcNow.Date,
+                EmailConfirmed = true
             };
 
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, "Hello46!");
