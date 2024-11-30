@@ -49,6 +49,7 @@ public class AccountsController : ApiControllerBase
     [HttpGet("CallbackVk")]
     public async Task<IActionResult> CallbackVk(string state, string code, string device_id)
     {
+        Console.WriteLine($"Started {nameof(CallbackVk)}");
         if (string.IsNullOrEmpty(state) || string.IsNullOrEmpty(code) || string.IsNullOrEmpty(device_id))
         {
             return BadRequest(new { error = "Parameters is missing" });
