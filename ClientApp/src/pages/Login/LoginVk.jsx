@@ -39,8 +39,8 @@ const LoginVk = () => {
         // Перенаправляем пользователя на сохранённый или стандартный маршрут
         navigate(redirectUrl || from, { replace: true });
       } catch (err) {
-        setErrMsg("Ошибка авторизации.");
-        navigate("/unauthorize", { replace: true });
+        setErrMsg("Ошибка авторизации." + err);
+        //navigate("/unauthorize", { replace: true });
       }
     }
 
