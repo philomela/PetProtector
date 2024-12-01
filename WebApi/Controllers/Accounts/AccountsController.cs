@@ -76,7 +76,7 @@ public class AccountsController : ApiControllerBase
     {
         var token = await Mediator.Send(request);
         
-        return Ok(token);
+        return Ok(new {token});
         
     }
 
