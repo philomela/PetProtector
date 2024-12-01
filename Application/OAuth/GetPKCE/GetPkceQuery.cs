@@ -24,12 +24,16 @@ public class GeneratePkceQueryHandler : IRequestHandler<GetPkceQuery, PkceVm>
 
     public async Task<PkceVm> Handle(GetPkceQuery request, CancellationToken cancellationToken)
     {
-        var state = Guid.NewGuid().ToString() + "|" + request.RedirectUri;
+        var state = Guid.NewGuid().ToString(); //Видимо в state нельзя передать Url
         var codeVerifier = GenerateRandomString(64); // Длина от 43 до 128 символов
         var codeChallenge = GenerateCodeChallenge(codeVerifier);
 
         // Сохраняем данные в кэше для проверки на этапе обратного вызова
-        await _cache.SetAsync(state, codeVerifier, cancellationToken, TimeSpan.FromMinutes(1));
+        await _cache.SetAsync(state, new CacheItem()
+        {
+            CodeVerifier = codeVerifier, 
+            RedirectUri = request.RedirectUri
+        }, cancellationToken, TimeSpan.FromMinutes(1));
         //Возможно стоит уменьшить время жизни в кеше.
         
         return new PkceVm
@@ -51,5 +55,11 @@ public class GeneratePkceQueryHandler : IRequestHandler<GetPkceQuery, PkceVm>
         using var sha256 = SHA256.Create();
         var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
         return Convert.ToBase64String(hash).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+    }
+    
+    public class CacheItem
+    {
+        public string CodeVerifier { get; set; }
+        public string RedirectUri { get; set; }
     }
 }

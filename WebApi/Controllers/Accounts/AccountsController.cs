@@ -54,13 +54,8 @@ public class AccountsController : ApiControllerBase
         {
             return BadRequest(new { error = "Parameters is missing" });
         }
-
-        // Разделяем state на оригинальный state и redirect URL
-        var stateParts = state.Split('|');
-        var originalState = stateParts[0];
-        var redirectUrl = stateParts.Length > 1 ? stateParts[1] : "/";
         
-        var stateResponse = await Mediator.Send(new SignInVkCommand()
+        var (stateResponse, redirectUrl) = await Mediator.Send(new SignInVkCommand()
         {
             Code = code,
             DeviceId = device_id,

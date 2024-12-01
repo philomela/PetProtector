@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Application.Users.Commands.CreateUserYandex;
 
-public record SignInVkCommand : IRequest<string>
+public record SignInVkCommand : IRequest<(string, string)>
 {
     public string State { get; set; } 
     
@@ -19,7 +19,7 @@ public record SignInVkCommand : IRequest<string>
     public string DeviceId { get; set; }
 }
 
-public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
+public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, string)>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IJwtTokenManager _tokenManager;
@@ -38,7 +38,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         => (_userManager, _tokenManager, _httpContextAccessor, _environment, _cache, _configuration)
             = (userManager, tokenManager, httpContextAccessor, environment, cache, configuration);
 
-    public async Task<string> Handle(SignInVkCommand request, CancellationToken cancellationToken)
+    public async Task<(string, string)> Handle(SignInVkCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.State) || string.IsNullOrEmpty(request.Code))
         {
@@ -46,9 +46,9 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
         }
         
         var cacheKeyState = request.State;
-        var codeVerifier = await _cache.GetAsync<string>(cacheKeyState, cancellationToken);
+        var cacheItem = await _cache.GetAsync<CacheItem>(cacheKeyState, cancellationToken);
 
-        if (codeVerifier == null)
+        if (cacheItem == null)
         {
             throw new BadRequestException("Invalid state");
         }
@@ -67,7 +67,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
                 { "client_secret", _configuration["Authentication:Yandex:ClientSecret"] },
                 { "redirect_uri", "https://petprotector.ru/api/accounts/CallbackVk" },
                 { "code", request.Code },
-                { "code_verifier", codeVerifier },
+                { "code_verifier", cacheItem.CodeVerifier },
                 {"device_id", request.DeviceId},
                 {"state", request.State}
             }));
@@ -126,10 +126,10 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
                 throw new Exception("User was not created");
         }
         
-        var cacheKeyStateResponse = request.State + codeVerifier;
+        var cacheKeyStateResponse = request.State + cacheItem.CodeVerifier;
         await _cache.SetAsync(cacheKeyStateResponse, user, cancellationToken, TimeSpan.FromMinutes(1));
         
-        return cacheKeyStateResponse;
+        return (cacheKeyStateResponse, cacheItem.RedirectUri);
     }
     
     public class VkUserInfoResponse
@@ -166,5 +166,9 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, string>
     }
 
     
-    
+    public class CacheItem
+    {
+        public string CodeVerifier { get; set; }
+        public string RedirectUri { get; set; }
+    }
 }
