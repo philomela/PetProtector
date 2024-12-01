@@ -74,9 +74,9 @@ public class AccountsController : ApiControllerBase
     [HttpPost("LoginVk")]
     public async Task<IActionResult> LoginVk(AuthenticateVkCommand request)
     {
-        var result = await Mediator.Send(request);
+        var token = await Mediator.Send(request);
         
-        return Ok(result);
+        return Ok(token);
         
     }
 
