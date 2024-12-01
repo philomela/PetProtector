@@ -31,9 +31,12 @@ const LoginVk = () => {
         );
 
         const accessToken = response?.data?.token;
-        const payload = JSON.parse(atob(accessToken.split(".")[1]));
-        const { role, nameid: userId, unique_name: userName } = payload;
-        const isAuth = true;
+      const payload = accessToken.split(".")[1];
+      const role = JSON.parse(atob(payload)).role;
+      const userId = JSON.parse(atob(payload)).nameid;
+      const userName = JSON.parse(atob(payload)).unique_name;
+      const isAuth = true;
+
 
         setAuth({ userId, userName, role, accessToken, isAuth });
         // Перенаправляем пользователя на сохранённый или стандартный маршрут
