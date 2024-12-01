@@ -53,7 +53,7 @@ public class AuthenticateVkCommandHandler : IRequestHandler<AuthenticateVkComman
             throw new BadRequestException("Invalid state");
         }
 
-        var user = await _userManager.FindByIdAsync(userInfo.Email);
+        var user = await _userManager.FindByEmailAsync(userInfo.Email);
         
         var token = _tokenManager.GenerateAccessToken(user);
         var refreshToken = _tokenManager.GenerateRefreshTokenAsync(user);
