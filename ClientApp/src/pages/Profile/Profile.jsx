@@ -34,6 +34,8 @@ import { useRef } from "react";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { PhoneNumberInput } from "../../utils/Masks/PhoneNumberMask";
 import Header from "../../components/Header/Header";
+import { Card, CardContent, CardActions, CardMedia } from "@mui/material";
+
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -450,140 +452,189 @@ const Profile = () => {
               </Typography>
             )}
 
-            <TableContainer
-              component={Paper}
+<Box
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    gap: 3,
+    mt: 3,
+    mb: 2,
+    backgroundColor: "#F8FAE5",
+    borderRadius: 3,
+  }}
+>
+  {profileInfo.collars.length > 0 &&
+    profileInfo.collars.map((collar) => (
+      <Card
+        key={collar.id}
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 3,
+          p: 3,
+          backgroundColor: "#fdfdf4",
+          borderRadius: 3,
+          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #d9e2ec",
+        }}
+      >
+        {/* Левая колонка с изображением */}
+        <Box
+          sx={{
+            flexShrink: 0,
+            textAlign: "center",
+            borderRight: "1px solid #d9e2ec",
+            pr: 3,
+          }}
+        >
+          <Box
+            component="img"
+            src="/images/corousel2.png"
+            alt="Collar"
+            sx={{
+              width: 150,
+              height: 150,
+              objectFit: "cover",
+              borderRadius: 3,
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
+              mb: 2,
+            }}
+          />
+          <Typography
+            variant="body2"
+            sx={{ color: "#636e72", fontStyle: "italic" }}
+          >
+            QR-адресник #{collar.id.split("-").pop()}
+          </Typography>
+        </Box>
+
+        {/* Правая колонка с информацией */}
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+          {/* Информация об адреснике */}
+          <Box>
+            <Typography
+              variant="h5"
               sx={{
-                backgroundColor: "#638889",
-                color: "white",
-                mt: 3,
-                mb: 2,
+                fontWeight: "bold",
+                color: "#2c3e50",
+                borderBottom: "2px solid #f57c00",
+                display: "inline-block",
+                mb: 1,
               }}
             >
-              <Table sx={{ color: "white" }}>
-                {profileInfo.collars.length > 0 && (
-                  <TableHead sx={{ color: "white" }}>
-                    <TableRow sx={{ color: "white" }}>
-                      {/* Заголовки столбцов */}
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>
-                        Изображение
-                      </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>
-                        QR-паспорт
-                      </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>
-                        Имя владельца
-                      </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>
-                        Кличка питомца
-                      </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "center" }}>
-                        Номер телефона
-                      </TableCell>
-                      {/* Добавьте другие заголовки столбцов */}
-                    </TableRow>
-                  </TableHead>
-                )}
-                {profileInfo.collars.length > 0 &&
-                  profileInfo.collars.map((collar) => (
-                    <TableBody>
-                      <TableRow key={collar.id}>
-                        {/* Колонка с изображением */}
-                        <TableCell
-                          sx={{
-                            color: "#638889",
-                            backgroundColor: "white",
-                            textAlign: "center",
-                          }}
-                        >
-                          <img
-                            src="/images/corousel2.png"
-                            alt="Collar"
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              objectFit: "cover",
-                            }} // Настройте размеры по вашему усмотрению
-                          />
-                        </TableCell>
+              Паспорт питомца
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#636e72" }}>
+              Статус:{" "}
+              <span
+                style={{
+                  color: collar.isActive ? "#4caf50" : "#e74c3c",
+                  fontWeight: "bold",
+                }}
+              >
+                {collar.isActive ? "Активен" : "Неактивен"}
+              </span>
+            </Typography>
+          </Box>
 
-                        {/* Остальные ячейки */}
-                        <TableCell
-                          sx={{ color: "#638889", backgroundColor: "white" }}
-                        >
-                          <Button
-                            onClick={() =>
-                              navigate(
-                                `/quest/${collar.questionnaire.linkQuestionnaire}`
-                              )
-                            }
-                          >
-                            Просмотреть qr-паспорт
-                          </Button>
-                        </TableCell>
-                        <TableCell
-                          sx={{ color: "#638889", backgroundColor: "white" }}
-                        >
-                          <TextField
-                            value={collar.questionnaire.ownersName || ""}
-                            onChange={(event) =>
-                              handleCollarChange(event, collar.id, "ownersName")
-                            }
-                            placeholder="Имя хозяина"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <Badge />
-                                </InputAdornment>
-                              ),
-                              sx: { color: "#638889" },
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          sx={{ color: "#638889", backgroundColor: "white" }}
-                        >
-                          <TextField
-                            value={collar.questionnaire.petsName || ""}
-                            onChange={(event) =>
-                              handleCollarChange(event, collar.id, "petsName")
-                            }
-                            placeholder="Кличка"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <Pets />
-                                </InputAdornment>
-                              ),
-                              sx: { color: "#638889" },
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          sx={{ color: "#638889", backgroundColor: "white" }}
-                        >
-                          <PhoneNumberInput
-                            value={collar.questionnaire.phoneNumber || ""}
-                            onChange={(e) =>
-                              handleCollarChange(e, collar.id, "phoneNumber")
-                            }
-                          />
-                        </TableCell>
-                        <TableCell
-                          sx={{ color: "#638889", backgroundColor: "white" }}
-                        >
-                          <Button
-                            variant="contained"
-                            onClick={() => handleOpenDialog(collar.id)}
-                            sx={{ backgroundColor: "#fdb750" }}
-                          >
-                            Сохранить
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  ))}
-              </Table>
-            </TableContainer>
+          {/* Поля для редактирования */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+              gap: 2,
+            }}
+          >
+            <TextField
+              value={collar.questionnaire.ownersName || ""}
+              onChange={(event) =>
+                handleCollarChange(event, collar.id, "ownersName")
+              }
+              label="Имя хозяина"
+              placeholder="Введите имя"
+              size="small"
+              fullWidth
+            />
+            <TextField
+              value={collar.questionnaire.petsName || ""}
+              onChange={(event) =>
+                handleCollarChange(event, collar.id, "petsName")
+              }
+              label="Кличка питомца"
+              placeholder="Введите кличку"
+              size="small"
+              fullWidth
+            />
+            <TextField
+              value={collar.questionnaire.phoneNumber || ""}
+              onChange={(event) =>
+                handleCollarChange(event, collar.id, "phoneNumber")
+              }
+              label="Телефон"
+              placeholder="Введите телефон"
+              size="small"
+              fullWidth
+            />
+            <TextField
+              value={collar.questionnaire.comment || ""}
+              onChange={(event) =>
+                handleCollarChange(event, collar.id, "comment")
+              }
+              label="Комментарий"
+              placeholder="Введите комментарий"
+              size="small"
+              fullWidth
+            />
+          </Box>
+          
+
+          {/* Кнопки */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "center", md: "flex-end" },
+              gap: 2,
+              mt: 2,
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() =>
+                navigate(`/quest/${collar.questionnaire.linkQuestionnaire}`)
+              }
+              sx={{
+                color: "#4caf50",
+                borderColor: "#4caf50",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#e8f5e9",
+                  borderColor: "#4caf50",
+                },
+              }}
+            >
+              Просмотреть QR-паспорт
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleOpenDialog(collar.id)}
+              sx={{
+                backgroundColor: "#f57c00",
+                color: "white",
+                fontWeight: "bold",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#e57300",
+                },
+              }}
+            >
+              Сохранить
+            </Button>
+          </Box>
+        </Box>
+      </Card>
+    ))}
+</Box>
+
           </Box>
           <Box
             sx={{
