@@ -77,8 +77,10 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
             Console.WriteLine("Failed to exchange code for token");
         }
 
+        Console.WriteLine(JsonConvert.SerializeObject(tokenResponse));
+
         // Обрабатываем успешный ответ
-        var responseContent = await tokenResponse.Content.ReadAsStringAsync();
+        var responseContent = await tokenResponse.Content.ReadAsStringAsync(cancellationToken);
         var responseData = JsonConvert.DeserializeObject<VkTokenResponse>(responseContent);
         
         var userInfoResponse = await httpClient.PostAsync("https://id.vk.com/oauth2/user_info", new FormUrlEncodedContent(
