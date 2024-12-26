@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../components/Header/Header"
+import Header from "../../components/Header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Carousel } from "react-responsive-carousel";
@@ -11,19 +11,22 @@ import Box from "@mui/material/Box";
 import Footer from "../../components/Footer/Footer";
 import Preloader from "../../components/Preloader/Preloader";
 import { Helmet } from "react-helmet";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     setTimeout(() => {
-        setIsLoading(false);
+      setIsLoading(false);
     }, 2000);
-  });
+  }, []);
 
   return (
     <>
-    <Helmet>
+      <Helmet>
         <title>PetProtector - Главная</title>
         <meta
           name="description"
@@ -43,115 +46,118 @@ const Home = () => {
         <meta property="og:type" content="website" />
       </Helmet>
 
-    {isLoading ? (
-      <Preloader />
-    ) : (
-      <><Header />
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Главный контент */}
-      <Box
-        sx={{
-          flex: 1, // Контент растягивается, занимая всё доступное пространство
-          display: "flex",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            width: "70%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            backgroundImage: "url(/images/main-slide-origin.png)",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "80% 100%",
-            backgroundSize: "60em",
-          }}
-        >
-          <Typography
-            sx={{ width: "50%", color: "#76453B", fontFamily: "Russo" }}
-            variant="h3"
-            gutterBottom
-          >
-            Защитите своего питомца от потери нашим qr-адресником
-          </Typography>
-          <Box />
-          <Typography
-            sx={{ width: "50%", color: "#76453B", mt: 3 }}
-            variant="h6"
-            gutterBottom
-          >
-            Простая регистрация
-            <br />
-            Быстрое заполнение анкеты
-            <br />
-            Удобный интерфейс
-          </Typography>
-
-          <Button
-            variant="contained"
+      {isLoading ? (
+        <Preloader />
+      ) : (
+        <>
+          <Header />
+          <Box
             sx={{
-              bgcolor: "#ED7D31",
-              height: 60,
-              width: 200,
-              fontSize: 20,
-              mt: 5,
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
             }}
-            endIcon={<ShopIcon />}
           >
-            Приобрести
-          </Button>
-        </Box>
-        <Box sx={{ width: "30%" }}>
-          <Carousel
-            showIndicators={false}
-            autoPlay={true}
-            infiniteLoop={true}
-            showStatus={false}
-            showArrows={false}
-          >
-            <div>
-              <img src="/images/corousel1.png" alt="Slideshow Image 1" />
-            </div>
-            <div>
-              <img src="/images/corousel2.png" alt="Slideshow Image 2" />
-            </div>
-            <div>
-              <img src="/images/corousel3.png" alt="Slideshow Image 3" />
-            </div>
-            <div>
-              <img src="/images/corousel4.png" alt="Slideshow Image 4" />
-            </div>
-          </Carousel>
-          <Box>
-            <Typography sx={{ textAlign: "center" }}>
-              Защити своего питомца!
-              <br />
-              Сканируй qr код и получи информацию о владельце
-              <br />
-            </Typography>
-            <Typography
+            {/* Главный контент */}
+            <Box
               sx={{
-                textAlign: "center",
-                fontWeight: "bold",
-                color: "#76453B",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                width: "100%",
+                backgroundImage: {md: "url(/images/main-slide-origin.png)"},
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "80% 100%",
+                backgroundSize: "60em",
               }}
             >
-              Наш instagram <FontAwesomeIcon icon={faInstagram} />
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+              <Typography
+                sx={{ width: { xs: "100%", md: "50%" }, color: "#76453B", fontFamily: "Russo" }}
+                textAlign={{xs: "center", md: 'left'}}
+                variant={isMobile ? "h4" : "h3"} // Изменяем variant в зависимости от экрана
+                gutterBottom
+              >
+                Защитите своего питомца от потери нашим qr-адресником
+              </Typography>
+              <Typography
+                sx={{ width: { xs: "100%", md: "50%" }, color: "#76453B", mt: 3 }}
+                variant="h6"
+                gutterBottom
+              >
+                Простая регистрация
+                <br />
+                Быстрое заполнение анкеты
+                <br />
+                Удобный интерфейс
+              </Typography>
 
-      {/* Футер */}
-      <Footer />
-    </Box></>)}
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "#ED7D31",
+                  height: 60,
+                  width: 200,
+                  fontSize: 20,
+                  mt: 5,
+                }}
+                endIcon={<ShopIcon />}
+              >
+                Приобрести
+              </Button>
+            </Box>
+
+            {/* Карусель */}
+            <Box
+              sx={{
+                width: { xs: "100%", md: "30%" },
+                mt: { xs: 3, md: 0 },
+              }}
+            >
+              <Carousel
+                showIndicators={false}
+                autoPlay={true}
+                infiniteLoop={true}
+                showStatus={false}
+                showArrows={false}
+              >
+                <div>
+                  <img src="/images/corousel1.png" alt="Slideshow Image 1" />
+                </div>
+                <div>
+                  <img src="/images/corousel2.png" alt="Slideshow Image 2" />
+                </div>
+                <div>
+                  <img src="/images/corousel3.png" alt="Slideshow Image 3" />
+                </div>
+                <div>
+                  <img src="/images/corousel4.png" alt="Slideshow Image 4" />
+                </div>
+              </Carousel>
+              <Box>
+                <Typography sx={{ textAlign: "center" }}>
+                  Защити своего питомца!
+                  <br />
+                  Сканируй qr код и получи информацию о владельце
+                  <br />
+                </Typography>
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    color: "#76453B",
+                  }}
+                >
+                  Наш instagram <FontAwesomeIcon icon={faInstagram} />
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Футер */}
+          <Footer />
+        </>
+      )}
     </>
   );
 };

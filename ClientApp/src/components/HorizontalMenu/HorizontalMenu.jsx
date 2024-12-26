@@ -41,9 +41,8 @@ function HorizontalMenu() {
     <AppBar position="static" sx={{ bgcolor: "#638889" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          
-          <MyCustomIcon/>
-          
+          <MyCustomIcon />
+
           <Typography
             variant="h6"
             noWrap
@@ -74,16 +73,18 @@ function HorizontalMenu() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box 
+            sx={{ 
+              flexGrow: 0, 
+              position: { xs: "absolute", md: "static" }, 
+              right: { xs: 0, md: "auto" } 
+            }}
+          >
             {auth.isAuth ? (
               <>
                 <Tooltip title="Открыть профиль">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, bgColor: lightBlue[500] }}>
-                    <Avatar
-                      
-                      
-                      sx={{ bgcolor: "#fdb750", color: "white" }}
-                    />
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar sx={{ bgcolor: "#fdb750", color: "white" }} />
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -103,8 +104,13 @@ function HorizontalMenu() {
                   onClose={handleCloseUserMenu}
                 >
                   {menuItems.map(({ label, path }) => (
-                    <MenuItem sx={{bgColor: "blue"}} key={label} onClick={handleCloseUserMenu}>
-                      <Typography sx={{color: "#638889", textDecoration: "none"}} textAlign="center" component={Link} to={path}>
+                    <MenuItem key={label} onClick={handleCloseUserMenu}>
+                      <Typography 
+                        sx={{ color: "#638889", textDecoration: "none" }} 
+                        textAlign="center" 
+                        component={Link} 
+                        to={path}
+                      >
                         {label}
                       </Typography>
                     </MenuItem>
@@ -112,19 +118,19 @@ function HorizontalMenu() {
                 </Menu>
               </>
             ) : (
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography
                   component={Link}
                   to="/login"
-                  sx={{ color: 'white', mr: 1 }}
+                  sx={{ color: "white", mr: 1 }}
                 >
                   Войти
                 </Typography>
-                <Typography sx={{ color: 'white' }}>или</Typography>
+                <Typography sx={{ color: "white" }}>или</Typography>
                 <Typography
                   component={Link}
                   to="/register"
-                  sx={{ color: 'white', ml: 1 }}
+                  sx={{ color: "white", ml: 1 }}
                 >
                   зарегистрироваться
                 </Typography>
@@ -136,4 +142,5 @@ function HorizontalMenu() {
     </AppBar>
   );
 }
+
 export default HorizontalMenu;

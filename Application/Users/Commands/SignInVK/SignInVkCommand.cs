@@ -117,6 +117,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
                 UserName = userInfoData.User.Email,
                 FullName = userInfoData.User.FirstName,
                 CreatedAt = DateTime.UtcNow.Date,
+                Avatar = userInfoData.User.Photo100,
                 EmailConfirmed = true
             };
 
@@ -153,6 +154,9 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
         
         [JsonProperty("email")]
         public string Email { get; set; }
+        
+        [JsonProperty("photo_100")]
+        public string Photo100 { get; set; }
     }
 
 

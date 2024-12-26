@@ -1,14 +1,15 @@
 import {axiosPrivate} from '../api/axios'
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import useRefreshToken from './useRefreshToken'
 import useAuth from './useAuth'
+import { Snackbar, Alert } from '@mui/material';
 
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
     const { auth } = useAuth();
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
@@ -24,10 +25,11 @@ const useAxiosPrivate = () => {
                 const prevRequest = error?.config;
                 if (error?.response?.status === 401 && !prevRequest?.sent) {
                     prevRequest.sent = true;
-                    console.log(auth.accessToken); //Убрать позже
                     const newAccessToken = await refresh(auth.accessToken);
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return axiosPrivate(prevRequest);
+                } else if (error?.response?.status === 500) {
+                    setErrorMessage("Что-то пошло не так. Попробуйте снова.");
                 }
                 return Promise.reject(error);
             }
@@ -36,10 +38,10 @@ const useAxiosPrivate = () => {
         return () => {
             axiosPrivate.interceptors.request.eject(requestIntercept);
             axiosPrivate.interceptors.response.eject(responseIntercept);
-        }
-    }, [auth, refresh])
+        };
+    }, [auth, refresh]);
 
-    return axiosPrivate;
-}
+    return { axiosPrivate, errorMessage, setErrorMessage };
+};
 
 export default useAxiosPrivate;

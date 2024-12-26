@@ -29,8 +29,8 @@ const VKIDComponent = () => {
         oneTap
           .render({
             container: containerRef.current,
-            showAlternativeLogin: true,
-            oauthList: ['ok_ru', 'mail_ru'],
+            showAlternativeLogin: false,
+            //oauthList: ['ok_ru', 'mail_ru'],
           })
           .on(VKID.WidgetEvents.ERROR, vkidOnError)
 

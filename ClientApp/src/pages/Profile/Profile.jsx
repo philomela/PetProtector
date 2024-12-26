@@ -1,11 +1,4 @@
 import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,15 +11,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Preloader from "../../components/Preloader/Preloader";
 import SearchForm from "../../components/SearchForm/SearchForm";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Box, Typography, TextField } from "@mui/material";
-import {
-  Email,
-  Person,
-  CalendarToday,
-  Edit,
-  Pets,
-  Badge,
-} from "@mui/icons-material";
+import { Box, Typography, TextField, Avatar } from "@mui/material";
+import { Email, Person, CalendarToday } from "@mui/icons-material";
 import { InputAdornment } from "@mui/material";
 import moment from "moment";
 import Link from "@mui/material/Link";
@@ -34,15 +20,15 @@ import { useRef } from "react";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { PhoneNumberInput } from "../../utils/Masks/PhoneNumberMask";
 import Header from "../../components/Header/Header";
-import { Card, CardContent, CardActions, CardMedia } from "@mui/material";
-
+import { Card } from "@mui/material";
+import { Snackbar, Alert } from "@mui/material";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [profileInfo, setProfileInfo] = useState(null);
   const [searchCollarsInfo, setSearchCollarsInfo] = useState(null);
   const [searchedCollar, setSearchedCollar] = useState(null);
-  const axiosPrivate = useAxiosPrivate();
+  const { axiosPrivate, errorMessage, setErrorMessage } = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -52,6 +38,15 @@ const Profile = () => {
   });
   const [dialogSavedDataInfo, setDialogSavedDataInfo] = useState(false);
   const phoneInputRef = useRef(null);
+
+  const handleCloseSnackbar = () => {
+    setErrorMessage("");
+    if (window.history.length > 1) {
+      navigate(-1); // Возвращаемся на предыдущую страницу
+    } else {
+      navigate("/"); // Если истории нет, отправляем на главную
+    }
+  };
 
   // Функция для обработки изменений в текстовых полях
   const handleCollarChange = (event, collarId, propName) => {
@@ -174,7 +169,6 @@ const Profile = () => {
         }
       } catch (err) {
         console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
       }
 
       return () => {
@@ -191,19 +185,34 @@ const Profile = () => {
       isMounted = false;
       //controller.abort();
     };
-  }, [searchedCollar]);
+  }, [searchedCollar, axiosPrivate]);
 
   return (
     <>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
       {isLoading ? (
         <Preloader />
       ) : (
         <>
           <Header />
+
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", md: "row" },
               justifyContent: "space-between",
               alignItems: "stretch",
               fontFamily: "Russo",
@@ -212,177 +221,190 @@ const Profile = () => {
             }}
           >
             {profileInfo && (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 3,
-                  width: "300px",
-                  bgcolor: "#638889",
-                  borderRadius: 1,
-                  padding: 5,
-                  color: "white",
-                }}
-              >
-                <Typography variant="h6" component="h6">
-                  Профиль
-                </Typography>
-                <TextField
-                  id="fullName"
-                  label="Ваше имя"
-                  variant="standard"
-                  value={profileInfo.fullName}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Person sx={{ color: "white" }} />
-                      </InputAdornment>
-                    ),
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{
-                    sx: {
-                      color: "white !important", // Устанавливаем постоянный цвет лейбла
-                      "&.Mui-focused": {
-                        color: "white !important", // Оставляем цвет белым даже при фокусе
-                      },
-                    },
-                  }}
-                  sx={{
-                    input: {
-                      color: "white !important",
-                      caretColor: "white !important",
-                    },
-                    "& .MuiInput-underline:before": {
-                      borderBottom: "2px solid white !important", // Белая полоса до фокуса
-                    },
-                    "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid white !important", // Белая полоса при наведении
-                    },
-                    "& .MuiInput-underline:after": {
-                      borderBottom: "2px solid orange !important", // Оранжевая полоса при фокусе
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "white !important",
-                      caretColor: "white !important",
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла
-                    },
-                    "&:hover .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла при наведении
-                    },
-                    "& .Mui-focused .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла при фокусе
-                    },
-                  }}
-                  autoComplete="off"
-                />
-                <TextField
-                  id="email"
-                  label="Ваш email"
-                  variant="standard"
-                  value={profileInfo.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Email sx={{ color: "white" }} />
-                      </InputAdornment>
-                    ),
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{
-                    sx: {
-                      color: "white !important", // Устанавливаем постоянный цвет лейбла
-                      "&.Mui-focused": {
-                        color: "white !important", // Оставляем цвет белым даже при фокусе
-                      },
-                    },
-                  }}
-                  sx={{
-                    input: {
-                      color: "white !important",
-                      caretColor: "white !important",
-                    },
-                    "& .MuiInput-underline:before": {
-                      borderBottom: "2px solid white !important", // Белая полоса до фокуса
-                    },
-                    "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid white !important", // Белая полоса при наведении
-                    },
-                    "& .MuiInput-underline:after": {
-                      borderBottom: "2px solid orange !important", // Оранжевая полоса при фокусе
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "white !important",
-                      caretColor: "white !important",
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла
-                    },
-                    "&:hover .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла при наведении
-                    },
-                    "& .Mui-focused .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла при фокусе
-                    },
-                  }}
-                  autoComplete="off"
-                />
-                <TextField
-                  id="createdAt"
-                  label="Дата регистрации"
-                  variant="standard"
-                  value={moment(profileInfo.createdAt).format("DD.MM.YYYY")}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <CalendarToday sx={{ color: "white" }} />
-                      </InputAdornment>
-                    ),
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{
-                    sx: {
-                      color: "white !important", // Устанавливаем постоянный цвет лейбла
-                      "&.Mui-focused": {
-                        color: "white !important", // Оставляем цвет белым даже при фокусе
-                      },
-                    },
-                  }}
-                  sx={{
-                    input: {
-                      color: "white !important",
-                      caretColor: "white !important",
-                    },
-                    "& .MuiInput-underline:before": {
-                      borderBottom: "2px solid white !important", // Белая полоса до фокуса
-                    },
-                    "&:hover .MuiInput-underline:before": {
-                      borderBottom: "2px solid white !important", // Белая полоса при наведении
-                    },
-                    "& .MuiInput-underline:after": {
-                      borderBottom: "2px solid orange !important", // Оранжевая полоса при фокусе
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "white !important",
-                      caretColor: "white !important",
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла
-                    },
-                    "&:hover .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла при наведении
-                    },
-                    "& .Mui-focused .MuiInputLabel-root": {
-                      color: "white !important", // Цвет лейбла при фокусе
-                    },
-                  }}
-                  autoComplete="off"
-                />
-              </Box>
-            )}
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 3,
+      width: "300px",
+      bgcolor: "#638889",
+      borderRadius: 1,
+      padding: 5,
+      color: "white",
+      alignItems: "center", // Центрируем содержимое
+    }}
+  >
+    <Avatar
+      alt={profileInfo.fullName}
+      src={profileInfo.avatarUrl || ""}
+      sx={{
+        width: 100,
+        height: 100,
+        bgcolor: "orange", // Цвет фона, если нет изображения
+        fontSize: "2rem", // Размер текста, если используются инициалы
+      }}
+    >
+      {profileInfo.fullName ? profileInfo.fullName[0] : "?"}
+    </Avatar>
+    <Typography variant="h6" component="h6">
+      Профиль
+    </Typography>
+    <TextField
+      id="fullName"
+      label="Ваше имя"
+      variant="standard"
+      value={profileInfo.fullName}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Person sx={{ color: "white" }} />
+          </InputAdornment>
+        ),
+        readOnly: true,
+      }}
+      InputLabelProps={{
+        sx: {
+          color: "white !important",
+          "&.Mui-focused": {
+            color: "white !important",
+          },
+        },
+      }}
+      sx={{
+        input: {
+          color: "white !important",
+          caretColor: "white !important",
+        },
+        "& .MuiInput-underline:before": {
+          borderBottom: "2px solid white !important",
+        },
+        "&:hover .MuiInput-underline:before": {
+          borderBottom: "2px solid white !important",
+        },
+        "& .MuiInput-underline:after": {
+          borderBottom: "2px solid orange !important",
+        },
+        "& .MuiInputBase-input": {
+          color: "white !important",
+          caretColor: "white !important",
+        },
+        "& .MuiInputLabel-root": {
+          color: "white !important",
+        },
+        "&:hover .MuiInputLabel-root": {
+          color: "white !important",
+        },
+        "& .Mui-focused .MuiInputLabel-root": {
+          color: "white !important",
+        },
+      }}
+      autoComplete="off"
+    />
+    <TextField
+      id="email"
+      label="Ваш email"
+      variant="standard"
+      value={profileInfo.email}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Email sx={{ color: "white" }} />
+          </InputAdornment>
+        ),
+        readOnly: true,
+      }}
+      InputLabelProps={{
+        sx: {
+          color: "white !important",
+          "&.Mui-focused": {
+            color: "white !important",
+          },
+        },
+      }}
+      sx={{
+        input: {
+          color: "white !important",
+          caretColor: "white !important",
+        },
+        "& .MuiInput-underline:before": {
+          borderBottom: "2px solid white !important",
+        },
+        "&:hover .MuiInput-underline:before": {
+          borderBottom: "2px solid white !important",
+        },
+        "& .MuiInput-underline:after": {
+          borderBottom: "2px solid orange !important",
+        },
+        "& .MuiInputBase-input": {
+          color: "white !important",
+          caretColor: "white !important",
+        },
+        "& .MuiInputLabel-root": {
+          color: "white !important",
+        },
+        "&:hover .MuiInputLabel-root": {
+          color: "white !important",
+        },
+        "& .Mui-focused .MuiInputLabel-root": {
+          color: "white !important",
+        },
+      }}
+      autoComplete="off"
+    />
+    <TextField
+      id="createdAt"
+      label="Дата регистрации"
+      variant="standard"
+      value={moment(profileInfo.createdAt).format("DD.MM.YYYY")}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <CalendarToday sx={{ color: "white" }} />
+          </InputAdornment>
+        ),
+        readOnly: true,
+      }}
+      InputLabelProps={{
+        sx: {
+          color: "white !important",
+          "&.Mui-focused": {
+            color: "white !important",
+          },
+        },
+      }}
+      sx={{
+        input: {
+          color: "white !important",
+          caretColor: "white !important",
+        },
+        "& .MuiInput-underline:before": {
+          borderBottom: "2px solid white !important",
+        },
+        "&:hover .MuiInput-underline:before": {
+          borderBottom: "2px solid white !important",
+        },
+        "& .MuiInput-underline:after": {
+          borderBottom: "2px solid orange !important",
+        },
+        "& .MuiInputBase-input": {
+          color: "white !important",
+          caretColor: "white !important",
+        },
+        "& .MuiInputLabel-root": {
+          color: "white !important",
+        },
+        "&:hover .MuiInputLabel-root": {
+          color: "white !important",
+        },
+        "& .Mui-focused .MuiInputLabel-root": {
+          color: "white !important",
+        },
+      }}
+      autoComplete="off"
+    />
+  </Box>
+)}
+
 
             <Box
               sx={{
@@ -452,189 +474,196 @@ const Profile = () => {
               </Typography>
             )}
 
-<Box
-  sx={{
-    display: "flex",
-    flexDirection: "column",
-    gap: 3,
-    mt: 3,
-    mb: 2,
-    backgroundColor: "#F8FAE5",
-    borderRadius: 3,
-  }}
->
-  {profileInfo.collars.length > 0 &&
-    profileInfo.collars.map((collar) => (
-      <Card
-        key={collar.id}
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: 3,
-          p: 3,
-          backgroundColor: "#fdfdf4",
-          borderRadius: 3,
-          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
-          border: "1px solid #d9e2ec",
-        }}
-      >
-        {/* Левая колонка с изображением */}
-        <Box
-          sx={{
-            flexShrink: 0,
-            textAlign: "center",
-            borderRight: "1px solid #d9e2ec",
-            pr: 3,
-          }}
-        >
-          <Box
-            component="img"
-            src="/images/corousel2.png"
-            alt="Collar"
-            sx={{
-              width: 150,
-              height: 150,
-              objectFit: "cover",
-              borderRadius: 3,
-              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
-              mb: 2,
-            }}
-          />
-          <Typography
-            variant="body2"
-            sx={{ color: "#636e72", fontStyle: "italic" }}
-          >
-            QR-адресник #{collar.id.split("-").pop()}
-          </Typography>
-        </Box>
-
-        {/* Правая колонка с информацией */}
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
-          {/* Информация об адреснике */}
-          <Box>
-            <Typography
-              variant="h5"
+            <Box
               sx={{
-                fontWeight: "bold",
-                color: "#2c3e50",
-                borderBottom: "2px solid #f57c00",
-                display: "inline-block",
-                mb: 1,
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                mt: 3,
+                mb: 2,
+                backgroundColor: "#F8FAE5",
+                borderRadius: 3,
               }}
             >
-              Паспорт питомца
-            </Typography>
-            <Typography variant="body2" sx={{ color: "#636e72" }}>
-              Статус:{" "}
-              <span
-                style={{
-                  color: collar.isActive ? "#4caf50" : "#e74c3c",
-                  fontWeight: "bold",
-                }}
-              >
-                {collar.isActive ? "Активен" : "Неактивен"}
-              </span>
-            </Typography>
-          </Box>
+              {profileInfo.collars.length > 0 &&
+                profileInfo.collars.map((collar) => (
+                  <Card
+                    key={collar.id}
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                      gap: 3,
+                      p: 3,
+                      backgroundColor: "#fdfdf4",
+                      borderRadius: 3,
+                      boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+                      border: "1px solid #d9e2ec",
+                    }}
+                  >
+                    {/* Левая колонка с изображением */}
+                    <Box
+                      sx={{
+                        flexShrink: 0,
+                        textAlign: "center",
+                        borderRight: "1px solid #d9e2ec",
+                        pr: 3,
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src="/images/corousel2.png"
+                        alt="Collar"
+                        sx={{
+                          width: 150,
+                          height: 150,
+                          objectFit: "cover",
+                          borderRadius: 3,
+                          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
+                          mb: 2,
+                        }}
+                      />
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "#636e72", fontStyle: "italic" }}
+                      >
+                        QR-адресник #{collar.id.split("-").pop()}
+                      </Typography>
+                    </Box>
 
-          {/* Поля для редактирования */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-              gap: 2,
-            }}
-          >
-            <TextField
-              value={collar.questionnaire.ownersName || ""}
-              onChange={(event) =>
-                handleCollarChange(event, collar.id, "ownersName")
-              }
-              label="Имя хозяина"
-              placeholder="Введите имя"
-              size="small"
-              fullWidth
-            />
-            <TextField
-              value={collar.questionnaire.petsName || ""}
-              onChange={(event) =>
-                handleCollarChange(event, collar.id, "petsName")
-              }
-              label="Кличка питомца"
-              placeholder="Введите кличку"
-              size="small"
-              fullWidth
-            />
-            <TextField
-              value={collar.questionnaire.phoneNumber || ""}
-              onChange={(event) =>
-                handleCollarChange(event, collar.id, "phoneNumber")
-              }
-              label="Телефон"
-              placeholder="Введите телефон"
-              size="small"
-              fullWidth
-            />
-            <TextField
-              value={collar.questionnaire.comment || ""}
-              onChange={(event) =>
-                handleCollarChange(event, collar.id, "comment")
-              }
-              label="Комментарий"
-              placeholder="Введите комментарий"
-              size="small"
-              fullWidth
-            />
-          </Box>
-          
+                    {/* Правая колонка с информацией */}
+                    <Box
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 3,
+                      }}
+                    >
+                      {/* Информация об адреснике */}
+                      <Box>
+                        <Typography
+                          variant="h5"
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#2c3e50",
+                            borderBottom: "2px solid #f57c00",
+                            display: "inline-block",
+                            mb: 1,
+                          }}
+                        >
+                          Паспорт питомца
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#636e72" }}>
+                          Статус:{" "}
+                          <span
+                            style={{
+                              color: collar.isActive ? "#4caf50" : "#e74c3c",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {collar.isActive ? "Активен" : "Неактивен"}
+                          </span>
+                        </Typography>
+                      </Box>
 
-          {/* Кнопки */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: { xs: "center", md: "flex-end" },
-              gap: 2,
-              mt: 2,
-            }}
-          >
-            <Button
-              variant="outlined"
-              onClick={() =>
-                navigate(`/quest/${collar.questionnaire.linkQuestionnaire}`)
-              }
-              sx={{
-                color: "#4caf50",
-                borderColor: "#4caf50",
-                textTransform: "none",
-                "&:hover": {
-                  backgroundColor: "#e8f5e9",
-                  borderColor: "#4caf50",
-                },
-              }}
-            >
-              Просмотреть QR-паспорт
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleOpenDialog(collar.id)}
-              sx={{
-                backgroundColor: "#f57c00",
-                color: "white",
-                fontWeight: "bold",
-                textTransform: "none",
-                "&:hover": {
-                  backgroundColor: "#e57300",
-                },
-              }}
-            >
-              Сохранить
-            </Button>
-          </Box>
-        </Box>
-      </Card>
-    ))}
-</Box>
+                      {/* Поля для редактирования */}
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                          gap: 2,
+                        }}
+                      >
+                        <TextField
+                          value={collar.questionnaire.ownersName || ""}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "ownersName")
+                          }
+                          label="Имя хозяина"
+                          placeholder="Введите имя"
+                          size="small"
+                          fullWidth
+                        />
+                        <TextField
+                          value={collar.questionnaire.petsName || ""}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "petsName")
+                          }
+                          label="Кличка питомца"
+                          placeholder="Введите кличку"
+                          size="small"
+                          fullWidth
+                        />
+                        <TextField
+                          value={collar.questionnaire.phoneNumber || ""}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "phoneNumber")
+                          }
+                          label="Телефон"
+                          placeholder="Введите телефон"
+                          size="small"
+                          fullWidth
+                        />
+                        <TextField
+                          value={collar.questionnaire.comment || ""}
+                          onChange={(event) =>
+                            handleCollarChange(event, collar.id, "comment")
+                          }
+                          label="Комментарий"
+                          placeholder="Введите комментарий"
+                          size="small"
+                          fullWidth
+                        />
+                      </Box>
 
+                      {/* Кнопки */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: { xs: "center", md: "flex-end" },
+                          gap: 2,
+                          mt: 2,
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          onClick={() =>
+                            navigate(
+                              `/quest/${collar.questionnaire.linkQuestionnaire}`
+                            )
+                          }
+                          sx={{
+                            color: "#4caf50",
+                            borderColor: "#4caf50",
+                            textTransform: "none",
+                            "&:hover": {
+                              backgroundColor: "#e8f5e9",
+                              borderColor: "#4caf50",
+                            },
+                          }}
+                        >
+                          Просмотреть QR-паспорт
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleOpenDialog(collar.id)}
+                          sx={{
+                            backgroundColor: "#f57c00",
+                            color: "white",
+                            fontWeight: "bold",
+                            textTransform: "none",
+                            "&:hover": {
+                              backgroundColor: "#e57300",
+                            },
+                          }}
+                        >
+                          Сохранить
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Card>
+                ))}
+            </Box>
           </Box>
           <Box
             sx={{

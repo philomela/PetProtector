@@ -2,15 +2,15 @@ import { useRef, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button, Box, FormControl, Typography, TextField } from "@mui/material";
-import Grid from '@mui/material/Grid';
-import CssBaseline from '@mui/material/CssBaseline';
-import Paper from '@mui/material/Paper';
-import Avatar from '@mui/material/Avatar';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import axios from "../../api/axios";
-import Header from "../../components/Header/Header"
-import VKIDComponent from '../../components/VKIDComponent/VKIDComponent';
-
+import Grid from "@mui/material/Grid";
+import CssBaseline from "@mui/material/CssBaseline";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import usePublicAxios from '../../hooks/useAxiosPublic';
+import Header from "../../components/Header/Header";
+import VKIDComponent from "../../components/VKIDComponent/VKIDComponent";
+import { Snackbar, Alert } from "@mui/material";
 
 const LOGIN_URL = "/api/accounts/login"; // Если планируется использовать JWT для обычного логина
 
@@ -18,6 +18,7 @@ const Login = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { axios, errorMessage, setErrorMessage } = usePublicAxios();
   const from = location.state?.from?.pathname || "/profile";
 
   const [email, setEmail] = useState(null);
@@ -25,9 +26,12 @@ const Login = () => {
   const [errMsg, setErrMsg] = useState(null);
   const errMsgRef = useRef(null);
 
+  const handleCloseSnackbar = () => {
+    setErrorMessage("");
+  };
 
-   // Добавляем обработку редиректа с VK OAuth
-   useEffect(() => {
+  // Добавляем обработку редиректа с VK OAuth
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const accessToken = params.get("accessToken"); // Предполагаем, что токен возвращается
     const redirectUrl = params.get("redirect"); // Сохраненный путь до авторизации
@@ -45,7 +49,6 @@ const Login = () => {
       navigate(redirectUrl || from, { replace: true });
     }
   }, [location, navigate, setAuth, from]);
-  
 
   useEffect(() => {
     setErrMsg(null);
@@ -91,93 +94,115 @@ const Login = () => {
 
   return (
     <>
-    <Header/>
-    <Box sx={{width: '100%', bgColor: 'F8FAE5'}}>
-    <Grid container  sx={{ height: '90vh', bgColor: 'F8FAE5' }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundRepeat: 'no-repeat',
-          backgroundColor: '#F8FAE5',
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: '#638889' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Войдите в аккаунт
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email адрес"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Пароль"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {errMsg && (
+     <Snackbar 
+                open={!!errorMessage} 
+                autoHideDuration={6000} 
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+      <Header />
+      <Box sx={{ width: "100%", bgColor: "F8FAE5" }}>
+        <Grid container sx={{ height: "90vh", bgColor: "F8FAE5" }}>
+          <CssBaseline />
+          <Grid
+            item
+            xs={false}
+            sm={4}
+            md={7}
+            sx={{
+              backgroundRepeat: "no-repeat",
+              backgroundColor: "#F8FAE5",
+            }}
+          />
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            md={5}
+            component={Paper}
+            elevation={6}
+            square
+          >
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: "#638889" }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Войдите в аккаунт
+              </Typography>
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email адрес"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Пароль"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {errMsg && (
                   <Typography
                     color="error"
                     variant="body2"
-                    ref={errMsgRef} 
-                    tabIndex="-1" 
+                    ref={errMsgRef}
+                    tabIndex="-1"
                   >
                     {errMsg}
                   </Typography>
                 )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, bgcolor: '#ED7D31' }}
-            >
-              Войти
-            </Button>
-            <div>
-      <VKIDComponent />
-    </div>
-            <Grid container>
-              <Grid item xs>
-                <Link to={"/forgot-password"} href="/forgot-password" variant="body2">
-                  Забыли пароль?
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Grid>
-    </Grid>
-    </Box>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2, bgcolor: "#ED7D31" }}
+                >
+                  Войти
+                </Button>
+                <div>
+                  <VKIDComponent />
+                </div>
+                <Grid container>
+                  <Grid item xs>
+                    <Link
+                      to={"/forgot-password"}
+                      href="/forgot-password"
+                      variant="body2"
+                    >
+                      Забыли пароль?
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </>
   );
 };
