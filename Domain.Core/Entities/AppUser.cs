@@ -9,7 +9,7 @@ public class AppUser : IdentityUser //Разобраться как для по�
 
     public DateTime CreatedAt { get; set; }
     
-    public string Avatar {get; set;}
+    public string? Avatar { get; set; }
     
     public ICollection<AppRefreshToken> Tokens { get; } = new List<AppRefreshToken>();
 }

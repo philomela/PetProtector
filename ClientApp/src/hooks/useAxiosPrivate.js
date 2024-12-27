@@ -2,7 +2,6 @@ import {axiosPrivate} from '../api/axios'
 import {useEffect, useState} from 'react'
 import useRefreshToken from './useRefreshToken'
 import useAuth from './useAuth'
-import { Snackbar, Alert } from '@mui/material';
 
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();

@@ -3,7 +3,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const VKIDComponent = () => {
   const containerRef = useRef(null);
-  const axiosPrivate = useAxiosPrivate();
+  const {axiosPrivate,  errorMessage, setErrorMessage }  = useAxiosPrivate();
   const from = location.state?.from?.pathname || "/profile";
   console.log(from) //Для отладки
 
