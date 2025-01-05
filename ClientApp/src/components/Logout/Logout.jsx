@@ -2,15 +2,25 @@ import { useRef, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-const LOGOUT_URL = "/api/accounts/login";
+import { Snackbar, Alert } from "@mui/material";
+const LOGOUT_URL = "/api/accounts/logout";
 
 const Logout = () => {
   const { auth, setAuth } = useAuth();
 
-  const axiosPrivate = useAxiosPrivate();
+  const { axiosPrivate, errorMessage, setErrorMessage } = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+
+  const handleCloseSnackbar = () => {
+    setErrorMessage("");
+    if (window.history.length > 1) {
+      navigate(-1); // Возвращаемся на предыдущую страницу
+    } else {
+      navigate("/"); // Если истории нет, отправляем на главную
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -18,14 +28,13 @@ const Logout = () => {
 
     const logout = async () => {
       try {
-        const responseUserInfo = await axiosPrivate.post("/api/accounts/Logout", {
-          token: auth.accessToken
+        await axiosPrivate.post(LOGOUT_URL, {
+          token: auth.accessToken,
         });
         setAuth({});
         navigate("/", { state: { from: location }, replace: true });
       } catch (err) {
         console.error(err);
-        navigate("/", { state: { from: location }, replace: true });
       }
     };
 
@@ -33,12 +42,27 @@ const Logout = () => {
 
     return () => {
       isMounted = false;
-      //controller.abort();
+      controller.abort();
     };
-  }, []);
+  }, [axiosPrivate]);
 
   return (
-    <></>
+    <>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

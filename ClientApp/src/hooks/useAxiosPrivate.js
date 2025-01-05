@@ -27,8 +27,8 @@ const useAxiosPrivate = () => {
                     const newAccessToken = await refresh(auth.accessToken);
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return axiosPrivate(prevRequest);
-                } else if (error?.response?.status === 500) {
-                    setErrorMessage("Что-то пошло не так. Попробуйте снова.");
+                } else if (error?.response?.status === 500 || error != null) {
+                    setErrorMessage("Что-то пошло не так. Попробуйте снова или напишите нам в поддержку");
                 }
                 return Promise.reject(error);
             }

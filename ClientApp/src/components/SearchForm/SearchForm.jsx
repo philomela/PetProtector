@@ -6,11 +6,10 @@ import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
-import Fade from "@mui/material/Fade";
 
 const SearchForm = ({ handleSearchInfo }) => {
   const [secretKey, setSecretKey] = useState("");
-  const axiosPrivate = useAxiosPrivate();
+  const { axiosPrivate, errorMessage, setErrorMessage } = useAxiosPrivate();
 
   useEffect(() => {}, []);
 

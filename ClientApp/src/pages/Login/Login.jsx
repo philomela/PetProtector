@@ -7,7 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import usePublicAxios from '../../hooks/useAxiosPublic';
+import usePublicAxios from "../../hooks/useAxiosPublic";
 import Header from "../../components/Header/Header";
 import VKIDComponent from "../../components/VKIDComponent/VKIDComponent";
 import { Snackbar, Alert } from "@mui/material";
@@ -28,6 +28,11 @@ const Login = () => {
 
   const handleCloseSnackbar = () => {
     setErrorMessage("");
+    if (window.history.length > 1) {
+      navigate(-1); // Возвращаемся на предыдущую страницу
+    } else {
+      navigate("/"); // Если истории нет, отправляем на главную
+    }
   };
 
   // Добавляем обработку редиректа с VK OAuth
@@ -94,16 +99,20 @@ const Login = () => {
 
   return (
     <>
-     <Snackbar 
-                open={!!errorMessage} 
-                autoHideDuration={6000} 
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            >
-                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-                    {errorMessage}
-                </Alert>
-            </Snackbar>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
       <Header />
       <Box sx={{ width: "100%", bgColor: "F8FAE5" }}>
         <Grid container sx={{ height: "90vh", bgColor: "F8FAE5" }}>

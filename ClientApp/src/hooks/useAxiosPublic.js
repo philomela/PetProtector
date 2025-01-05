@@ -1,6 +1,5 @@
 import axios from '../api/axios';
 import { useEffect, useState } from 'react';
-import { Snackbar, Alert } from '@mui/material';
 
 const usePublicAxios = () => {
     const [errorMessage, setErrorMessage] = useState("");
