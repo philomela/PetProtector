@@ -62,14 +62,14 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
         var tokenResponse = await httpClient.PostAsync("https://id.vk.com/oauth2/auth", new FormUrlEncodedContent(
             new Dictionary<string, string>
             {
-                {"grant_type", "authorization_code"},
+                { "grant_type", "authorization_code"},
                 { "client_id", "52743816" },
                 { "client_secret", _configuration["Authentication:Yandex:ClientSecret"] },
                 { "redirect_uri", "https://petprotector.ru/api/accounts/CallbackVk" },
                 { "code", request.Code },
                 { "code_verifier", cacheItem.CodeVerifier },
-                {"device_id", request.DeviceId},
-                {"state", request.State}
+                { "device_id", request.DeviceId},
+                { "state", request.State}
             }));
         
         if (!tokenResponse.IsSuccessStatusCode)
@@ -87,7 +87,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
             new Dictionary<string, string>
             {
                 { "client_id", "52743816" },
-                {"access_token", responseData.AccessToken},
+                { "access_token", responseData.AccessToken},
             }));
         
         if (!userInfoResponse.IsSuccessStatusCode)
@@ -117,7 +117,7 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
                 UserName = userInfoData.User.Email,
                 FullName = userInfoData.User.FirstName,
                 CreatedAt = DateTime.UtcNow.Date,
-                Avatar = userInfoData.User.Photo100,
+                Avatar = userInfoData.User.Avatar.Replace("cs=50x50", "cs=200x200"),
                 EmailConfirmed = true
             };
 
@@ -153,10 +153,10 @@ public class SignInVkCommandHandler : IRequestHandler<SignInVkCommand, (string, 
         public string LastName { get; set; }
         
         [JsonProperty("email")]
-        public string Email { get; set; }
+        public string Email { get; set; } 
         
-        [JsonProperty("photo_100")]
-        public string Photo100 { get; set; }
+        [JsonProperty("avatar")]
+        public string Avatar { get; set; }
     }
 
 

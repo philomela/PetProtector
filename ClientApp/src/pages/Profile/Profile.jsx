@@ -236,7 +236,7 @@ const Profile = () => {
   >
     <Avatar
       alt={profileInfo.fullName}
-      src={profileInfo.avatarUrl || ""}
+      src={profileInfo.avatar || ""}
       sx={{
         width: 100,
         height: 100,
