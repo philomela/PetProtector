@@ -225,7 +225,7 @@ const Profile = () => {
     sx={{
       display: "flex",
       flexDirection: "column",
-      gap: 3,
+      gap: 0.5,
       width: "300px",
       bgcolor: "#638889",
       borderRadius: 1,
@@ -238,10 +238,11 @@ const Profile = () => {
       alt={profileInfo.fullName}
       src={profileInfo.avatar || ""}
       sx={{
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         bgcolor: "orange", // Цвет фона, если нет изображения
         fontSize: "2rem", // Размер текста, если используются инициалы
+        border: "solid 2px white"
       }}
     >
       {profileInfo.fullName ? profileInfo.fullName[0] : "?"}
@@ -422,7 +423,7 @@ const Profile = () => {
                   url(/images/png-lk.png) 
                 `,
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "160% -10%",
+                backgroundPosition: "160% -100%",
               }}
             >
               <Typography variant="h6" component="h6">
@@ -435,8 +436,7 @@ const Profile = () => {
           <Box
             sx={{
               background: `
-                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), 
-                  url(/images/png-lk.png) 
+                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0))
                 `,
             }}
           >
