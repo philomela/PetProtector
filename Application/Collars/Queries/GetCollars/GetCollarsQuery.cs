@@ -41,7 +41,8 @@ internal record GetCollarsQueryHandler : IRequestHandler<GetCollarsQuery, Collar
                     OwnersName = c.Questionnaire.OwnersName,
                     PetsName = c.Questionnaire.PetsName,
                     PhoneNumber = c.Questionnaire.PhoneNumber,
-                    LinkQuestionnaire = c.Questionnaire.LinkQuestionnaire
+                    LinkQuestionnaire = c.Questionnaire.LinkQuestionnaire,
+                    State = c.Questionnaire.State.ToString(),
                 },
                 Location = c.Locations
                     .OrderByDescending(l => l.CreatedAt)

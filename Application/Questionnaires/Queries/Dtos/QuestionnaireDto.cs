@@ -9,4 +9,6 @@ public class QuestionnaireDto
     public string PhoneNumber { get; set; }
     
     public Guid LinkQuestionnaire { get; set; }
+    
+    public string State { get; set; }
 }

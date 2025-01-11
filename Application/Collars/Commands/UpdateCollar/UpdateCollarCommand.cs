@@ -26,7 +26,7 @@ internal record UpdateCollarCommandHandler : IRequestHandler<UpdateCollarCommand
         var entity = await _appDbContext.Collars.FindAsync(request.Id, cancellationToken) 
                      ?? throw new NotFoundException("Entity not found");
         
-        if (entity.UserId == userId)
+        if (entity.State == CollarStates.Linked)
         {
             throw new NotFoundException("Entity not found");
         }

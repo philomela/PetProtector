@@ -74,6 +74,7 @@ const Profile = () => {
       handleCloseDialog(); // Закрываем диалог после сохранения
       // Обновите состояние, если необходимо
       setDialogSavedDataInfo(true);
+      //setProfileInfo(profileInfo);
     }
   };
 
@@ -100,6 +101,7 @@ const Profile = () => {
     ).questionnaire;
 
     collarToUpdate.id = collarId;
+    collarToUpdate.state = "Filled";
     //collarToUpdate.phoneNumber = phoneNumber;  // Передаем актуальное значение phoneNumber
 
     try {
@@ -107,6 +109,7 @@ const Profile = () => {
         `/api/questionnaries/`,
         JSON.stringify(collarToUpdate)
       );
+      //setProfileInfo(profileInfo);
     } catch (error) {
       console.error(error);
     }
@@ -185,7 +188,7 @@ const Profile = () => {
       isMounted = false;
       //controller.abort();
     };
-  }, [searchedCollar, axiosPrivate]);
+  }, [searchedCollar]);
 
   return (
     <>
@@ -232,6 +235,14 @@ const Profile = () => {
       padding: 5,
       color: "white",
       alignItems: "center", // Центрируем содержимое
+      // Плавный переход для свойств
+    transition: "box-shadow 0.3s ease, transform 0.3s ease",
+
+    // При наведении добавляем внешний светящийся эффект
+    "&:hover": {
+      boxShadow: "0 10px 15px rgba(99, 136, 137, 0.8), 0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset",
+      transform: "scale(1.03)", // Лёгкое увеличение для визуального эффекта
+    },
     }}
   >
     <Avatar
@@ -272,6 +283,7 @@ const Profile = () => {
         },
       }}
       sx={{
+        width: "100%",
         input: {
           color: "white !important",
           caretColor: "white !important",
@@ -323,6 +335,7 @@ const Profile = () => {
         },
       }}
       sx={{
+        width: "100%",
         input: {
           color: "white !important",
           caretColor: "white !important",
@@ -374,6 +387,7 @@ const Profile = () => {
         },
       }}
       sx={{
+        width: "100%",
         input: {
           color: "white !important",
           caretColor: "white !important",
@@ -419,11 +433,20 @@ const Profile = () => {
                 borderRadius: 1,
                 marginLeft: 1,
                 background: `
-                  linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0)), 
-                  url(/images/png-lk.png) 
+                  
+                  url(/images/lk-background.jpg) 
                 `,
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "160% -100%",
+                backgroundSize: "cover", 
+                backgroundPosition: "center", 
+                // Плавный переход для свойств
+    transition: "box-shadow 0.3s ease, transform 0.3s ease",
+
+    // При наведении добавляем внешний светящийся эффект
+    "&:hover": {
+      boxShadow: "0 10px 15px rgba(99, 136, 137, 0.8), 0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset",
+      transform: "scale(1.03)", // Лёгкое увеличение для визуального эффекта
+    },
               }}
             >
               <Typography variant="h6" component="h6">
@@ -434,11 +457,21 @@ const Profile = () => {
           </Box>
 
           <Box
+          
             sx={{
+              // Плавный переход для свойств
+    transition: "box-shadow 0.3s ease, transform 0.3s ease",
+
+    // При наведении добавляем внешний светящийся эффект
+    "&:hover": {
+      boxShadow: "0 10px 15px rgba(99, 136, 137, 0.8), 0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset",
+      transform: "scale(1.03)", // Лёгкое увеличение для визуального эффекта
+    },
               background: `
                   linear-gradient(to bottom right, rgba(99, 136, 137, 0.1), rgba(248, 250, 229, 0))
                 `,
             }}
+            
           >
             <Typography
               variant="h6"
@@ -557,11 +590,11 @@ const Profile = () => {
                           Статус:{" "}
                           <span
                             style={{
-                              color: collar.isActive ? "#4caf50" : "#e74c3c",
+                              color: collar?.questionnaire?.state == "Filling" ? "#e74c3c" : "#4caf50",
                               fontWeight: "bold",
                             }}
                           >
-                            {collar.isActive ? "Активен" : "Неактивен"}
+                            {collar?.questionnaire?.state == "Filling" ? "Ожидает заполнения" : "Заполнена"}
                           </span>
                         </Typography>
                       </Box>
