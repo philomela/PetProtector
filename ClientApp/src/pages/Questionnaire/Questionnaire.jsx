@@ -143,13 +143,36 @@ const Questionnaire = () => {
 
       {!showDialog && (
         <Box mt={5}>
+          
           <Typography
-            variant="h4"
-            gutterBottom
-            sx={{ textAlign: "center", color: "#638889" }}
-          >
-            Ура! Вы нашли питомца!
-          </Typography>
+  variant="h5"
+  gutterBottom
+  sx={{
+    textAlign: "center",
+    color: "#f1f1f1",
+    backgroundColor: "#638889",
+    padding: "15px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    fontWeight: "bold",
+    maxWidth: 600,
+    margin: "auto",
+    marginBottom: "20px", // Отступ снизу
+  }}
+>
+  📍 <Typography 
+        variant="h5" 
+        component="span" 
+        sx={{ fontWeight: "bolder", color: "#ffffff", textDecoration: "underline" }}
+      >
+        Вы нашли питомца!
+      </Typography>  
+  <br />
+  Отсканировав QR-адресник, вы попали на эту страницу.  
+  Нажмите кнопку <strong>“Позвонить”</strong> ниже, чтобы сообщить владельцу радостную новость!
+</Typography>
+
+
         </Box>
       )}
 
@@ -163,7 +186,18 @@ const Questionnaire = () => {
             borderRadius: 2,
           }}
         >
-          <Typography variant="h4" gutterBottom sx={{ color: "white" }}>
+          <Typography variant="h5" gutterBottom sx={{
+    textAlign: "center",
+    color: "#f1f1f1",
+    backgroundColor: "#638889",
+    padding: "15px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    fontWeight: "bold",
+    maxWidth: 600,
+    margin: "auto",
+    marginBottom: "20px", // Отступ снизу
+  }}>
             Анкета питомца
           </Typography>
 

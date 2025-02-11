@@ -39,6 +39,7 @@ const SearchForm = ({ handleSearchInfo }) => {
         flexDirection: "column",
         alignItems: "center",
         gap: 2,
+        marginBottom: {xs: 3} 
       }}
     >
         <Typography

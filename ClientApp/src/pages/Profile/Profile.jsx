@@ -221,6 +221,7 @@ const Profile = () => {
               fontFamily: "Russo",
               fontWeight: 100,
               marginTop: 2,
+              marginBottom: {xs: 3}, 
             }}
           >
             {profileInfo && (
@@ -229,9 +230,10 @@ const Profile = () => {
       display: "flex",
       flexDirection: "column",
       gap: 0.5,
-      width: "300px",
+      width: { md: "300px" }, 
       bgcolor: "#638889",
       borderRadius: 1,
+      marginBottom: {xs: 3}, 
       padding: 5,
       color: "white",
       alignItems: "center", // Центрируем содержимое
@@ -428,7 +430,7 @@ const Profile = () => {
                 gap: 2,
                 alignItems: "center",
                 justifyContent: "center",
-                width: "70%",
+                width: { md: "300px" }, 
                 boxShadow: "0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset",
                 borderRadius: 1,
                 marginLeft: 1,
