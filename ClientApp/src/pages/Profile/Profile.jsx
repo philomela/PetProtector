@@ -233,7 +233,7 @@ const Profile = () => {
       width: { md: "300px" }, 
       bgcolor: "#638889",
       borderRadius: 1,
-      marginBottom: {xs: 3}, 
+      marginBottom: {xs: 3, md: 0},  
       padding: 5,
       color: "white",
       alignItems: "center", // Центрируем содержимое
@@ -430,7 +430,7 @@ const Profile = () => {
                 gap: 2,
                 alignItems: "center",
                 justifyContent: "center",
-                width: { md: "300px" }, 
+                width: { md: "70%" }, 
                 boxShadow: "0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset",
                 borderRadius: 1,
                 marginLeft: 1,
