@@ -12,7 +12,7 @@ const useRefreshToken = () => {
       setAuth({ ...auth, accessToken: response.data.token });
       return response.data.token;
     } catch (err) {
-      if (err.response.status === 401) {
+      if (err.response.status === 401 || err.response.status === 400) {
         setAuth({});
         return;
       }
