@@ -20,7 +20,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - DbConnection=Server=mssql,1433;Database=PetProtector;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
-      - RedisConnection=${REDIS_CONN}
+      - RedisConnection=redis:6379,password=${REDIS_PASS}
       - Authentication__Yandex__ClientId=${YANDEX_CLIENT_ID}
       - Authentication__Yandex__ClientSecret=${YANDEX_CLIENT_SECRET}
       - SmtpConfigurations__Server=${SMTP_SERVER}
@@ -48,8 +48,7 @@ services:
   redis:
     container_name: redis
     image: redis:latest
-    ports:
-      - "6379:6379"
+    command: ["redis-server", "--requirepass", "${REDIS_PASS}"]
     networks:
       - my-network
 

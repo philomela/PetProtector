@@ -53,6 +53,7 @@ jobs:
           SMTP_LOGIN: ${{ secrets.SMTP_LOGIN }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REDIS_PASS: ${{ secrets.REDIS_PASS }}
         
         run: |
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SERVER_IP "
@@ -66,6 +67,7 @@ jobs:
             export REDIS_CONN=\"$REDIS_CONN\" &&
             export YANDEX_CLIENT_ID=\"$YANDEX_CLIENT_ID\" &&
             export YANDEX_CLIENT_SECRET=\"$YANDEX_CLIENT_SECRET\" &&
+            export REDIS_PASS=\"$REDIS_PASS\" &&
             git pull &&
             docker-compose stop backend &&
             docker-compose rm -f backend &&
