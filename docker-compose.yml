@@ -48,7 +48,9 @@ services:
   redis:
     container_name: redis
     image: redis:latest
-    command: ["redis-server", "--requirepass", "${REDIS_PASS}"]
+    command: redis-server --requirepass ${REDIS_PASS}
+    environment:
+    - REDIS_PASS=${REDIS_PASS}
     networks:
       - my-network
 
