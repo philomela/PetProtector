@@ -48,7 +48,9 @@ services:
   redis:
     container_name: redis
     image: redis:latest
-    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
+    environment:
+      - REDIS_PASS=${REDIS_PASS}
+    command: redis-server --requirepass ${REDIS_PASS}
     networks:
       - my-network
 
