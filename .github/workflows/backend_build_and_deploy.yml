@@ -68,7 +68,7 @@ jobs:
             export YANDEX_CLIENT_SECRET=\"$YANDEX_CLIENT_SECRET\" &&
             export REDIS_PASS=\"$REDIS_PASS\" &&
             git pull &&
-            docker-compose stop backend &&
-            docker-compose rm -f backend &&
-            docker-compose up --build -d backend
+            docker compose stop backend &&
+            docker compose rm -f backend &&
+            docker compose up --build -d backend
           "
