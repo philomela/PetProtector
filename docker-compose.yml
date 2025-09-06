@@ -44,6 +44,8 @@ services:
       - "1433:1433"
     networks:
       - my-network
+    volumes:
+    - mssql-data:/var/opt/mssql
       
   redis:
     container_name: redis
@@ -53,6 +55,8 @@ services:
     command: redis-server --requirepass ${REDIS_PASS}
     networks:
       - my-network
+    volumes:
+    - redis-data:/data
 
 networks:
   my-network:

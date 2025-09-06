@@ -33,7 +33,7 @@ public class GeneratePkceQueryHandler : IRequestHandler<GetPkceQuery, PkceVm>
         {
             CodeVerifier = codeVerifier, 
             RedirectUri = request.RedirectUri
-        }, cancellationToken, TimeSpan.FromMinutes(1));
+        }, cancellationToken, TimeSpan.FromMinutes(5));
         //Возможно стоит уменьшить время жизни в кеше.
         
         return new PkceVm
