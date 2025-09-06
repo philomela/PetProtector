@@ -61,3 +61,7 @@ services:
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  mssql-data:
+  redis-data:
